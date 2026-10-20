@@ -5,9 +5,19 @@ export const federhainClues = [
   { id: 'volcano', title: 'Die letzte klare Spur', text: 'Die jüngsten Aufzeichnungen betreffen die Zuckerdornechse aus einem vulkanischen Gebiet. Hier verliert sich bisher seine Spur.', dialogId: 'region-volcano' }
 ];
 export const vidiDialogs = [
+  { id: 'bestiary-introduction', text: 'Das ist Professor Federhains Bestiarium. Hier hat er seine Entdeckungen gesammelt. Seit er verschwunden ist, sind viele Seiten leer geblieben. Vielleicht können wir seine Forschung fortsetzen.', buttonLabel: 'Mit der Forschung beginnen' },
+  { id: 'research-niffler', text: 'Habt ihr den Niffler genau genug erforscht? Dann tragen wir unsere Ergebnisse ein.' },
+  { id: 'research-pandanaflora', text: 'In Federhains Unterlagen steckt die Zeichnung eines merkwürdigen Pflanzenwesens. Habt ihr herausgefunden, wie es aussieht, und eure Beschreibung fertig? Dann halten wir eure Ergebnisse fest.' },
+  { id: 'research-codex', text: 'Ihr arbeitet inzwischen schon fast wie richtige Tierwesenforscher! Habt ihr eure Forschungsregeln gesammelt? Dann halten wir sie im Codex fest.' },
+  { id: 'research-wolf', text: 'Federhain fand auch ganz gewöhnliche Tiere faszinierend. Habt ihr den Wolf genau beschrieben? Dann bekommt er seine eigene Forschungsseite.' },
+  { id: 'research-review', text: 'Professor Federhain hat seine Aufzeichnungen nie einfach beim ersten Versuch abgelegt. Gute Forschung wird überprüft! Habt ihr eure Beschreibungen gemeinsam geprüft und überarbeitet?' },
+  { id: 'research-generator', text: 'Wartet mal … dieses Gerät hat der Professor benutzt, wenn er neue Tierwesen entworfen hat. Vielleicht bekommen wir es wieder zum Laufen. Seid ihr bereit, eigene Wesen zu erfinden?' },
+  { id: 'research-wespuin', text: 'Habt ihr eure Forschungsarbeit über den Wespuin abgeschlossen? Dann geben wir euren Beobachtungen einen Platz im Bestiarium.' },
+  { id: 'research-zuckerdornechse', text: 'Die jüngste Spur in Federhains Aufzeichnungen führt zu einer außergewöhnlichen Kreatur aus einem vulkanischen Gebiet. Habt ihr die Zuckerdornechse fertig beschrieben? Dann tragen wir sie ein.' },
+  { id: 'research-class', text: 'Jetzt habt ihr so viel über Tierwesen gelernt, dass es Zeit für eure eigenen Entdeckungen ist. Sollen wir einen zweiten Bestiariumsband für eure Klasse aufschlagen?' },
   { id: 'generator-first-open', text: 'Professor Federhain hat diesen Apparat benutzt, wenn ihm die Ideen für neue Tierwesen ausgingen. Startet ihn – aber was daraus entsteht, müsst ihr selbst zum Leben erwecken!' },
   { id: 'clue-station', text: 'Ich bin Vidi, der Hauself und frühere Assistent von Professor Elian Federhain. Der Professor ist zu einer Expedition aufgebrochen. Wo er jetzt ist, weiß Vidi leider nicht. Aber seine Aufzeichnungen sind noch hier!' },
-  { id: 'milestone-niffler', text: 'Ihr habt wirklich genau hingeschaut! So können wir Federhains Beobachtungen verstehen. Jede gute Beschreibung hilft uns bei seiner Forschung.' },
+  { id: 'milestone-niffler', text: 'Da ist sie – unsere erste neue Forschungsseite! Ihr habt wirklich genau hingeschaut. Jede gute Beschreibung hilft uns bei Federhains Forschung.' },
   { id: 'region-plant', text: 'Seht mal! Der Nebel lichtet sich. Diese Pflanzen kommen mir bekannt vor – Federhain hat sie in seinen Notizen gezeichnet. Vielleicht finden wir dort eine Spur.' },
   { id: 'milestone-codex', text: 'Jetzt haben wir gemeinsame Forscherregeln! Nach solchen Regeln hat auch Federhain gearbeitet. Damit können andere eure Tierbeschreibungen gut verstehen.' },
   { id: 'region-forest', text: 'Hier war der Professor ganz sicher. Federhain hat nämlich nicht nur Tierwesen untersucht. Er konnte sich genauso für einen Wolf oder ein Wildschwein begeistern.' },
@@ -32,6 +42,22 @@ export const milestones = [
   { id: 'zuckerdornechse-documented', title: 'Zuckerdornechse dokumentiert', shortTitle: 'Zuckerdornechse', description: 'Eine zweite Übungsarbeit abschließen und die jüngste Forschungsspur entdecken.', roomPhase: 4, unlocks: { bestiary: ['zuckerdornechse'], regions: ['volcano'], expeditions: ['volcano-observation'] }, vidiDialog: 'region-volcano', federhainClue: 'volcano' },
   { id: 'class-discoveries', title: 'Entdeckungen unserer Klasse', shortTitle: 'Eigene Tierwesen', description: 'Eigene Tierwesen beschreiben und einen zweiten Bestiariumsband eröffnen.', roomPhase: 4, unlocks: { bestiary: ['classBestiary'], features: ['classBestiary'] }, vidiDialog: 'milestone-class' }
 ];
+const presentationActions = {
+  'niffler-researched': { location: 'bestiary', label: 'Niffler ins Bestiarium eintragen', dialog: 'research-niffler', completeLabel: 'Eintrag übernehmen' },
+  'pandanaflora-researched': { location: 'bestiary', label: 'Pandanaflora dokumentieren', dialog: 'research-pandanaflora', completeLabel: 'Eintrag übernehmen' },
+  'research-codex-complete': { location: 'bestiary', label: 'Forschungsregeln eintragen', dialog: 'research-codex', completeLabel: 'Regeln übernehmen' },
+  'wolf-documented': { location: 'bestiary', label: 'Wolf dokumentieren', dialog: 'research-wolf', completeLabel: 'Eintrag übernehmen' },
+  'research-verified': { location: 'station', label: 'Forschung bestätigen', dialog: 'research-review', completeLabel: 'Forschung bestätigen' },
+  'generator-activated': { location: 'station', label: 'Generator aktivieren', dialog: 'research-generator', completeLabel: 'Generator aktivieren' },
+  'wespuin-documented': { location: 'bestiary', label: 'Wespuin dokumentieren', dialog: 'research-wespuin', completeLabel: 'Eintrag übernehmen' },
+  'zuckerdornechse-documented': { location: 'bestiary', label: 'Zuckerdornechse dokumentieren', dialog: 'research-zuckerdornechse', completeLabel: 'Eintrag übernehmen' },
+  'class-discoveries': { location: 'bestiary', label: 'Klassen-Bestiarium öffnen', dialog: 'research-class', completeLabel: 'Zweiten Band öffnen' }
+};
+milestones.forEach(milestone => { milestone.presentationAction = presentationActions[milestone.id]; });
+export function nextPresentationMilestone(classroom) {
+  const next = milestones.find(item => !classroom.completedMilestones.includes(item.id));
+  return next?.presentationAction ? next : null;
+}
 const fields = { bestiary: 'unlockedBestiaryEntries', regions: 'unlockedRegions', expeditions: 'unlockedExpeditions', features: 'unlockedFeatures' };
 function include(list, id, enabled) {
   return enabled ? [...new Set([...list, id])] : list.filter(value => value !== id);

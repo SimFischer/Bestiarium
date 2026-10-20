@@ -10,6 +10,8 @@ import { createGenerator } from './generator.js';
 import { initFullscreen } from './fullscreen.js';
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
+const stationAction = element('div', '', 'station-action');
+document.querySelector('#hotspots').append(stationAction);
 let currentView = '';
 let selectedId = null;
 let detailId = null;
@@ -66,6 +68,12 @@ function renderView() {
   dialog.classList.toggle('generator-dialog', currentView === 'generator');
   if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
+    const tools = element('div', '', 'book-tools');
+    const back = content.querySelector('.bestiary-back');
+    if (back) tools.append(back);
+    const hasAction = messages.renderAction(tools, 'bestiary');
+    content.classList.toggle('has-presentation-action', hasAction);
+    if (back || hasAction) content.prepend(tools);
   } else if (currentView === 'world-map') {
     heading.textContent = 'Weltkarte';
     renderMap(content, classroom, navigate);
@@ -99,6 +107,8 @@ function render() {
     button.setAttribute('aria-label', hotspot.name);
   });
   if (dialog.open) renderView();
+  stationAction.replaceChildren();
+  messages.renderAction(stationAction, 'station');
   story.sync();
   messages.check();
   if (getStorageWarning()) notify(getStorageWarning());
@@ -121,10 +131,20 @@ const messages = initVidiDialogs(
       scene.querySelector(`[data-region="${regionId}"] .region-fog`).animate([{ opacity: 1 }, { opacity: 0 }], { duration: 650, easing: 'ease-out' });
     }
   },
-  () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; }
+  () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; },
+  milestone => {
+    const bookId = milestone.unlocks.bestiary?.[0];
+    if (!bookId) { navigate('station'); return; }
+    navigate('bestiary', bookId);
+    const spread = content.querySelector('.bestiary-spread');
+    const image = spread.querySelector('.book-art');
+    const shine = () => spread.classList.add('book-revealed');
+    if (image.complete) shine();
+    else { image.addEventListener('load', shine, { once: true }); image.addEventListener('error', shine, { once: true }); }
+  }
 );
 const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
-dialog.addEventListener('close', generator.cancel);
+dialog.addEventListener('close', () => { generator.cancel(); messages.check(); });
 initTeacher(notify, story.start, messages.replay);
 initFullscreen();
 subscribe(render);
