@@ -3,8 +3,9 @@ import { activeClass, subscribe, getStorageWarning, bookUnlocked } from './state
 import { initTeacher } from './teacher.js';
 import { initIntro } from './intro.js';
 import { renderBestiary } from './bestiary.js';
-import { renderMap, renderExpedition, initRegionMessages } from './world.js';
+import { renderMap, renderExpedition } from './world.js';
 import { element } from './ui.js';
+import { initVidiDialogs } from './story.js';
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
 const notice = document.querySelector('#notice');
@@ -40,6 +41,7 @@ function navigate(view, id = null, detail = null) {
   renderView();
   if (!dialog.open) dialog.showModal();
   else content.querySelector('button')?.focus();
+  messages.check();
 }
 const buttons = hotspots.map(hotspot => {
   const button = element('button', '', 'hotspot');
@@ -50,7 +52,7 @@ const buttons = hotspots.map(hotspot => {
   button.addEventListener('click', () => {
     button.classList.add('touched');
     setTimeout(() => button.classList.remove('touched'), 280);
-    if (hotspot.feature && !activeClass().features[hotspot.feature]) { notify(`${hotspot.name} ist noch verschlossen.`); return; }
+    if (hotspot.feature && !activeClass().unlockedFeatures.includes(hotspot.feature)) { notify(`${hotspot.name} ist noch verschlossen.`); return; }
     navigate(hotspot.id, hotspot.bookId);
   });
   document.querySelector('#hotspots').append(button);
@@ -74,20 +76,20 @@ function renderView() {
     const feature = features.find(f => f.id === currentView);
     if (!feature) return;
     heading.textContent = feature.name;
-    content.append(element('p', classroom.features[feature.id] ? feature.description : 'Dieser Bereich ist noch verschlossen.', 'intro'));
+    content.append(element('p', classroom.unlockedFeatures.includes(feature.id) ? feature.description : 'Dieser Bereich ist noch verschlossen.', 'intro'));
   }
 }
 function render() {
   const classroom = activeClass();
   images.forEach((img, index) => {
-    const active = index === classroom.phase;
+    const active = index === classroom.roomPhase;
     img.classList.toggle('active', active);
     img.setAttribute('aria-hidden', String(!active));
   });
-  document.querySelector('#class-label').textContent = `${classroom.name} · ${roomPhases[classroom.phase].name}`;
+  document.querySelector('#class-label').textContent = `${classroom.name} · ${roomPhases[classroom.roomPhase].name}`;
   buttons.forEach(({ button, label, hotspot }) => {
     const book = animals.find(a => a.id === hotspot.bookId);
-    const locked = Boolean((hotspot.feature && !classroom.features[hotspot.feature]) || (book && !bookUnlocked(classroom, book)));
+    const locked = Boolean((hotspot.feature && !classroom.unlockedFeatures.includes(hotspot.feature)) || (book && !bookUnlocked(classroom, book)));
     button.classList.toggle('locked', locked);
     button.setAttribute('aria-label', `${hotspot.name}${locked ? ' · verschlossen' : ''}`);
     button.setAttribute('aria-disabled', String(locked));
@@ -106,7 +108,18 @@ document.querySelectorAll('dialog').forEach(modal => {
   modal.querySelector('[data-close]').addEventListener('click', () => modal.close());
 });
 const story = initIntro();
-const messages = initRegionMessages();
-initTeacher(notify, story.start);
+const messages = initVidiDialogs(
+  () => ({ view: dialog.open ? currentView : 'station', id: selectedId }),
+  regionId => {
+    navigate('world-map');
+    const scene = content.querySelector('.world-scene');
+    scene.inert = true;
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      scene.querySelector(`[data-region="${regionId}"] .region-fog`).animate([{ opacity: 1 }, { opacity: 0 }], { duration: 650, easing: 'ease-out' });
+    }
+  },
+  () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; }
+);
+initTeacher(notify, story.start, messages.replay);
 subscribe(render);
 render();

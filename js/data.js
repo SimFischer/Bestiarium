@@ -70,11 +70,11 @@ export const mapConfig = { asset: 'assets/map/worldmap-full.png' };
 export const regions = [
   { id: 'station', name: 'Forschungsstation', unlocked: true, x: 7, y: 57, width: 25, height: 31 },
   { id: 'forest', name: 'Waldregion', unlocked: false, x: 8, y: 9, width: 31, height: 35,
-    message: 'Seht nur! Der Nebel lichtet sich. Dort hinten beginnt ein Waldgebiet. Vielleicht finden wir dort eine Spur von Professor Federhain.' },
+    vidiDialog: 'region-forest' },
   { id: 'plant', name: 'Pflanzenregion', unlocked: false, x: 43, y: 30, width: 28, height: 51,
-    message: 'Diese Pflanzen kenne ich aus Federhains Aufzeichnungen. Er muss hier geforscht haben. Wir sollten uns dort genauer umsehen.' },
+    vidiDialog: 'region-plant' },
   { id: 'volcano', name: 'Vulkanregion', unlocked: false, x: 74, y: 9, width: 23, height: 55,
-    message: 'Das sieht nach einem gefährlicheren Forschungsgebiet aus. Aber genau dort könnte Federhains Spur weiterführen.' }
+    vidiDialog: 'region-volcano' }
 ];
 export const expeditions = [
   { id: 'forest-observation', regionId: 'forest', title: 'Beobachtung im Wald', creatureId: 'bowtruckle', animationType: 'sway' },
@@ -83,6 +83,7 @@ export const expeditions = [
 ].map(item => ({
   ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/background.png`,
   hint: 'Beobachtet genau. Welche Merkmale fallen euch auf?',
+  vidiDialog: `expedition-${item.regionId}`,
   creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType }]
 }));
 export const features = [
@@ -96,3 +97,5 @@ export const hotspots = [
   { id: 'bestiary', bookId: 'classBestiary', name: 'Klassen-Bestiarium', x: 75, y: 63, width: 16, height: 22, feature: 'classBestiary' },
   { id: 'bestiary', bookId: 'codex', name: 'Forschercodex', x: 25, y: 48, width: 7, height: 9 }
 ];
+
+export const classBestiaryPages = [];

@@ -1,4 +1,4 @@
-import { animals } from './data.js';
+import { animals, classBestiaryPages } from './data.js';
 import { bookUnlocked } from './state.js';
 import { element, button, asset, position } from './ui.js';
 
@@ -27,7 +27,8 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     return;
   }
   const spread = element('article', '', `bestiary-spread book-${entry.type}`);
-  asset(spread, entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
+  const preparedPage = entry.type === 'class' ? classBestiaryPages.find(page => page.id === detailId) : null;
+  asset(spread, preparedPage?.asset || entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
   if (entry.type === 'codex') {
     entry.textContent.forEach(section => {
       const text = element('section', '', 'codex-text');
@@ -36,7 +37,10 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
       spread.append(text);
     });
   } else if (entry.type === 'class') {
-    renderClassEntries(spread, classroom.classEntries, detailId, id => navigate('bestiary', entry.id, id));
+    if (preparedPage) {
+      heading.textContent = preparedPage.title;
+      content.append(button('Zur Klassenübersicht', () => navigate('bestiary', entry.id), 'bestiary-back'));
+    } else renderClassPages(spread, id => navigate('bestiary', entry.id, id));
   } else {
     const text = element('div', '', 'bestiary-page-text');
     text.append(element('h3', entry.name));
@@ -49,29 +53,14 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
   }
   content.append(spread);
 }
-function renderClassEntries(spread, entries, detailId, open) {
+function renderClassPages(spread, open) {
   const text = element('section', '', 'class-book-text');
-  const detail = entries.find(entry => entry.id === detailId);
-  text.append(element('h3', detail ? detail.name : 'Unsere Entdeckungen'));
-  if (detail) {
-    text.append(button('Zur Klassenübersicht', () => open(null)), element('p', detail.description, 'class-description'));
-    if (detail.mainImage) {
-      const frame = element('div', '', 'class-main-image');
-      asset(frame, detail.mainImage, detail.name);
-      spread.append(frame);
-    }
-    const details = element('div', '', 'class-detail-images');
-    detail.detailImages.forEach((path, index) => {
-      const frame = element('div', '', 'class-detail-image');
-      asset(frame, path, `Detail ${index + 1} von ${detail.name}`);
-      details.append(frame);
-    });
-    spread.append(details);
-  } else if (!entries.length) {
-    text.append(element('p', 'Hier sammeln wir später die Tierwesen und Entdeckungen unserer Klasse. Noch warten die Seiten auf eure Ideen!'));
+  text.append(element('h3', 'Unsere Entdeckungen'));
+  if (!classBestiaryPages.length) {
+    text.append(element('p', 'Hier sammeln wir später die fertigen Tierwesenseiten unserer Klasse. Noch wartet dieser zweite Band auf eure Entdeckungen!'));
   } else {
     const list = element('ul', '', 'class-entry-list');
-    entries.forEach(entry => { const item = element('li'); item.append(button(entry.name, () => open(entry.id))); list.append(item); });
+    classBestiaryPages.forEach(page => { const item = element('li'); item.append(button(page.title, () => open(page.id))); list.append(item); });
     text.append(list);
   }
   spread.append(text);

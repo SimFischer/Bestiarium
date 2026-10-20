@@ -1,5 +1,5 @@
 import { regions, expeditions, mapConfig } from './data.js';
-import { activeClass, updateClass } from './state.js';
+import { activeClass } from './state.js';
 import { element, button, asset, position } from './ui.js';
 
 export function renderMap(content, classroom, navigate, notify) {
@@ -12,10 +12,10 @@ export function renderMap(content, classroom, navigate, notify) {
     regions.forEach(region => {
       const hotspot = button('', () => {
         const current = activeClass();
-        if (!current.regions[region.id].unlocked) { notify('Diese Region liegt noch im Nebel.'); return; }
+        if (!current.unlockedRegions.includes(region.id)) { notify('Diese Region liegt noch im Nebel.'); return; }
         if (region.id === 'station') { navigate('station'); return; }
         const expedition = expeditions.find(e => e.regionId === region.id);
-        if (!expedition || !current.expeditions[expedition.id].unlocked) { notify('Die Expedition ist noch nicht freigeschaltet.'); return; }
+        if (!expedition || !current.unlockedExpeditions.includes(expedition.id)) { notify('Die Expedition ist noch nicht freigeschaltet.'); return; }
         navigate('expedition', expedition.id);
       }, 'map-region');
       position(hotspot, region);
@@ -29,7 +29,7 @@ export function renderMap(content, classroom, navigate, notify) {
   }
   regions.forEach(region => {
     const hotspot = scene.querySelector(`[data-region="${region.id}"]`);
-    const unlocked = classroom.regions[region.id].unlocked;
+    const unlocked = classroom.unlockedRegions.includes(region.id);
     hotspot.classList.toggle('region-unlocked', unlocked);
     hotspot.setAttribute('aria-disabled', String(!unlocked));
     hotspot.setAttribute('aria-label', `${region.name} · ${unlocked ? 'freigeschaltet' : 'verschlossen'}`);
@@ -39,7 +39,7 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   content.replaceChildren();
   content.append(button('Zur Weltkarte', () => navigate('world-map'), 'bestiary-back'));
   const expedition = expeditions.find(e => e.id === expeditionId);
-  if (!expedition || !classroom.regions[expedition.regionId].unlocked || !classroom.expeditions[expedition.id].unlocked) {
+  if (!expedition || !classroom.unlockedRegions.includes(expedition.regionId) || !classroom.unlockedExpeditions.includes(expedition.id)) {
     content.append(element('p', 'Diese Expedition ist noch verschlossen.', 'locked-page'));
     return;
   }
@@ -65,38 +65,4 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   hint.append(portrait, element('p', `Vidi: „${expedition.hint}“`));
   scene.append(hint);
   content.append(scene);
-}
-export function initRegionMessages() {
-  const dialog = element('dialog', '', 'region-message-dialog');
-  dialog.setAttribute('aria-labelledby', 'region-message-title');
-  const title = element('h2', 'Vidi hat etwas entdeckt!');
-  title.id = 'region-message-title';
-  const image = element('img');
-  image.src = 'assets/story/vidi-fullbody.png';
-  image.alt = 'Vidi';
-  const text = element('p');
-  const body = element('div');
-  let regionId;
-  let classId;
-  const acknowledge = () => {
-    if (activeClass().id === classId && regionId) updateClass(c => { c.regions[regionId].messageSeen = true; });
-    dialog.close();
-  };
-  body.append(title, text, button('Weiterforschen', acknowledge));
-  dialog.append(image, body);
-  document.body.append(dialog);
-  function check() {
-    if (dialog.open || document.querySelector('#teacher-dialog').open || !document.querySelector('#story-intro').hidden) return;
-    const classroom = activeClass();
-    const region = regions.find(r => r.message && classroom.regions[r.id].unlocked && !classroom.regions[r.id].messageSeen);
-    if (!region) return;
-    regionId = region.id;
-    classId = classroom.id;
-    text.textContent = region.message;
-    dialog.showModal();
-  }
-  dialog.addEventListener('cancel', event => { event.preventDefault(); acknowledge(); });
-  dialog.addEventListener('close', check);
-  document.querySelector('#teacher-dialog').addEventListener('close', check);
-  return { check };
 }

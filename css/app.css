@@ -101,13 +101,8 @@ img[hidden], .asset-fallback[hidden] { display: none !important; }
 .class-book-text { position: absolute; left: 54%; top: 12%; width: 30%; max-height: 47%; overflow-y: auto; color: #50351e; font: 1.4cqw/1.5 Georgia, 'Times New Roman', serif; }
 .class-book-text h3 { font: bold 2.5cqw/1.2 Georgia, serif; }
 .class-book-text button { color: #50351e; background: #ebd5a9; border-color: #ac8249; font-size: 1.2cqw; }
-.class-description { white-space: pre-wrap; }
 .class-entry-list { list-style: none; padding: 0; }
 .class-entry-list li { margin: .7cqw 0; }
-.class-main-image { position: absolute; left: 9%; top: 14%; width: 37%; height: 43%; }
-.class-main-image img, .class-detail-image img { width: 100%; height: 100%; object-fit: contain; }
-.class-detail-images { position: absolute; left: 8%; top: 65%; width: 39%; height: 20%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12cqw; overflow-y: auto; }
-.class-detail-image { position: relative; min-height: 10cqw; }
 dialog.landscape-dialog { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: 100dvh; padding: 12px 20px; border-radius: 0; }
 dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .landscape-dialog .dialog-heading { margin: 0 0 8px; padding: 0 0 8px; }
@@ -145,3 +140,23 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 @keyframes creature-idle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.015); } }
 @keyframes creature-sway { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
 @media (prefers-reduced-motion: reduce) { .creature-motion { animation: none; } .region-fog { transition: none; } }
+
+.milestone-section, .story-progress, .manual-controls { grid-column: 1 / -1; }
+.milestone-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.milestone-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border: 1px solid #715b3d; border-radius: 10px; background: #31281e; }
+.milestone-item.completed { border-color: #8d9d71; }
+.milestone-item h4 { margin: 0 0 .4rem; color: #f0d6a4; font-size: 1.1rem; }
+.milestone-item p { margin: 0 0 .5rem; color: #cfc0a9; font-size: .9rem; }
+.milestone-item button { min-height: 48px; flex-shrink: 0; border-color: #b58b4e; }
+.milestone-item:not(.completed) button { background: #e4bd76; color: #48321c; }
+.milestone-status { font-size: .85rem; color: #e3c184; }
+.completed .milestone-status { color: #c1d2a7; }
+.story-clues { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2.5rem; padding-left: 1.5rem; }
+.story-clues p { margin: .3rem 0; color: #cfc0a9; }
+.manual-controls { border: 1px solid #5a4833; border-radius: 8px; padding: 1rem; }
+.manual-controls > summary { cursor: pointer; color: #d5bc94; font-size: 1.1rem; min-height: 44px; padding: .5rem; }
+.manual-content { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding-top: 1rem; }
+.vidi-dialog { border-radius: 26px; border: 2px solid #d4b27b; box-shadow: 0 12px 40px #74451540; background: radial-gradient(ellipse at top left, #fff9e9, #f5e3bf); }
+.vidi-dialog h2 { display: inline-block; padding: .4rem 1.1rem; background: #e7c788; border: 1px solid #c7a063; border-radius: 12px; }
+.vidi-dialog button { min-height: 48px; padding: .8rem 1.3rem; border-radius: 14px; font-size: 1.1rem; }
+@media (max-width: 900px) { .milestone-list, .manual-content, .story-clues { grid-template-columns: 1fr; } }

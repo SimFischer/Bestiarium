@@ -1,7 +1,9 @@
 import { roomPhases, animals, regions, expeditions, features } from './data.js';
-import { bookUnlocked, setBookUnlocked, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
+import { bookUnlocked, setBookUnlocked, setClassUnlock, setMilestone, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
 
-export function initTeacher(notify, replayIntro) {
+import { milestones, federhainClues, storyStage } from './progress.js';
+
+export function initTeacher(notify, replayIntro, replayStory) {
   const dialog = document.querySelector('#teacher-dialog');
   const content = document.querySelector('#teacher-content');
   const element = (tag, text, className) => {
@@ -11,12 +13,13 @@ export function initTeacher(notify, replayIntro) {
     return node;
   };
   function render() {
+    const manualOpen = content.querySelector('.manual-controls')?.open || false;
     content.replaceChildren();
     const classroom = activeClass();
-    function section(title) {
+    function section(title, parent = content) {
       const node = element('section', '', 'teacher-section');
       node.append(element('h3', title));
-      content.append(node);
+      parent.append(node);
       return node;
     }
     function selectRow(section, label, options, selected, onChange) {
@@ -41,8 +44,42 @@ export function initTeacher(notify, replayIntro) {
       });
       section.append(node);
     }
-    const room = section('Raum');
-    selectRow(room, 'Raumphase', roomPhases.map(p => [p.id, `${p.id} · ${p.name}`]), classroom.phase, value => updateClass(c => { c.phase = Number(value); }));
+    const progress = section('Unterrichtsfortschritt');
+    progress.classList.add('milestone-section');
+    progress.append(element('p', 'Die Lehrkraft erklärt den Unterrichtsschritt für abgeschlossen. Die App schaltet die passenden Seiten und Forschungsgebiete frei.', 'muted'));
+    const milestoneList = element('div', '', 'milestone-list');
+    milestones.forEach((milestone, index) => {
+      const completed = classroom.completedMilestones.includes(milestone.id);
+      const row = element('article', '', `milestone-item${completed ? ' completed' : ''}`);
+      const summary = element('div');
+      summary.append(element('h4', `M${index} · ${milestone.title}`), element('p', milestone.description), element('span', completed ? 'Abgeschlossen' : 'Noch offen', 'milestone-status'));
+      button(row, completed ? 'Zurücksetzen' : 'Abschließen', () => { setMilestone(milestone.id, !completed); render(); });
+      row.querySelector('button').setAttribute('aria-label', `${completed ? 'Zurücksetzen' : 'Abschließen'}: ${milestone.title}`);
+      row.prepend(summary);
+      milestoneList.append(row);
+    });
+    progress.append(milestoneList, element('p', 'Zurücksetzen nimmt die zugehörigen Freigaben zurück. Die Raumphase bleibt erhalten und kann manuell geändert werden.', 'muted small'));
+    const story = section('Federhains Spur');
+    story.classList.add('story-progress');
+    const current = storyStage(classroom);
+    story.append(element('p', current ? `Aktueller Storyschritt: ${current.title}` : 'Noch keine Forschungsspur entdeckt.'));
+    const clues = element('ol', '', 'story-clues');
+    federhainClues.filter(clue => classroom.discoveredFederhainClues.includes(clue.id)).forEach(clue => {
+      const item = element('li');
+      item.append(element('strong', clue.title), element('p', clue.text));
+      clues.append(item);
+    });
+    const next = federhainClues.find(clue => !classroom.discoveredFederhainClues.includes(clue.id));
+    story.append(clues, element('p', next ? `Nächster noch verborgener Hinweis: ${next.title}` : 'Alle vier Hinweise sind entdeckt. Federhains Verbleib bleibt offen.', 'muted'));
+    if (current) button(story, 'Storyhinweis erneut zeigen', () => { dialog.close(); replayStory(current.dialogId); });
+    const manual = element('details', '', 'manual-controls');
+    manual.open = manualOpen;
+    manual.append(element('summary', 'Manuelle Steuerung'));
+    const manualContent = element('div', '', 'manual-content');
+    manual.append(manualContent);
+    content.append(manual);
+    const room = section('Raum', manualContent);
+    selectRow(room, 'Raumphase', roomPhases.map(p => [p.id, `${p.id} · ${p.name}`]), classroom.roomPhase, value => updateClass(c => { c.roomPhase = Number(value); }));
     button(room, 'Intro erneut anzeigen', () => { dialog.close(); replayIntro(); });
     function unlockRow(section, name, checked, change) {
       const label = element('label', '', 'check-field');
@@ -53,18 +90,18 @@ export function initTeacher(notify, replayIntro) {
       label.append(input, element('span', `${name} freigeschaltet`));
       section.append(label);
     }
-    const bestiary = section('Bestiarium');
+    const bestiary = section('Bestiarium', manualContent);
     animals.forEach(entry => unlockRow(bestiary, entry.name, bookUnlocked(classroom, entry), value => {
       setBookUnlocked(entry, value);
       if (entry.feature) render();
     }));
-    const world = section('Weltkarte');
-    regions.forEach(region => unlockRow(world, region.name, classroom.regions[region.id].unlocked, value => updateClass(c => { c.regions[region.id].unlocked = value; })));
-    const expeditionsSection = section('Expeditionen');
-    expeditions.forEach(expedition => unlockRow(expeditionsSection, expedition.title, classroom.expeditions[expedition.id].unlocked, value => updateClass(c => { c.expeditions[expedition.id].unlocked = value; })));
-    const featureSection = section('Funktionen');
-    features.forEach(feature => unlockRow(featureSection, feature.name, classroom.features[feature.id], value => {
-      updateClass(c => { c.features[feature.id] = value; });
+    const world = section('Weltkarte', manualContent);
+    regions.forEach(region => unlockRow(world, region.name, classroom.unlockedRegions.includes(region.id), value => { setClassUnlock('regions', region.id, value); render(); }));
+    const expeditionsSection = section('Expeditionen', manualContent);
+    expeditions.forEach(expedition => unlockRow(expeditionsSection, expedition.title, classroom.unlockedExpeditions.includes(expedition.id), value => setClassUnlock('expeditions', expedition.id, value)));
+    const featureSection = section('Funktionen', manualContent);
+    features.forEach(feature => unlockRow(featureSection, feature.name, classroom.unlockedFeatures.includes(feature.id), value => {
+      setClassUnlock('features', feature.id, value);
       if (feature.id === 'classBestiary') render();
     }));
     const classes = section('Klasse');
