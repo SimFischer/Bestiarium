@@ -116,3 +116,18 @@ export const generatorConfig = {
     { id: 'similarity2', name: 'Ähnlichkeit 2', values: ['Raupe', 'Schlange', 'Blume', 'Oktopus', 'Baum', 'Blätter', 'Stein', 'Phönix', 'Schnabeltier', 'Frucht', 'Gemüse'] }
   ].map(category => ({ ...category, values: [...category.values, 'Freie Wahl – wählt zwei!'] }))
 };
+
+// Module: { id, name, asset, tags: [] }. Alle PNGs: transparent, 1600 × 1200, Blick nach links/links-vorne.
+// Gleiche Körperposition, Grundperspektive, Bodenhöhe, Körpermitte sowie Hals-/Kopf-, Bein- und Schwanzansatz.
+export const generatorBuilderConfig = {
+  id: 'builder', title: 'Mischwesen bauen', enabled: false,
+  canvas: { width: 1600, height: 1200 },
+  layers: [
+    { id: 'body', collection: 'bodies', directory: 'assets/generator-builder/bodies/' },
+    { id: 'legs', collection: 'legs', directory: 'assets/generator-builder/legs/' },
+    { id: 'tail', collection: 'tails', directory: 'assets/generator-builder/tails/' },
+    { id: 'head', collection: 'heads', directory: 'assets/generator-builder/heads/' },
+    { id: 'extra', collection: 'extras', directory: 'assets/generator-builder/extras/' }
+  ],
+  heads: [], bodies: [], legs: [], tails: [], extras: []
+};
