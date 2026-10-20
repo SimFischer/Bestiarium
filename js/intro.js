@@ -2,19 +2,20 @@ import { activeClass, updateClass } from './state.js';
 
 const steps = [
   {
-    title: 'Eine vergessene Forschungsstation',
+    title: 'Eine Entdeckung',
     paragraphs: [
-      'Am Rand der bekannten Tierwesenwelt wurde eine alte Forschungsstation entdeckt.',
-      'Seit langer Zeit scheint hier niemand mehr gearbeitet zu haben.',
-      'Doch im Inneren befinden sich noch Bücher, Karten und Spuren früherer Expeditionen.'
+      'Auf einer Wanderung entdeckt ihr zwischen Bäumen und Bergen ein altes Haus.',
+      'Es sieht aus, als hätte hier lange niemand mehr gearbeitet.',
+      'Neugierig geht ihr näher heran.'
     ],
     button: 'Station untersuchen'
   },
   {
     title: 'Vidi',
     paragraphs: [
-      'Oh! Besucher? Damit hatte Vidi wirklich nicht mehr gerechnet.',
-      'Diese Forschungsstation gehört Professor Elian Federhain. Vidi war viele Jahre sein Assistent.',
+      'Oh! Besuch? Damit hat Vidi wirklich nicht mehr gerechnet!',
+      'Diese Forschungsstation gehört Professor Elian Federhain.',
+      'Vidi war lange sein Assistent.',
       'Aber der Professor ist nicht hier.'
     ],
     button: 'Wo ist Professor Federhain?'
@@ -22,31 +23,31 @@ const steps = [
   {
     title: 'Die letzte Expedition',
     paragraphs: [
-      'Professor Federhain hatte eine ungewöhnliche Spur entdeckt.',
-      'Er glaubte, sie könnte ihn zu einem Tierwesen führen, nach dem er schon lange gesucht hatte.',
-      'Also brach er zu einer Expedition auf. Er versprach zurückzukehren.',
+      'Der Professor ist vor langer Zeit zu einer Expedition aufgebrochen.',
+      'Er folgte einer Spur, die ihn zu einem besonderen Tierwesen führen sollte.',
+      'Er wollte bald zurückkommen.',
       'Aber seitdem hat Vidi nichts mehr von ihm gehört.'
     ],
-    button: 'Gibt es keine Hinweise?'
+    button: 'Gibt es Hinweise?'
   },
   {
-    title: 'Die unvollständige Forschung',
+    title: 'Die Hinweise',
     paragraphs: [
-      'Doch. Einige.',
-      'Professor Federhains letzte Aufzeichnungen befinden sich noch hier.',
-      'Aber vieles ist unvollständig. Seiten des Bestiariums sind beschädigt, Tierbeobachtungen fehlen und auf der Weltkarte sind ganze Gebiete noch unerforscht.',
-      'Wenn wir seine Forschung vervollständigen, können wir vielleicht herausfinden, wohin seine letzte Expedition geführt hat.'
+      'Ja. Einige.',
+      'Seine Aufzeichnungen sind noch hier. Aber vieles ist unvollständig.',
+      'Im Bestiarium fehlen Seiten, Tierbeschreibungen sind beschädigt und auf der Karte sind noch nicht alle Regionen erforscht.',
+      'Wenn wir seine Forschung vervollständigen, finden wir vielleicht heraus, wohin er gegangen ist.'
     ],
     button: 'Wie können wir helfen?'
   },
   {
-    title: 'Der Forschungsauftrag',
+    title: 'Der Auftrag',
     paragraphs: [
-      'Wir müssen genau beobachten.',
-      'Wir müssen Tierwesen so beschreiben, dass andere sie sich genau vorstellen können.',
-      'Wir müssen alte Aufzeichnungen prüfen, Bestiariumsseiten vervollständigen und neue Regionen erforschen.'
+      'Wir müssen Tierwesen genau beobachten.',
+      'Wir müssen sie so beschreiben, dass andere sie sich gut vorstellen können.',
+      'Wir müssen das Bestiarium vervollständigen und neue Regionen erforschen.'
     ],
-    motto: 'Je genauer wir beobachten und beschreiben, desto mehr können wir entdecken.',
+    motto: 'Je genauer ihr beobachtet und beschreibt, desto mehr könnt ihr entdecken.',
     closing: 'Vielleicht finden wir so auch Professor Federhain.',
     button: 'Forschung beginnen'
   }
@@ -71,9 +72,9 @@ export function initIntro() {
   function renderStep(focus = true) {
     const data = steps[step];
     intro.classList.toggle('with-vidi', step > 0);
+    intro.classList.toggle('vidi-arrives', step === 1);
     document.querySelector('#story-vidi').hidden = step === 0;
-    const caption = step === 0 ? 'Die Entdeckung' : step === 1 ? 'Hauself und Forschungsassistent' : 'Vidi erzählt';
-    document.querySelector('#story-step').textContent = `${caption} · ${step + 1} / ${steps.length}`;
+    document.querySelector('#story-step').textContent = step === 0 ? 'Euer Abenteuer beginnt' : 'Vidi';
     title.textContent = data.title;
     text.replaceChildren();
     const append = (tag, value) => {
