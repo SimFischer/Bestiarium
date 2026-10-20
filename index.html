@@ -16,6 +16,16 @@
     <div id="scene" class="scene">
       <div id="room-images" class="room-images"></div>
       <nav id="hotspots" aria-label="Bereiche der Forschungsstation"></nav>
+      <section id="story-intro" class="story-intro" aria-labelledby="story-title" hidden>
+        <img class="story-background" src="assets/story/station-exterior.png" alt="Die alte Forschungsstation am Rand der Tierwesenwelt">
+        <img id="story-vidi" class="story-vidi" src="assets/story/vidi-fullbody.png" alt="Vidi, Federhains Hauself und Forschungsassistent" hidden>
+        <div id="story-panel" class="story-panel">
+          <p id="story-step" class="eyebrow"></p>
+          <h2 id="story-title" tabindex="-1"></h2>
+          <div id="story-text"></div>
+          <button id="story-next" type="button"></button>
+        </div>
+      </section>
     </div>
   </main>
   <dialog id="view-dialog" aria-labelledby="view-title">

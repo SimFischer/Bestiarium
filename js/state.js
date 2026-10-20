@@ -9,7 +9,7 @@ const validName = name => typeof name === 'string' && name.trim().length > 0 && 
 
 export function newClass(name = 'Klasse 5') {
   return {
-    id: id(), name: name.trim(), phase: 0,
+    id: id(), name: name.trim(), phase: 0, introCompleted: false,
     animals: Object.fromEntries(animals.map(a => [a.id, 'hidden'])),
     regions: Object.fromEntries(regions.map(r => [r.id, r.id === 'base' ? 'discovered' : 'hidden'])),
     features: Object.fromEntries(features.map(f => [f.id, false]))
@@ -24,6 +24,7 @@ export function validateState(value) {
   const ids = new Set();
   const classes = value.classes.map(c => {
     if (!object(c) || typeof c.id !== 'string' || !c.id || c.id.length > 100 || ids.has(c.id) || !validName(c.name) || !Number.isInteger(c.phase) || !roomPhases[c.phase]) throw new Error('Ungültige Klassendaten.');
+    if (own(c, 'introCompleted') && typeof c.introCompleted !== 'boolean') throw new Error('Ungültiger Introstatus.');
     ids.add(c.id);
     const readMap = (source, definitions, valid) => {
       if (!object(source)) throw new Error('Unvollständiger Klassenstand.');
@@ -32,7 +33,7 @@ export function validateState(value) {
         return [item.id, source[item.id]];
       }));
     };
-    return { id: c.id, name: c.name.trim(), phase: c.phase,
+    return { id: c.id, name: c.name.trim(), phase: c.phase, introCompleted: c.introCompleted ?? false,
       animals: readMap(c.animals, animals, v => own(animalStatuses, v)),
       regions: readMap(c.regions, regions, v => own(regionStatuses, v)),
       features: readMap(c.features, features, v => typeof v === 'boolean') };

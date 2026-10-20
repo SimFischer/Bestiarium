@@ -60,3 +60,19 @@ body:has(dialog[open]) > .notice { visibility: hidden; }
 @keyframes arrive { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: scale(1); } }
 @media (max-width: 760px) { #app-title span { display: none; } #teacher-content, .card-grid, .region-grid { grid-template-columns: 1fr; } .dialog-heading { align-items: flex-start; } .dialog-heading > button { font-size: .8rem; } .field { grid-template-columns: 1fr; gap: .3rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+.story-intro { position: absolute; inset: 0; overflow: hidden; background: #15120f; container-type: inline-size; }
+.story-intro[hidden], .story-vidi[hidden] { display: none; }
+.story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.story-intro::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, #110d0780, transparent 80%); }
+.story-panel { position: absolute; z-index: 2; left: 5%; bottom: 7%; width: 47%; max-height: 86%; overflow-y: auto; padding: 2.2cqw; color: #f8ecd5; background: #21180ee8; border: 1px solid #b4935f; border-radius: 5px 18px 5px 18px; box-shadow: 0 12px 45px #120b0770; }
+.story-panel .eyebrow { font-size: clamp(.65rem, 1cqw, 1.1rem); color: #d1b37e; }
+.story-panel h2 { font-size: clamp(1.1rem, 2.5cqw, 3rem); line-height: 1.15; margin-bottom: 1.2cqw; }
+.story-panel h2:focus { outline: none; }
+#story-text p { font-size: clamp(.85rem, 1.45cqw, 1.75rem); line-height: 1.45; margin: 0 0 .85cqw; }
+#story-text blockquote { font: 500 clamp(1rem, 1.8cqw, 2.15rem)/1.35 Georgia, serif; color: #f5d59b; margin: 1.2cqw 0; padding-left: 1cqw; border-left: 2px solid #bb9659; }
+#story-next { margin-top: .9cqw; font-size: clamp(.85rem, 1.25cqw, 1.5rem); padding: .8cqw 1.3cqw; border-color: #bc9559; background: #624522; color: #fff0d3; }
+#story-next:hover { background: #79572d; }
+.story-vidi { position: absolute; z-index: 1; right: 0; bottom: 0; width: 44%; height: 94%; object-fit: contain; object-position: center bottom; animation: arrive 300ms ease-out; }
+.with-vidi .story-panel { left: 4%; width: 53%; bottom: 5%; max-height: 90%; }
+@media (max-width: 760px), (max-height: 500px) { .story-panel { overflow-y: auto; } #story-text p { line-height: 1.3; } }

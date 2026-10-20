@@ -1,6 +1,7 @@
 import { roomPhases, hotspots, animals, animalStatuses, regions, regionStatuses, features } from './data.js';
 import { activeClass, subscribe, getStorageWarning } from './state.js';
 import { initTeacher } from './teacher.js';
+import { initIntro } from './intro.js';
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
 const notice = document.querySelector('#notice');
@@ -118,6 +119,7 @@ function render() {
     label.textContent = `${locked ? 'Verschlossen · ' : ''}${hotspot.name}`;
   });
   if (dialog.open) renderView();
+  story.sync();
   if (getStorageWarning()) notify(getStorageWarning());
 }
 document.querySelectorAll('dialog').forEach(modal => {
@@ -127,6 +129,7 @@ document.querySelectorAll('dialog').forEach(modal => {
   modal.querySelector('.dialog-heading').after(feedback);
   modal.querySelector('[data-close]').addEventListener('click', () => modal.close());
 });
-initTeacher(notify);
+const story = initIntro();
+initTeacher(notify, story.start);
 subscribe(render);
 render();

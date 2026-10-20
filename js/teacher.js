@@ -1,7 +1,7 @@
 import { roomPhases, animals, animalStatuses, regions, regionStatuses, features } from './data.js';
 import { getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
 
-export function initTeacher(notify) {
+export function initTeacher(notify, replayIntro) {
   const dialog = document.querySelector('#teacher-dialog');
   const content = document.querySelector('#teacher-content');
   const element = (tag, text, className) => {
@@ -43,6 +43,7 @@ export function initTeacher(notify) {
     }
     const room = section('Raum');
     selectRow(room, 'Raumphase', roomPhases.map(p => [p.id, `${p.id} · ${p.name}`]), classroom.phase, value => updateClass(c => { c.phase = Number(value); }));
+    button(room, 'Intro erneut anzeigen', () => { dialog.close(); replayIntro(); });
     const bestiary = section('Bestiarium');
     animals.forEach(a => selectRow(bestiary, a.name, Object.entries(animalStatuses), classroom.animals[a.id], value => updateClass(c => { c.animals[a.id] = value; })));
     const world = section('Welt');
