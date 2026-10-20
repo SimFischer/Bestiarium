@@ -1,5 +1,5 @@
-import { roomPhases, animals, animalStatuses, regions, regionStatuses, features } from './data.js';
-import { getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
+import { roomPhases, animals, regions, expeditions, features } from './data.js';
+import { bookUnlocked, setBookUnlocked, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
 
 export function initTeacher(notify, replayIntro) {
   const dialog = document.querySelector('#teacher-dialog');
@@ -44,32 +44,29 @@ export function initTeacher(notify, replayIntro) {
     const room = section('Raum');
     selectRow(room, 'Raumphase', roomPhases.map(p => [p.id, `${p.id} · ${p.name}`]), classroom.phase, value => updateClass(c => { c.phase = Number(value); }));
     button(room, 'Intro erneut anzeigen', () => { dialog.close(); replayIntro(); });
+    function unlockRow(section, name, checked, change) {
+      const label = element('label', '', 'check-field');
+      const input = element('input');
+      input.type = 'checkbox';
+      input.checked = checked;
+      input.addEventListener('change', () => change(input.checked));
+      label.append(input, element('span', `${name} freigeschaltet`));
+      section.append(label);
+    }
     const bestiary = section('Bestiarium');
-    animals.forEach(a => {
-      if (!a.pageAsset) {
-        selectRow(bestiary, a.name, Object.entries(animalStatuses), classroom.animals[a.id], value => updateClass(c => { c.animals[a.id] = value; }));
-        return;
-      }
-      const label = element('label', '', 'check-field');
-      const input = element('input');
-      input.type = 'checkbox';
-      input.checked = classroom.animals[a.id].unlocked;
-      input.addEventListener('change', () => updateClass(c => { c.animals[a.id].unlocked = input.checked; }));
-      label.append(input, element('span', `${a.name} freigeschaltet`));
-      bestiary.append(label);
-    });
-    const world = section('Welt');
-    regions.forEach(r => selectRow(world, r.name, Object.entries(regionStatuses), classroom.regions[r.id], value => updateClass(c => { c.regions[r.id] = value; })));
+    animals.forEach(entry => unlockRow(bestiary, entry.name, bookUnlocked(classroom, entry), value => {
+      setBookUnlocked(entry, value);
+      if (entry.feature) render();
+    }));
+    const world = section('Weltkarte');
+    regions.forEach(region => unlockRow(world, region.name, classroom.regions[region.id].unlocked, value => updateClass(c => { c.regions[region.id].unlocked = value; })));
+    const expeditionsSection = section('Expeditionen');
+    expeditions.forEach(expedition => unlockRow(expeditionsSection, expedition.title, classroom.expeditions[expedition.id].unlocked, value => updateClass(c => { c.expeditions[expedition.id].unlocked = value; })));
     const featureSection = section('Funktionen');
-    features.forEach(feature => {
-      const label = element('label', '', 'check-field');
-      const input = element('input');
-      input.type = 'checkbox';
-      input.checked = classroom.features[feature.id];
-      input.addEventListener('change', () => updateClass(c => { c.features[feature.id] = input.checked; }));
-      label.append(input, element('span', `${feature.name} freigeschaltet`));
-      featureSection.append(label);
-    });
+    features.forEach(feature => unlockRow(featureSection, feature.name, classroom.features[feature.id], value => {
+      updateClass(c => { c.features[feature.id] = value; });
+      if (feature.id === 'classBestiary') render();
+    }));
     const classes = section('Klasse');
     selectRow(classes, 'Aktive Klasse', getState().classes.map(c => [c.id, c.name]), classroom.id, value => { selectClass(value); render(); });
     const nameLabel = element('label', '', 'field');

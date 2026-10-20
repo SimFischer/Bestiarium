@@ -2,14 +2,9 @@ export const roomPhases = [
   'Verlassen', 'Erste Spuren', 'Forschungsstation', 'Expedition läuft', 'Vollendetes Archiv'
 ].map((name, id) => ({ id, name, image: `assets/station/phase-${id}.png` }));
 
-export const animalStatuses = {
-  hidden: 'Noch unbekannt', hint: 'Erste Spur', sighted: 'Gesichtet',
-  documented: 'Dokumentiert', verified: 'Überprüft'
-};
 export const animals = [
   {
-    id: 'niffler', name: 'Niffler', unlocked: false,
-    pageAsset: 'assets/bestiary/niffler-bestiary-page.png',
+    id: 'niffler', name: 'Niffler',
     textContent: [
       { heading: 'Aussehen', text: 'Der Niffler ist klein und gedrungen. Er hat dichtes dunkles Fell, eine lange rosige Schnauze und kurze Beine. Seine kräftigen Vorderpfoten tragen lange Krallen.' },
       { heading: 'Besondere Merkmale', text: 'Mit seinen beweglichen Vorderpfoten kann er graben und Gegenstände greifen. Glänzende Dinge interessieren ihn besonders.' },
@@ -18,27 +13,86 @@ export const animals = [
       { heading: 'Verhalten', text: 'Niffler sind neugierig. Auf der Suche nach glänzenden Gegenständen durchwühlen sie Taschen, Kisten und andere Aufbewahrungsorte.' }
     ]
   },
-  { id: 'pandanaflora', name: 'Pandanaflora', hint: 'Etwas Unbekanntes verbirgt sich in der Pflanzenwelt.' },
-  { id: 'wolf', name: 'Wolf', hint: 'Pfotenabdrücke wurden entdeckt.' },
-  { id: 'zuckerdornechse', name: 'Zuckerdornechse', hint: 'Eine ungewöhnliche Spur wartet auf Untersuchung.' }
-];
-export const regionStatuses = { hidden: 'Unbekannt', discovered: 'Entdeckt', explored: 'Erforscht' };
+  {
+    id: 'pandanaflora', name: 'Pandanaflora',
+    textContent: [
+      { heading: 'Aussehen', text: 'Das Tierwesen hat einen rundlichen Körper, einen hellen Kopf und dunkle Ohren. Dunkle Flecken umgeben seine grünen Augen. Die Beine sind kurz und kräftig.' },
+      { heading: 'Besondere Merkmale', text: 'Grüne, blattförmige Strukturen bedecken den Rücken und den langen Schwanz. Zwischen den Blättern liegen gelbe, längliche Früchte.' },
+      { heading: 'Beobachtung', text: 'Die Studie zeigt das Tierwesen zwischen Pflanzen. Beschreibt Kopf, Rumpf, Beine und Schwanz in einer sinnvollen Reihenfolge.' }
+    ]
+  },
+  {
+    id: 'wolf', name: 'Wolf',
+    textContent: [
+      { heading: 'Aussehen', text: 'Der Wolf hat einen länglichen Körper, dichtes graubraunes Fell und eine helle Schnauzenpartie. Seine Ohren sind aufgerichtet und laufen spitz zu.' },
+      { heading: 'Besondere Merkmale', text: 'An den kräftigen Pfoten sitzen Krallen. Der buschige Schwanz und die lange Schnauze gehören zu seinen auffälligen Merkmalen.' },
+      { heading: 'Beobachtung', text: 'Die Studien zeigen Kopf, Pfote, Fell und Spuren. Achtet auf die genaue Form und die unterschiedlichen Fellfarben.' }
+    ]
+  },
+  {
+    id: 'bowtruckle', name: 'Bowtruckle',
+    textContent: [
+      { heading: 'Aussehen', text: 'Der Bowtruckle ist schmal und länglich. Sein grüner Körper erinnert an einen Zweig. Am Kopf wachsen blattförmige Strukturen.' },
+      { heading: 'Besondere Merkmale', text: 'Lange, dünne Arme und Beine gehen in verzweigte Finger und Zehen über. Kleine dunkle Augen sitzen im schmalen Kopf.' },
+      { heading: 'Beobachtung', text: 'Vergleicht das Tierwesen mit den Zweigen in der Studie. Welche Formen und Farben machen es zwischen den Pflanzen schwer erkennbar?' }
+    ]
+  },
+  {
+    id: 'zuckerdornechse', name: 'Zuckerdornechse',
+    textContent: [
+      { heading: 'Aussehen', text: 'Die Zuckerdornechse hat einen gedrungenen Körper, vier kurze Beine und einen langen, gebogenen Schwanz. Ihre Haut besteht aus vielen kleinen Schuppen.' },
+      { heading: 'Besondere Merkmale', text: 'Rote, spitze Kristalle sitzen auf Kopf, Rücken und Schwanz. Die grünlichen Schuppen heben sich vom orangefarbenen Bauch ab.' },
+      { heading: 'Beobachtung', text: 'Die Studie zeigt das Tierwesen in einer felsigen Vulkanlandschaft. Beschreibt die Anordnung der Kristalle und die Form der kräftigen Krallen.' }
+    ]
+  },
+  {
+    id: 'wespuin', name: 'Wespuin',
+    textContent: [
+      { heading: 'Aussehen', text: 'Der Wespuin besitzt einen rundlichen, schwarz-gelb gestreiften Körper. Am Kopf sitzen große dunkle Augen, ein spitzer Schnabel und zwei lange Fühler.' },
+      { heading: 'Besondere Merkmale', text: 'Durchscheinende Flügel wachsen am Rücken. Die Beine tragen gelbe, dicht behaarte Abschnitte.' },
+      { heading: 'Beobachtung', text: 'Die Studie zeigt das Tierwesen auf einer Blüte. Vergleicht Flügel, Fühler und Beine mit bekannten Tieren.' }
+    ]
+  },
+  {
+    id: 'codex', name: 'Forschercodex', type: 'codex', assetName: 'research-codex-page',
+    textContent: [
+      { heading: 'Überschrift und Einleitung', text: 'Wählt eine treffende Überschrift. Nennt die Tierart oder den Tiernamen und eine auffällige Besonderheit.', x: 24, y: 10, width: 21, height: 22 },
+      { heading: 'Größe und Aussehen', text: 'Beschreibt Größe, bei Bedarf Gewicht, Körperteile, Farben, Formen und besondere Merkmale genau.', x: 19, y: 40, width: 26, height: 18 },
+      { heading: 'Reihenfolge und Schluss', text: 'Geht sinnvoll vor, etwa vom Kopf bis zum Schwanz. Am Schluss passen Verhalten, Lebensraum, Nahrung oder Lebenserwartung.', x: 17, y: 65, width: 28, height: 14 },
+      { heading: 'Genau und sachlich schreiben', text: 'Verwendet treffende Adjektive und passende Vergleiche. Schreibt im Präsens und ohne persönliche Wertung. Andere sollen sich das Tier genau vorstellen können.', x: 54, y: 10, width: 28, height: 31 },
+      { heading: 'Phantastische Tierwesen', text: 'Verbindet Bekanntes sinnvoll: Tiere, Pflanzen oder Gegenstände. Besondere Merkmale brauchen eine nachvollziehbare Logik. Überladet euer Wesen nicht mit Fähigkeiten. Größe und Gewicht sollen plausibel bleiben.', x: 54, y: 49, width: 29, height: 21 }
+    ]
+  },
+  { id: 'classBestiary', name: 'Klassen-Bestiarium', type: 'class', feature: 'classBestiary', assetName: 'class-bestiary-page', textContent: [] }
+].map(entry => ({ type: 'animal', unlocked: false, ...entry, pageAsset: `assets/bestiary/${entry.assetName || `${entry.id}-bestiary-page`}.png` }));
+
+export const mapConfig = { asset: 'assets/map/worldmap-full.png' };
 export const regions = [
-  { id: 'base', name: 'Forschungsstation' }, { id: 'forest', name: 'Wald' },
-  { id: 'mountains', name: 'Gebirge' }, { id: 'wetlands', name: 'Feuchtgebiete' },
-  { id: 'volcano', name: 'Vulkanland' }, { id: 'frost', name: 'Frostlande' },
-  { id: 'island', name: 'Insel' }
+  { id: 'station', name: 'Forschungsstation', unlocked: true, x: 7, y: 57, width: 25, height: 31 },
+  { id: 'forest', name: 'Waldregion', unlocked: false, x: 8, y: 9, width: 31, height: 35,
+    message: 'Seht nur! Der Nebel lichtet sich. Dort hinten beginnt ein Waldgebiet. Vielleicht finden wir dort eine Spur von Professor Federhain.' },
+  { id: 'plant', name: 'Pflanzenregion', unlocked: false, x: 43, y: 30, width: 28, height: 51,
+    message: 'Diese Pflanzen kenne ich aus Federhains Aufzeichnungen. Er muss hier geforscht haben. Wir sollten uns dort genauer umsehen.' },
+  { id: 'volcano', name: 'Vulkanregion', unlocked: false, x: 74, y: 9, width: 23, height: 55,
+    message: 'Das sieht nach einem gefährlicheren Forschungsgebiet aus. Aber genau dort könnte Federhains Spur weiterführen.' }
 ];
+export const expeditions = [
+  { id: 'forest-observation', regionId: 'forest', title: 'Beobachtung im Wald', creatureId: 'bowtruckle', animationType: 'sway' },
+  { id: 'plant-observation', regionId: 'plant', title: 'Beobachtung in der Pflanzenregion', creatureId: 'pandanaflora', animationType: 'idle' },
+  { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland', creatureId: 'zuckerdornechse', animationType: 'idle' }
+].map(item => ({
+  ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/background.png`,
+  hint: 'Beobachtet genau. Welche Merkmale fallen euch auf?',
+  creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType }]
+}));
 export const features = [
   { id: 'generator', name: 'Tierwesen-Generator', description: 'Das Gerät ist bereit. Die Erschaffung neuer Tierwesen folgt in einer späteren Ausbaustufe.' },
-  { id: 'classBestiary', name: 'Klassen-Bestiarium', description: 'Band II wartet auf die selbst erfundenen Tierwesen unserer Klasse.' },
-  { id: 'codex', name: 'Forscherkodex', description: 'Hier entsteht später unser gemeinsamer Forscherkodex.' }
+  { id: 'classBestiary', name: 'Klassen-Bestiarium' }
 ];
-// Prozentwerte beziehen sich für alle Raumphasen auf dieselbe 16:9-Szene.
 export const hotspots = [
   { id: 'bestiary', name: 'Bestiarium', x: 27, y: 55, width: 48, height: 29 },
-  { id: 'world', name: 'Weltkarte', x: 39, y: 10, width: 36, height: 34 },
+  { id: 'world-map', name: 'Weltkarte', x: 39, y: 10, width: 36, height: 34 },
   { id: 'generator', name: 'Tierwesen-Generator', x: 84, y: 30, width: 14, height: 23, feature: 'generator' },
-  { id: 'classBestiary', name: 'Klassen-Bestiarium', x: 75, y: 63, width: 16, height: 22, feature: 'classBestiary' },
-  { id: 'codex', name: 'Forscherkodex', x: 25, y: 48, width: 7, height: 9, feature: 'codex' }
+  { id: 'bestiary', bookId: 'classBestiary', name: 'Klassen-Bestiarium', x: 75, y: 63, width: 16, height: 22, feature: 'classBestiary' },
+  { id: 'bestiary', bookId: 'codex', name: 'Forschercodex', x: 25, y: 48, width: 7, height: 9 }
 ];
