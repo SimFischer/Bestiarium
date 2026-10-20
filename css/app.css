@@ -47,6 +47,10 @@ dialog.teacher-guide { width: 100vw; height: 100dvh; max-width: none; max-height
 dialog.teacher-guide[open] { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; }
 .guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .guide-heading h2 { color: #674322; font-size: clamp(1.5rem, 2.5vw, 2.5rem); }
+.guide-heading-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 16px; }
+.guide-heading-actions a { display: inline-flex; align-items: center; min-height: 48px; padding: .55rem .8rem; border: 1px solid #b9a17c; border-radius: 7px; color: #674322; font-size: .95rem; text-decoration: none; }
+.guide-heading-actions a:hover { background: #ead09c; }
+.guide-heading-actions a:focus-visible { outline: 3px solid #90662f; outline-offset: 2px; }
 .teacher-guide button { min-height: 48px; border-color: #a17b45; background: #f8edcf; color: #51391f; }
 .teacher-guide button:hover { background: #ead09c; }
 .teacher-guide button:focus-visible, .guide-panel:focus-visible { outline: 3px solid #90662f; outline-offset: -3px; }
