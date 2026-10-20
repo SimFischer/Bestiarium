@@ -83,3 +83,16 @@ body:has(dialog[open]) > .notice { visibility: hidden; }
 .vidi-arrives #story-title { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
 .with-vidi:before { content: ''; position: absolute; z-index: 3; left: 57.8%; bottom: 40%; width: 2cqw; height: 3cqw; background: #f5e3bf; clip-path: polygon(0 0, 100% 35%, 0 100%); }
 @media (max-width: 760px), (max-height: 500px) { #story-text p { line-height: 1.4; } .story-panel { padding-top: 1.5cqw; } }
+
+dialog.book-dialog { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: 100dvh; padding: 12px 20px; border-radius: 0; background: #201a14; }
+dialog.book-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
+.book-dialog .dialog-heading { margin: 0 0 8px; padding: 0 0 8px; }
+.book-dialog .dialog-heading h2 { font-size: 1.35rem; }
+.book-dialog #view-content { display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 0; }
+.bestiary-back { align-self: flex-start; font-size: .9rem; padding: .45rem .8rem; }
+.bestiary-spread { position: relative; width: min(100%, calc((100dvh - 150px) * 1.5)); aspect-ratio: 3 / 2; container-type: inline-size; flex-shrink: 0; }
+.bestiary-spread > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.bestiary-page-text { position: absolute; left: 53.3%; top: 6.5%; width: 40%; color: #50351e; font: 1.28cqw/1.35 Georgia, 'Times New Roman', serif; }
+.bestiary-page-text h3 { font: bold 2.7cqw/1.15 Georgia, 'Times New Roman', serif; margin: 0 0 .8cqw; color: #54351c; }
+.bestiary-page-text p { line-height: inherit; margin: 0 0 .5cqw; }
+.locked-page { margin: auto; max-width: 620px; padding: 2rem; border-radius: 16px; background: #f3e1bd; color: #624424; font-size: 1.2rem; }

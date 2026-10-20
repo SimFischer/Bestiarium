@@ -45,7 +45,19 @@ export function initTeacher(notify, replayIntro) {
     selectRow(room, 'Raumphase', roomPhases.map(p => [p.id, `${p.id} · ${p.name}`]), classroom.phase, value => updateClass(c => { c.phase = Number(value); }));
     button(room, 'Intro erneut anzeigen', () => { dialog.close(); replayIntro(); });
     const bestiary = section('Bestiarium');
-    animals.forEach(a => selectRow(bestiary, a.name, Object.entries(animalStatuses), classroom.animals[a.id], value => updateClass(c => { c.animals[a.id] = value; })));
+    animals.forEach(a => {
+      if (!a.pageAsset) {
+        selectRow(bestiary, a.name, Object.entries(animalStatuses), classroom.animals[a.id], value => updateClass(c => { c.animals[a.id] = value; }));
+        return;
+      }
+      const label = element('label', '', 'check-field');
+      const input = element('input');
+      input.type = 'checkbox';
+      input.checked = classroom.animals[a.id].unlocked;
+      input.addEventListener('change', () => updateClass(c => { c.animals[a.id].unlocked = input.checked; }));
+      label.append(input, element('span', `${a.name} freigeschaltet`));
+      bestiary.append(label);
+    });
     const world = section('Welt');
     regions.forEach(r => selectRow(world, r.name, Object.entries(regionStatuses), classroom.regions[r.id], value => updateClass(c => { c.regions[r.id] = value; })));
     const featureSection = section('Funktionen');

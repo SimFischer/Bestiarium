@@ -10,7 +10,7 @@ const validName = name => typeof name === 'string' && name.trim().length > 0 && 
 export function newClass(name = 'Klasse 5') {
   return {
     id: id(), name: name.trim(), phase: 0, introCompleted: false,
-    animals: Object.fromEntries(animals.map(a => [a.id, 'hidden'])),
+    animals: Object.fromEntries(animals.map(a => [a.id, a.pageAsset ? { unlocked: a.unlocked } : 'hidden'])),
     regions: Object.fromEntries(regions.map(r => [r.id, r.id === 'base' ? 'discovered' : 'hidden'])),
     features: Object.fromEntries(features.map(f => [f.id, false]))
   };
@@ -26,15 +26,17 @@ export function validateState(value) {
     if (!object(c) || typeof c.id !== 'string' || !c.id || c.id.length > 100 || ids.has(c.id) || !validName(c.name) || !Number.isInteger(c.phase) || !roomPhases[c.phase]) throw new Error('Ungültige Klassendaten.');
     if (own(c, 'introCompleted') && typeof c.introCompleted !== 'boolean') throw new Error('Ungültiger Introstatus.');
     ids.add(c.id);
-    const readMap = (source, definitions, valid) => {
+    const readMap = (source, definitions, valid, normalize = v => v) => {
       if (!object(source)) throw new Error('Unvollständiger Klassenstand.');
       return Object.fromEntries(definitions.map(item => {
-        if (!own(source, item.id) || !valid(source[item.id])) throw new Error('Ungültiger Status im Klassenstand.');
-        return [item.id, source[item.id]];
+        if (!own(source, item.id) || !valid(source[item.id], item)) throw new Error('Ungültiger Status im Klassenstand.');
+        return [item.id, normalize(source[item.id], item)];
       }));
     };
     return { id: c.id, name: c.name.trim(), phase: c.phase, introCompleted: c.introCompleted ?? false,
-      animals: readMap(c.animals, animals, v => own(animalStatuses, v)),
+      animals: readMap(c.animals, animals,
+        (v, a) => own(animalStatuses, v) || (Boolean(a.pageAsset) && object(v) && typeof v.unlocked === 'boolean'),
+        (v, a) => a.pageAsset ? { unlocked: typeof v === 'string' ? v !== 'hidden' : v.unlocked } : v),
       regions: readMap(c.regions, regions, v => own(regionStatuses, v)),
       features: readMap(c.features, features, v => typeof v === 'boolean') };
   });

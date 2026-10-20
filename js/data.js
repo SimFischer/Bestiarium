@@ -7,7 +7,17 @@ export const animalStatuses = {
   documented: 'Dokumentiert', verified: 'Überprüft'
 };
 export const animals = [
-  { id: 'niffler', name: 'Niffler', hint: 'Eine Spur führt zu einem unbekannten Tierwesen.' },
+  {
+    id: 'niffler', name: 'Niffler', unlocked: false,
+    pageAsset: 'assets/bestiary/niffler-bestiary-page.png',
+    textContent: [
+      { heading: 'Aussehen', text: 'Der Niffler ist klein und gedrungen. Er hat dichtes dunkles Fell, eine lange rosige Schnauze und kurze Beine. Seine kräftigen Vorderpfoten tragen lange Krallen.' },
+      { heading: 'Besondere Merkmale', text: 'Mit seinen beweglichen Vorderpfoten kann er graben und Gegenstände greifen. Glänzende Dinge interessieren ihn besonders.' },
+      { heading: 'Lebensraum', text: 'Er lebt gern in geschützten Verstecken und unterirdischen Bauten.' },
+      { heading: 'Nahrung', text: 'Noch nicht dokumentiert.' },
+      { heading: 'Verhalten', text: 'Niffler sind neugierig. Auf der Suche nach glänzenden Gegenständen durchwühlen sie Taschen, Kisten und andere Aufbewahrungsorte.' }
+    ]
+  },
   { id: 'pandanaflora', name: 'Pandanaflora', hint: 'Etwas Unbekanntes verbirgt sich in der Pflanzenwelt.' },
   { id: 'wolf', name: 'Wolf', hint: 'Pfotenabdrücke wurden entdeckt.' },
   { id: 'zuckerdornechse', name: 'Zuckerdornechse', hint: 'Eine ungewöhnliche Spur wartet auf Untersuchung.' }

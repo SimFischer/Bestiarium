@@ -6,6 +6,7 @@ const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
 const notice = document.querySelector('#notice');
 let currentView = '';
+let currentAnimalId = null;
 let noticeTimer;
 function notify(message) {
   clearTimeout(noticeTimer);
@@ -49,6 +50,7 @@ const buttons = hotspots.map(hotspot => {
       return;
     }
     currentView = hotspot.id;
+    currentAnimalId = null;
     renderView();
     dialog.showModal();
   });
@@ -59,11 +61,26 @@ function renderView() {
   const classroom = activeClass();
   const heading = document.querySelector('#view-title');
   content.replaceChildren();
+  dialog.classList.toggle('book-dialog', currentView === 'bestiary' && Boolean(currentAnimalId));
   if (currentView === 'bestiary') {
+    if (currentAnimalId) {
+      renderAnimalPage(animals.find(a => a.id === currentAnimalId), classroom);
+      return;
+    }
     heading.textContent = 'Bestiarium · Band I';
     content.append(element('p', 'Wir sammeln Spuren, beobachten genau und halten unsere Entdeckungen im Heft fest.', 'intro'));
     const list = element('div', '', 'card-grid');
     animals.forEach((animal, index) => {
+      if (animal.pageAsset) {
+        const entry = element('article', '', 'entry');
+        entry.append(element('h3', animal.name), element('p', classroom.animals[animal.id].unlocked ? 'Freigeschaltet' : 'Noch verschlossen', 'status'));
+        const open = element('button', `${animal.name} öffnen`);
+        open.type = 'button';
+        open.addEventListener('click', () => { currentAnimalId = animal.id; renderView(); content.querySelector('.bestiary-back').focus(); });
+        entry.append(open);
+        list.append(entry);
+        return;
+      }
       const status = classroom.animals[animal.id];
       const card = element('article', '', `entry status-${status}`);
       card.append(element('p', `Eintrag ${String(index + 1).padStart(2, '0')}`, 'eyebrow'));
@@ -102,6 +119,32 @@ function renderView() {
     content.append(element('p', classroom.features[feature.id] ? feature.description : 'Dieser Bereich ist noch verschlossen.', 'intro'));
     if (feature.id === 'classBestiary' && classroom.features[feature.id]) content.append(element('p', 'Noch keine Tierwesen eingetragen.', 'muted'));
   }
+}
+function renderAnimalPage(animal, classroom) {
+  document.querySelector('#view-title').textContent = `Bestiarium · ${animal.name}`;
+  const back = element('button', 'Zur Bestiariumsübersicht', 'bestiary-back');
+  back.type = 'button';
+  back.addEventListener('click', () => { currentAnimalId = null; renderView(); content.querySelector('button').focus(); });
+  content.append(back);
+  if (!classroom.animals[animal.id].unlocked) {
+    const locked = element('section', '', 'locked-page');
+    locked.append(element('h3', 'Diese Buchseite wartet noch auf euch.'), element('p', `Der Eintrag „${animal.name}“ ist noch verschlossen. Eure Lehrkraft kann ihn freischalten.`));
+    content.append(locked);
+    return;
+  }
+  const spread = element('article', '', 'bestiary-spread');
+  const image = element('img');
+  image.src = animal.pageAsset;
+  image.alt = `Vollständige Bestiariums-Doppelseite: ${animal.name} mit Körper-, Pfoten- und Verhaltensstudien`;
+  const text = element('div', '', 'bestiary-page-text');
+  text.append(element('h3', animal.name));
+  animal.textContent.forEach(section => {
+    const paragraph = element('p');
+    paragraph.append(element('strong', `${section.heading}: `), document.createTextNode(section.text));
+    text.append(paragraph);
+  });
+  spread.append(image, text);
+  content.append(spread);
 }
 function render() {
   const classroom = activeClass();
