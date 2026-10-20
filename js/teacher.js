@@ -114,42 +114,8 @@ export function initTeacher(notify) {
     }, true);
   }
   const title = document.querySelector('#app-title');
-  let timer;
-  let pointerId;
-  let keyboardHolding = false;
-  const cancel = () => {
-    clearTimeout(timer);
-    timer = null;
-    pointerId = undefined;
-    keyboardHolding = false;
-    title.classList.remove('holding');
-  };
-  function start() {
-    title.classList.add('holding');
-    timer = setTimeout(() => {
-      cancel(); render();
-      if (!dialog.open) dialog.showModal();
-    }, 5000);
-  }
-  title.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.button !== 0) return;
-    cancel(); pointerId = event.pointerId;
-    title.setPointerCapture(event.pointerId);
-    start();
+  title.addEventListener('click', () => {
+    render();
+    if (!dialog.open) dialog.showModal();
   });
-  title.addEventListener('pointermove', event => {
-    if (event.pointerId !== pointerId) return;
-    const box = title.getBoundingClientRect();
-    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) cancel();
-  });
-  ['pointerup', 'pointercancel', 'lostpointercapture', 'blur'].forEach(type => title.addEventListener(type, cancel));
-  title.addEventListener('contextmenu', event => event.preventDefault());
-  title.addEventListener('keydown', event => {
-    if (event.key !== ' ' && event.key !== 'Enter') return;
-    event.preventDefault();
-    if (!keyboardHolding && !event.repeat) { cancel(); keyboardHolding = true; start(); }
-  });
-  title.addEventListener('keyup', event => { if (event.key === ' ' || event.key === 'Enter') cancel(); });
-  window.addEventListener('blur', cancel);
-  document.addEventListener('visibilitychange', cancel);
 }

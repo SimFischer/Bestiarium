@@ -10,8 +10,6 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px s
 h1 { font-size: 1.12rem; margin: 0; }
 #app-title { border: 0; padding: .45rem 0; border-radius: 0; background: transparent; color: var(--gold); font-family: Georgia, serif; font-weight: bold; letter-spacing: .035em; touch-action: none; user-select: none; -webkit-touch-callout: none; position: relative; }
 #app-title span { color: #c3b49c; font: 400 .78rem system-ui, sans-serif; margin-left: .8rem; letter-spacing: .06em; }
-#app-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); }
-#app-title.holding::after { width: 100%; transition: width 5s linear; }
 #class-label { color: #b8aa95; font-size: .8rem; text-align: right; margin: 0; }
 #station { min-height: 0; display: grid; place-items: center; overflow: hidden; }
 .scene { position: relative; width: min(100vw, calc((100vh - 54px) * 16 / 9)); width: min(100vw, calc((100dvh - 54px) * 16 / 9)); aspect-ratio: 16 / 9; isolation: isolate; }
