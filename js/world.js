@@ -2,7 +2,7 @@ import { regions, expeditions, mapConfig } from './data.js';
 import { activeClass } from './state.js';
 import { element, button, asset, position } from './ui.js';
 
-export function renderMap(content, classroom, navigate, notify) {
+export function renderMap(content, classroom, navigate) {
   let scene = content.querySelector('.world-scene');
   if (!scene) {
     content.replaceChildren();
@@ -12,10 +12,10 @@ export function renderMap(content, classroom, navigate, notify) {
     regions.forEach(region => {
       const hotspot = button('', () => {
         const current = activeClass();
-        if (!current.unlockedRegions.includes(region.id)) { notify('Diese Region liegt noch im Nebel.'); return; }
+        if (!current.unlockedRegions.includes(region.id)) return;
         if (region.id === 'station') { navigate('station'); return; }
         const expedition = expeditions.find(e => e.regionId === region.id);
-        if (!expedition || !current.unlockedExpeditions.includes(expedition.id)) { notify('Die Expedition ist noch nicht freigeschaltet.'); return; }
+        if (!expedition || !current.unlockedExpeditions.includes(expedition.id)) return;
         navigate('expedition', expedition.id);
       }, 'map-region');
       position(hotspot, region);
@@ -25,14 +25,16 @@ export function renderMap(content, classroom, navigate, notify) {
       hotspot.append(fog, element('span', region.name, 'region-label'));
       scene.append(hotspot);
     });
-    content.append(element('p', 'Wählt eine freigeschaltete Region für eine gemeinsame Beobachtung.', 'muted'), scene);
+    content.append(element('p', 'Federhains Spuren führen uns durch diese Welt.', 'muted'), scene);
   }
   regions.forEach(region => {
     const hotspot = scene.querySelector(`[data-region="${region.id}"]`);
     const unlocked = classroom.unlockedRegions.includes(region.id);
     hotspot.classList.toggle('region-unlocked', unlocked);
-    hotspot.setAttribute('aria-disabled', String(!unlocked));
-    hotspot.setAttribute('aria-label', `${region.name} · ${unlocked ? 'freigeschaltet' : 'verschlossen'}`);
+    const expedition = expeditions.find(item => item.regionId === region.id);
+    hotspot.disabled = !unlocked || (region.id !== 'station' && (!expedition || !classroom.unlockedExpeditions.includes(expedition.id)));
+    hotspot.querySelector('.region-label').hidden = !unlocked;
+    hotspot.setAttribute('aria-label', unlocked ? region.name : 'Nebelverhülltes Gebiet');
   });
 }
 export function renderExpedition(content, classroom, expeditionId, navigate) {
@@ -40,7 +42,7 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   content.append(button('Zur Weltkarte', () => navigate('world-map'), 'bestiary-back'));
   const expedition = expeditions.find(e => e.id === expeditionId);
   if (!expedition || !classroom.unlockedRegions.includes(expedition.regionId) || !classroom.unlockedExpeditions.includes(expedition.id)) {
-    content.append(element('p', 'Diese Expedition ist noch verschlossen.', 'locked-page'));
+    navigate('world-map');
     return;
   }
   const scene = element('div', '', 'expedition-scene observation-scene');

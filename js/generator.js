@@ -116,7 +116,7 @@ export function createGenerator(showHelp) {
   function render(content, classroom) {
     if (!classroom.unlockedFeatures.includes('generator')) {
       cancel();
-      content.replaceChildren(element('p', 'Der Tierwesen-Generator ist noch verschlossen.', 'locked-page'));
+      content.replaceChildren();
       return;
     }
     if (!root || !content.contains(root) || classId !== classroom.id) build(content, classroom);

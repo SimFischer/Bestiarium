@@ -99,11 +99,15 @@ export const hotspots = [
 ];
 
 export const classBestiaryPages = [];
+export const bestiaryConfig = {
+  indexAsset: 'assets/bestiary/bestiary-index-page.png',
+  order: ['niffler', 'pandanaflora', 'wolf', 'bowtruckle', 'wespuin', 'zuckerdornechse', 'codex', 'classBestiary']
+};
 
 export const generatorConfig = {
   mode: 'traits',
   modes: [{ id: 'traits', title: 'Eigenschaften mischen' }],
-  frameAsset: null,
+  frameAsset: 'assets/generator/generator-machine-frame.png',
   vidiDialog: 'generator-first-open',
   categories: [
     { id: 'habitat', name: 'Lebensraum', values: ['Wasser', 'Luft', 'Wald', 'Wiese', 'Berg', 'Höhle', 'Wüste', 'Erde', 'Schnee', 'Vulkan', 'Buch'] },

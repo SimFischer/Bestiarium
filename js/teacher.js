@@ -1,5 +1,5 @@
 import { roomPhases, animals, regions, expeditions, features } from './data.js';
-import { bookUnlocked, setBookUnlocked, setClassUnlock, setMilestone, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState } from './state.js';
+import { bookUnlocked, setBookUnlocked, setClassUnlock, setMilestone, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState, getStorageWarning } from './state.js';
 
 import { milestones, federhainClues, storyStage } from './progress.js';
 
@@ -164,5 +164,6 @@ export function initTeacher(notify, replayIntro, replayStory) {
   title.addEventListener('click', () => {
     render();
     if (!dialog.open) dialog.showModal();
+    if (getStorageWarning()) notify(getStorageWarning());
   });
 }

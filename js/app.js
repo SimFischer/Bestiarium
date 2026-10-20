@@ -7,21 +7,21 @@ import { renderMap, renderExpedition } from './world.js';
 import { element } from './ui.js';
 import { initVidiDialogs } from './story.js';
 import { createGenerator } from './generator.js';
+import { initFullscreen } from './fullscreen.js';
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
-const notice = document.querySelector('#notice');
 let currentView = '';
 let selectedId = null;
 let detailId = null;
 let noticeTimer;
 function notify(message) {
   clearTimeout(noticeTimer);
-  notice.textContent = message;
-  notice.hidden = false;
-  document.querySelectorAll('.dialog-notice').forEach(node => { node.textContent = message; node.hidden = false; });
+  const feedback = document.querySelector('#teacher-dialog .dialog-notice');
+  if (!feedback) return;
+  feedback.textContent = message;
+  feedback.hidden = false;
   noticeTimer = setTimeout(() => {
-    notice.hidden = true;
-    document.querySelectorAll('.dialog-notice').forEach(node => { node.hidden = true; });
+    feedback.hidden = true;
   }, 9000);
 }
 const images = roomPhases.map(phase => {
@@ -49,32 +49,31 @@ const buttons = hotspots.map(hotspot => {
   const button = element('button', '', 'hotspot');
   button.type = 'button';
   Object.assign(button.style, { left: `${hotspot.x}%`, top: `${hotspot.y}%`, width: `${hotspot.width}%`, height: `${hotspot.height}%` });
-  const label = element('span', hotspot.name, 'hotspot-label');
-  button.append(label);
   button.addEventListener('click', () => {
-    button.classList.add('touched');
-    setTimeout(() => button.classList.remove('touched'), 280);
-    if (hotspot.feature && !activeClass().unlockedFeatures.includes(hotspot.feature)) { notify(`${hotspot.name} ist noch verschlossen.`); return; }
+    const classroom = activeClass();
+    const book = animals.find(entry => entry.id === hotspot.bookId);
+    if ((hotspot.feature && !classroom.unlockedFeatures.includes(hotspot.feature)) || (book && !bookUnlocked(classroom, book))) return;
     navigate(hotspot.id, hotspot.bookId);
   });
   document.querySelector('#hotspots').append(button);
-  return { button, label, hotspot };
+  return { button, hotspot };
 });
 function renderView() {
   const classroom = activeClass();
   const heading = document.querySelector('#view-title');
-  dialog.classList.toggle('book-dialog', currentView === 'bestiary' && Boolean(selectedId));
+  dialog.classList.toggle('book-dialog', currentView === 'bestiary');
   dialog.classList.toggle('landscape-dialog', ['world-map', 'expedition'].includes(currentView));
   dialog.classList.toggle('generator-dialog', currentView === 'generator');
   if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
   } else if (currentView === 'world-map') {
     heading.textContent = 'Weltkarte';
-    renderMap(content, classroom, navigate, notify);
+    renderMap(content, classroom, navigate);
   } else if (currentView === 'expedition') {
     heading.textContent = expeditions.find(e => e.id === selectedId)?.title || 'Expedition';
     renderExpedition(content, classroom, selectedId, navigate);
   } else if (currentView === 'generator') {
+    if (!classroom.unlockedFeatures.includes('generator')) { generator.cancel(); dialog.close(); return; }
     heading.textContent = 'Tierwesen-Generator';
     generator.render(content, classroom);
   } else {
@@ -82,7 +81,7 @@ function renderView() {
     const feature = features.find(f => f.id === currentView);
     if (!feature) return;
     heading.textContent = feature.name;
-    content.append(element('p', classroom.unlockedFeatures.includes(feature.id) ? feature.description : 'Dieser Bereich ist noch verschlossen.', 'intro'));
+    if (classroom.unlockedFeatures.includes(feature.id)) content.append(element('p', feature.description, 'intro'));
   }
 }
 function render() {
@@ -93,13 +92,11 @@ function render() {
     img.setAttribute('aria-hidden', String(!active));
   });
   document.querySelector('#class-label').textContent = `${classroom.name} · ${roomPhases[classroom.roomPhase].name}`;
-  buttons.forEach(({ button, label, hotspot }) => {
+  buttons.forEach(({ button, hotspot }) => {
     const book = animals.find(a => a.id === hotspot.bookId);
     const locked = Boolean((hotspot.feature && !classroom.unlockedFeatures.includes(hotspot.feature)) || (book && !bookUnlocked(classroom, book)));
-    button.classList.toggle('locked', locked);
-    button.setAttribute('aria-label', `${hotspot.name}${locked ? ' · verschlossen' : ''}`);
-    button.setAttribute('aria-disabled', String(locked));
-    label.textContent = `${locked ? 'Verschlossen · ' : ''}${hotspot.name}`;
+    button.disabled = locked;
+    button.setAttribute('aria-label', hotspot.name);
   });
   if (dialog.open) renderView();
   story.sync();
@@ -129,5 +126,6 @@ const messages = initVidiDialogs(
 const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
 dialog.addEventListener('close', generator.cancel);
 initTeacher(notify, story.start, messages.replay);
+initFullscreen();
 subscribe(render);
 render();
