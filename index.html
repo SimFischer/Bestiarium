@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#201a14">
+  <title>Bestiarium · Forschungsstation</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1><button id="app-title" type="button">Bestiarium <span>Forschungsstation</span></button></h1>
+    <p id="class-label"></p>
+  </header>
+  <main id="station" aria-label="Forschungsstation">
+    <div id="scene" class="scene">
+      <div id="room-images" class="room-images"></div>
+      <nav id="hotspots" aria-label="Bereiche der Forschungsstation"></nav>
+    </div>
+  </main>
+  <dialog id="view-dialog" aria-labelledby="view-title">
+    <div class="dialog-heading"><h2 id="view-title"></h2><button type="button" data-close aria-label="Zurück zur Forschungsstation">Zur Station <span aria-hidden="true">×</span></button></div>
+    <div id="view-content"></div>
+  </dialog>
+  <dialog id="teacher-dialog" class="teacher-dialog" aria-labelledby="teacher-title">
+    <div class="dialog-heading"><div><p class="eyebrow">Klassenstand verwalten</p><h2 id="teacher-title">Lehrkraftmodus</h2></div><button type="button" data-close>Zur Station <span aria-hidden="true">×</span></button></div>
+    <div id="teacher-content"></div>
+  </dialog>
+  <p id="notice" class="notice" role="status" hidden></p>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
