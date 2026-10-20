@@ -1,4 +1,4 @@
-import { roomPhases, hotspots, animals, features, expeditions } from './data.js';
+import { roomPhases, hotspots, animals, features, expeditions, generatorConfig } from './data.js';
 import { activeClass, subscribe, getStorageWarning, bookUnlocked } from './state.js';
 import { initTeacher } from './teacher.js';
 import { initIntro } from './intro.js';
@@ -6,6 +6,7 @@ import { renderBestiary } from './bestiary.js';
 import { renderMap, renderExpedition } from './world.js';
 import { element } from './ui.js';
 import { initVidiDialogs } from './story.js';
+import { createGenerator } from './generator.js';
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
 const notice = document.querySelector('#notice');
@@ -33,6 +34,7 @@ const images = roomPhases.map(phase => {
   return img;
 });
 function navigate(view, id = null, detail = null) {
+  generator.cancel();
   if (view === 'station') { dialog.close(); return; }
   currentView = view;
   selectedId = id;
@@ -63,6 +65,7 @@ function renderView() {
   const heading = document.querySelector('#view-title');
   dialog.classList.toggle('book-dialog', currentView === 'bestiary' && Boolean(selectedId));
   dialog.classList.toggle('landscape-dialog', ['world-map', 'expedition'].includes(currentView));
+  dialog.classList.toggle('generator-dialog', currentView === 'generator');
   if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
   } else if (currentView === 'world-map') {
@@ -71,6 +74,9 @@ function renderView() {
   } else if (currentView === 'expedition') {
     heading.textContent = expeditions.find(e => e.id === selectedId)?.title || 'Expedition';
     renderExpedition(content, classroom, selectedId, navigate);
+  } else if (currentView === 'generator') {
+    heading.textContent = 'Tierwesen-Generator';
+    generator.render(content, classroom);
   } else {
     content.replaceChildren();
     const feature = features.find(f => f.id === currentView);
@@ -120,6 +126,8 @@ const messages = initVidiDialogs(
   },
   () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; }
 );
+const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
+dialog.addEventListener('close', generator.cancel);
 initTeacher(notify, story.start, messages.replay);
 subscribe(render);
 render();

@@ -5,6 +5,7 @@ export const federhainClues = [
   { id: 'volcano', title: 'Die letzte klare Spur', text: 'Die jüngsten Aufzeichnungen betreffen die Zuckerdornechse aus einem vulkanischen Gebiet. Hier verliert sich bisher seine Spur.', dialogId: 'region-volcano' }
 ];
 export const vidiDialogs = [
+  { id: 'generator-first-open', text: 'Professor Federhain hat diesen Apparat benutzt, wenn ihm die Ideen für neue Tierwesen ausgingen. Startet ihn – aber was daraus entsteht, müsst ihr selbst zum Leben erwecken!' },
   { id: 'clue-station', text: 'Ich bin Vidi, der Hauself und frühere Assistent von Professor Elian Federhain. Der Professor ist zu einer Expedition aufgebrochen. Wo er jetzt ist, weiß Vidi leider nicht. Aber seine Aufzeichnungen sind noch hier!' },
   { id: 'milestone-niffler', text: 'Ihr habt wirklich genau hingeschaut! So können wir Federhains Beobachtungen verstehen. Jede gute Beschreibung hilft uns bei seiner Forschung.' },
   { id: 'region-plant', text: 'Seht mal! Der Nebel lichtet sich. Diese Pflanzen kommen mir bekannt vor – Federhain hat sie in seinen Notizen gezeichnet. Vielleicht finden wir dort eine Spur.' },

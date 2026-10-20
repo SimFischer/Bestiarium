@@ -87,7 +87,7 @@ export const expeditions = [
   creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType }]
 }));
 export const features = [
-  { id: 'generator', name: 'Tierwesen-Generator', description: 'Das Gerät ist bereit. Die Erschaffung neuer Tierwesen folgt in einer späteren Ausbaustufe.' },
+  { id: 'generator', name: 'Tierwesen-Generator', description: 'Mischt Eigenschaften für neue Tierwesen. Zeichnet und beschreibt sie anschließend auf Papier.' },
   { id: 'classBestiary', name: 'Klassen-Bestiarium' }
 ];
 export const hotspots = [
@@ -99,3 +99,20 @@ export const hotspots = [
 ];
 
 export const classBestiaryPages = [];
+
+export const generatorConfig = {
+  mode: 'traits',
+  modes: [{ id: 'traits', title: 'Eigenschaften mischen' }],
+  frameAsset: null,
+  vidiDialog: 'generator-first-open',
+  categories: [
+    { id: 'habitat', name: 'Lebensraum', values: ['Wasser', 'Luft', 'Wald', 'Wiese', 'Berg', 'Höhle', 'Wüste', 'Erde', 'Schnee', 'Vulkan', 'Buch'] },
+    { id: 'shape', name: 'Gestalt', values: ['groß', 'klein', 'gigantisch', 'winzig', 'rund', 'eckig', 'spitz', 'lang', 'kurz', 'flach', 'breit'] },
+    { id: 'special', name: 'Besonderheit', values: ['Flügel', 'Beine', 'Augen', 'Maul', 'Ohren', 'Finger', 'Haut', 'Fell', 'Krallen', 'Ruf', 'Nase'] },
+    { id: 'type', name: 'Typ', values: ['Wasser', 'Luft', 'Pflanze', 'Gestein', 'Fee', 'Geist', 'Elektro', 'Metall', 'Drache', 'Feuer', 'Käfer'] },
+    { id: 'color', name: 'Farbe', values: ['blau', 'gelb', 'grün', 'lila', 'braun', 'orange', 'rot', 'rosa', 'schwarz', 'bunt', 'türkis'] },
+    { id: 'pattern', name: 'Muster', values: ['einfarbig', 'gestreift', 'gepunktet', 'kariert', 'gefleckt', 'verlaufend', 'abwechselnd', 'verblassend', 'geometrisch', 'verschlungen', 'Kreise'] },
+    { id: 'similarity1', name: 'Ähnlichkeit 1', values: ['Schildkröte', 'Vogel', 'Reh', 'Käfer', 'Schnecke', 'Fledermaus', 'Kaktus', 'Wurm', 'Pinguin', 'Salamander', 'Biene'] },
+    { id: 'similarity2', name: 'Ähnlichkeit 2', values: ['Raupe', 'Schlange', 'Blume', 'Oktopus', 'Baum', 'Blätter', 'Stein', 'Phönix', 'Schnabeltier', 'Frucht', 'Gemüse'] }
+  ].map(category => ({ ...category, values: [...category.values, 'Freie Wahl – wählt zwei!'] }))
+};

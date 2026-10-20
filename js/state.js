@@ -1,6 +1,6 @@
-import { animals, regions, expeditions, features, roomPhases } from './data.js';
+import { animals, regions, expeditions, features, roomPhases, generatorConfig } from './data.js';
 import { milestones, federhainClues, vidiDialogs, applyMilestone, setUnlock } from './progress.js';
-const STORAGE_KEY = 'bestiarium.classroom.v3';
+const STORAGE_KEY = 'bestiarium.classroom.v4';
 const listeners = new Set();
 let storageWarning = '';
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -11,17 +11,17 @@ export function newClass(name = 'Klasse 5') {
   const classroom = {
     id: id(), name: name.trim(), roomPhase: 0, introCompleted: false,
     completedMilestones: [], unlockedBestiaryEntries: [], unlockedRegions: [],
-    unlockedExpeditions: [], unlockedFeatures: [], seenVidiDialogs: [], discoveredFederhainClues: []
+    unlockedExpeditions: [], unlockedFeatures: [], seenVidiDialogs: [], discoveredFederhainClues: [], generatorResult: null
   };
   applyMilestone(classroom, 'station-found', true);
   return classroom;
 }
 function initialState() {
   const classroom = newClass();
-  return { version: 3, activeClassId: classroom.id, classes: [classroom] };
+  return { version: 4, activeClassId: classroom.id, classes: [classroom] };
 }
 export function validateState(value) {
-  if (!object(value) || value.version !== 3 || !Array.isArray(value.classes) || !value.classes.length || value.classes.length > 1000) throw new Error('Ungültige Bestiarium-Sicherungsdatei.');
+  if (!object(value) || value.version !== 4 || !Array.isArray(value.classes) || !value.classes.length || value.classes.length > 1000) throw new Error('Ungültige Bestiarium-Sicherungsdatei.');
   const ids = new Set();
   const classes = value.classes.map(c => {
     if (!object(c) || typeof c.id !== 'string' || !c.id || c.id.length > 100 || ids.has(c.id) || !validName(c.name) || !Number.isInteger(c.roomPhase) || !roomPhases[c.roomPhase] || typeof c.introCompleted !== 'boolean') throw new Error('Ungültige Klassendaten.');
@@ -31,6 +31,15 @@ export function validateState(value) {
       if (!Array.isArray(list) || list.length > definitions.length || new Set(list).size !== list.length || !list.every(id => definitions.some(item => item.id === id))) throw new Error('Ungültiger Unterrichts- oder Storyfortschritt.');
       return [...list];
     };
+    let generatorResult = null;
+    if (c.generatorResult !== null) {
+      if (!object(c.generatorResult) || Object.keys(c.generatorResult).length !== generatorConfig.categories.length) throw new Error('Ungültiges Generatorergebnis.');
+      generatorResult = Object.fromEntries(generatorConfig.categories.map(category => {
+        const roll = c.generatorResult[category.id];
+        if (!Number.isInteger(roll) || roll < 1 || roll > 12) throw new Error('Ungültiges Generatorergebnis.');
+        return [category.id, roll];
+      }));
+    }
     const classroom = {
       id: c.id, name: c.name.trim(), roomPhase: c.roomPhase, introCompleted: c.introCompleted,
       completedMilestones: readIds('completedMilestones', milestones),
@@ -39,13 +48,13 @@ export function validateState(value) {
       unlockedExpeditions: readIds('unlockedExpeditions', expeditions),
       unlockedFeatures: readIds('unlockedFeatures', features),
       seenVidiDialogs: readIds('seenVidiDialogs', vidiDialogs),
-      discoveredFederhainClues: readIds('discoveredFederhainClues', federhainClues)
+      discoveredFederhainClues: readIds('discoveredFederhainClues', federhainClues), generatorResult
     };
     if (classroom.unlockedBestiaryEntries.includes('classBestiary') !== classroom.unlockedFeatures.includes('classBestiary')) throw new Error('Widersprüchlicher Freischaltstatus des Klassen-Bestiariums.');
     return classroom;
   });
   if (!ids.has(value.activeClassId)) throw new Error('Die aktive Klasse fehlt in der Sicherung.');
-  return { version: 3, activeClassId: value.activeClassId, classes };
+  return { version: 4, activeClassId: value.activeClassId, classes };
 }
 function load() {
   try {

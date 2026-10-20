@@ -1,4 +1,4 @@
-import { regions, expeditions } from './data.js';
+import { regions, expeditions, generatorConfig } from './data.js';
 import { milestones, vidiDialogs } from './progress.js';
 import { activeClass, markVidiDialogSeen } from './state.js';
 import { element, button } from './ui.js';
@@ -56,6 +56,10 @@ export function initVidiDialogs(getRoute, revealRegion, finishReveal) {
     const milestone = milestones.find(item => classroom.completedMilestones.includes(item.id) && unseen(item.vidiDialog) && !regions.some(region => region.vidiDialog === item.vidiDialog));
     if (milestone) { show(milestone.vidiDialog); return; }
     const route = getRoute();
+    if (route.view === 'generator' && classroom.unlockedFeatures.includes('generator') && unseen(generatorConfig.vidiDialog)) {
+      show(generatorConfig.vidiDialog);
+      return;
+    }
     const expedition = route.view === 'expedition' && expeditions.find(item => item.id === route.id && classroom.unlockedExpeditions.includes(item.id) && classroom.unlockedRegions.includes(item.regionId));
     if (expedition && unseen(expedition.vidiDialog)) show(expedition.vidiDialog);
   }
