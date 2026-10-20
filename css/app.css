@@ -40,6 +40,42 @@ p { line-height: 1.55; }
 .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
 .danger { border-color: #a67762; color: #ffcfb6; }
 .dialog-notice { position: sticky; top: 0; z-index: 1; padding: .75rem; background: #392e20; border: 1px solid #bd9559; border-radius: 7px; }
+.teacher-guide-entry { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: .75rem 1.2rem; padding: 1rem 1.2rem; border: 1px solid #ad8951; border-radius: 10px; background: #3b3021; }
+.teacher-guide-entry button { min-height: 48px; background: #e4bd76; color: #48321c; font-weight: 600; }
+.teacher-guide-entry p { margin: 0; flex: 1 1 240px; }
+dialog.teacher-guide { width: 100vw; height: 100dvh; max-width: none; max-height: 100dvh; margin: 0; padding: clamp(16px, 2.5vw, 40px); border: 1px solid #ad8951; border-radius: 0; background: radial-gradient(ellipse at top left, #fff7e3, #eddbb8); color: #4d3824; overflow: hidden; }
+dialog.teacher-guide[open] { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; }
+.guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.guide-heading h2 { color: #674322; font-size: clamp(1.5rem, 2.5vw, 2.5rem); }
+.teacher-guide button { min-height: 48px; border-color: #a17b45; background: #f8edcf; color: #51391f; }
+.teacher-guide button:hover { background: #ead09c; }
+.teacher-guide button:focus-visible, .guide-panel:focus-visible { outline: 3px solid #90662f; outline-offset: -3px; }
+.guide-tabs { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid #bb9a63; }
+.guide-tabs button { flex: 1 1 160px; font-weight: 600; }
+.guide-tabs button[aria-selected="true"] { background: #725132; color: #fff2d1; border-color: #725132; }
+.guide-panel { overflow-y: auto; min-height: 0; padding: 6px clamp(4px, 1.5vw, 24px) 24px 4px; scrollbar-color: #a48452 #e8d6b1; font-size: clamp(1rem, 1.2vw, 1.25rem); line-height: 1.6; }
+.guide-panel > h3 { font: 600 clamp(1.6rem, 2.4vw, 2.25rem)/1.25 Georgia, serif; color: #674322; margin: 0 0 1rem; }
+.guide-panel p { margin: 0 0 1rem; }
+.guide-panel blockquote { margin: 1.5rem 0; padding: 1.2rem 1.5rem; border-left: 4px solid #a9803d; border-radius: 0 12px 12px 0; background: #e7c98b66; font: 600 clamp(1.15rem, 1.8vw, 1.65rem)/1.5 Georgia, serif; color: #745024; }
+.guide-section { margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid #c8ac7c; }
+.guide-section h3 { color: #674322; font: 600 1.4em/1.3 Georgia, serif; }
+.guide-panel ul { padding-left: 1.5rem; margin: .75rem 0; }
+.guide-panel li { padding-left: .25rem; margin-bottom: .6rem; }
+.guide-checklist { list-style-type: '\2610  '; }
+.guide-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.guide-cards article, .guide-block { padding: 1.1rem 1.3rem; border: 1px solid #cbb083; border-radius: 10px; background: #fff8e24d; }
+.guide-cards h4, .guide-block h4 { margin: 0 0 .6rem; color: #674322; font: 600 1.15em/1.35 Georgia, serif; }
+.guide-cards p { margin: 0; }
+.guide-block { margin-top: 1rem; }
+.guide-block dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: .7rem 1.2rem; margin: 0; }
+.guide-block dt { font-weight: 600; color: #76532f; }
+.guide-block dd { margin: 0; }
+.guide-problems { width: 100%; border-collapse: collapse; margin-top: 1.4rem; }
+.guide-problems th, .guide-problems td { text-align: left; vertical-align: top; border-bottom: 1px solid #c9ad7d; padding: 1rem; }
+.guide-problems thead { background: #dfc18c; color: #5e3c1e; }
+.guide-problems tbody th { width: 28%; font-weight: 600; }
+.guide-problems tbody tr:nth-child(even) { background: #fff5d755; }
+@media (max-width: 760px) { .guide-heading { align-items: flex-start; } .guide-heading button { max-width: 45%; } .guide-cards { grid-template-columns: 1fr; } .guide-block dl { grid-template-columns: 1fr; gap: .2rem; } .guide-block dd { margin-bottom: .7rem; } .guide-problems th, .guide-problems td { padding: .65rem; overflow-wrap: anywhere; } }
 @keyframes arrive { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: scale(1); } }
 @media (max-width: 760px) { #app-title span { display: none; } #teacher-content { grid-template-columns: 1fr; } .dialog-heading { align-items: flex-start; } .dialog-heading > button { font-size: .8rem; } .field { grid-template-columns: 1fr; gap: .3rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

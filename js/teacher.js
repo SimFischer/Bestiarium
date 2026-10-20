@@ -2,10 +2,12 @@ import { roomPhases, animals, regions, expeditions, features } from './data.js';
 import { bookUnlocked, setBookUnlocked, setClassUnlock, setMilestone, getState, activeClass, updateClass, selectClass, addClass, renameClass, deleteClass, resetClass, importState, exportState, validateState, getStorageWarning } from './state.js';
 
 import { milestones, federhainClues, storyStage } from './progress.js';
+import { initTeacherGuide } from './teacher-guide.js';
 
 export function initTeacher(notify, replayIntro, replayStory) {
   const dialog = document.querySelector('#teacher-dialog');
   const content = document.querySelector('#teacher-content');
+  const openGuide = initTeacherGuide(dialog);
   const element = (tag, text, className) => {
     const node = document.createElement(tag);
     if (text) node.textContent = text;
@@ -44,6 +46,10 @@ export function initTeacher(notify, replayIntro, replayStory) {
       });
       section.append(node);
     }
+    const help = element('div', '', 'teacher-guide-entry');
+    button(help, 'Hilfe & Stundenverlauf', openGuide);
+    help.append(element('p', 'Neu dabei? Kurz erklärt, Spickzettel, Unterrichtsbausteine und Hilfe bei Problemen.', 'muted'));
+    content.append(help);
     const progress = section('Unterrichtsfortschritt');
     progress.classList.add('milestone-section');
     progress.append(element('p', 'Die Lehrkraft erklärt den Unterrichtsschritt für abgeschlossen. Die App schaltet die passenden Seiten und Forschungsgebiete frei.', 'muted'));
