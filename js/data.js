@@ -87,7 +87,15 @@ export const expeditions = [
         frames: ['forest-fantasy-idle.png', 'forest-fantasy-step-a.png', 'forest-fantasy-step-b.png'],
         travel: -9, duration: 44, cadence: 2 }
     ] },
-  { id: 'plant-observation', regionId: 'plant', title: 'Beobachtung in der Pflanzenregion', creatureId: 'pandanaflora', animationType: 'idle' },
+  { id: 'plant-observation', regionId: 'plant', title: 'Beobachtung in der Pflanzenregion',
+    background: 'plants-expedition-background.png',
+    creatures: [
+      { id: 'giant-african-snail', name: 'Afrikanische Riesenschnecke', x: 23, y: 68, scale: 1.05, motionType: 'glide',
+        frames: ['giant-african-snail.png'], travel: 6, duration: 140, delay: 6 },
+      { id: 'bloomwing', name: 'Blütenflügler', x: 77, y: 59, scale: 1.05, animationType: 'walk',
+        frames: ['bloomwing-idle.png', 'bloomwing-step-a.png', 'bloomwing-step-b.png'],
+        travel: -14, duration: 32, cadence: 1.6, delay: 1 }
+    ] },
   { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland', creatureId: 'zuckerdornechse', animationType: 'idle' }
 ].map(item => ({
   ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/${item.background || 'background.png'}`,

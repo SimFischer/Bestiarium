@@ -54,28 +54,33 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
     wrapper.style.top = `${creature.y}%`;
     wrapper.style.width = `${24 * creature.scale}%`;
     wrapper.style.height = `${40 * creature.scale}%`;
-    const motion = element('div', '', `creature-motion motion-${creature.animationType}`);
+    const motionType = creature.motionType || creature.animationType;
+    const motion = element('div', '', `creature-motion motion-${motionType}`);
     const name = creature.name || creature.id.charAt(0).toUpperCase() + creature.id.slice(1);
     if (creature.frames) {
       wrapper.style.setProperty('--travel', `${creature.travel}cqw`);
       wrapper.style.setProperty('--walk-duration', `${creature.duration}s`);
-      wrapper.style.setProperty('--frame-duration', `${creature.cadence}s`);
+      if (creature.cadence) wrapper.style.setProperty('--frame-duration', `${creature.cadence}s`);
+      wrapper.style.setProperty('--motion-delay', `${creature.delay || 0}s`);
+      if (motionType === 'glide') wrapper.classList.add('gliding');
       motion.setAttribute('role', 'img');
       motion.setAttribute('aria-label', name);
       const walking = element('div', '', 'walking-frames');
       const images = creature.frames.map((src, index) => {
-        const image = element('img', '', `creature-image creature-frame frame-${index}`);
+        const image = element('img', '', creature.frames.length > 1 ? `creature-image creature-frame frame-${index}` : 'creature-image');
         image.alt = '';
         image.draggable = false;
         image.src = src;
         (index ? walking : motion).append(image);
         return image;
       });
-      const walkingIdle = images[0].cloneNode();
-      walkingIdle.className = 'creature-image creature-frame frame-between';
-      walking.append(walkingIdle);
-      images.push(walkingIdle);
-      motion.append(walking);
+      if (images.length > 1) {
+        const walkingIdle = images[0].cloneNode();
+        walkingIdle.className = 'creature-image creature-frame frame-between';
+        walking.append(walkingIdle);
+        images.push(walkingIdle);
+        motion.append(walking);
+      }
       Promise.all(images.map(image => image.decode())).then(() => {
         wrapper.classList.add('walking-ready');
       }).catch(() => {});
