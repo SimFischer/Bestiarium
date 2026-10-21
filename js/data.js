@@ -69,11 +69,11 @@ export const animals = [
 export const mapConfig = { asset: 'assets/map/worldmap-full.png' };
 export const regions = [
   { id: 'station', name: 'Forschungsstation', unlocked: true, x: 7, y: 57, width: 25, height: 31 },
-  { id: 'forest', name: 'Waldregion', unlocked: false, x: 8, y: 9, width: 31, height: 35,
+  { id: 'forest', name: 'Waldregion', unlocked: false, x: 2, y: 20, width: 32, height: 43,
     vidiDialog: 'region-forest' },
-  { id: 'plant', name: 'Pflanzenregion', unlocked: false, x: 43, y: 30, width: 28, height: 51,
+  { id: 'plant', name: 'Pflanzenregion', unlocked: false, x: 35, y: 52, width: 34, height: 39,
     vidiDialog: 'region-plant' },
-  { id: 'volcano', name: 'Vulkanregion', unlocked: false, x: 74, y: 9, width: 23, height: 55,
+  { id: 'volcano', name: 'Vulkanregion', unlocked: false, x: 2, y: 3, width: 23, height: 16,
     vidiDialog: 'region-volcano' }
 ];
 export const expeditions = [

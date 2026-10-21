@@ -158,15 +158,15 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .landscape-dialog #view-content > p { margin: .5rem 0; }
 .observation-scene { position: relative; isolation: isolate; width: min(100%, calc((100dvh - 180px) * 16 / 9)); aspect-ratio: 16 / 9; flex-shrink: 0; overflow: hidden; container-type: inline-size; background: #ccc4b1; }
 .scene-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.map-region { position: absolute; padding: 0; overflow: hidden; border: 1px solid #a7a18f; background: #938e7840; border-radius: 12%; }
-.map-region:hover { background: #dfd8bd55; }
-.map-region:focus-visible { outline-offset: -4px; }
-.map-region[aria-disabled="true"] { cursor: help; }
-.region-label { position: absolute; z-index: 2; bottom: 10%; left: 0; width: 100%; text-align: center; padding: .5rem; background: #29251be0; color: #f9ebcd; font-size: clamp(.85rem, 1.6cqw, 1.8rem); }
-.region-fog { position: absolute; inset: 0; opacity: 1; background: radial-gradient(ellipse at 25% 30%, #efeee9, #bcbfbbeb 65%, #e3e4e0); transition: opacity 650ms ease-out; pointer-events: none; }
+.map-dialog #view-content { gap: 0; }
+.map-dialog #view-content > p { margin: 0 0 6px; font-size: .9rem; }
+.map-dialog .world-scene { width: min(100%, calc((100dvh - 130px) * 16 / 9)); background: transparent; }
+.map-region { position: absolute; padding: 0; border: 0; background: transparent; border-radius: 0; touch-action: manipulation; }
+.map-region:hover, .map-region:disabled { background: transparent; }
+.map-region:disabled { cursor: default; }
+.map-region:focus-visible { outline: none; background: radial-gradient(ellipse, #fff3, transparent 70%); }
+.region-fog { position: absolute; inset: -12%; opacity: 1; background: radial-gradient(ellipse at 25% 30%, #efeee9, #bcbfbbeb 65%, #e3e4e0); mask-image: radial-gradient(ellipse, #000 35%, transparent 72%); transition: opacity 650ms ease-out; pointer-events: none; }
 .region-unlocked .region-fog { opacity: 0; }
-.region-unlocked { border-color: #d6bb7e; }
-.world-scene.asset-missing { background: #b9b7a5; }
 .world-scene > .asset-fallback, .expedition-scene > .asset-fallback { top: 3%; bottom: auto; }
 .expedition-creature { position: absolute; transform: translate(-50%, -50%); height: 40%; }
 .creature-motion { position: relative; width: 100%; height: 100%; transform-origin: 50% 90%; }
@@ -256,8 +256,6 @@ html:fullscreen #app-title { text-shadow: 0 1px 5px #000; }
 html:fullscreen #app-title span { display: none; }
 html:fullscreen .scene { width: min(100vw, calc(100dvh * 16 / 9)); }
 #view-dialog .asset-fallback { display: none; }
-.map-region:disabled { cursor: default; }
-.map-region:not(.region-unlocked) .region-label { display: none; }
 .book-stage { position: relative; width: min(calc(100% - 112px), calc((100dvh - 150px) * 1.5)); flex-shrink: 0; }
 .book-stage > .bestiary-spread { width: 100%; }
 .book-turn { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; min-height: 64px; padding: 0; font: 3rem/1 Georgia, serif; border: 0; color: #ddc79a; background: transparent; border-radius: 24px; }

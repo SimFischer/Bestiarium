@@ -65,6 +65,7 @@ function renderView() {
   const heading = document.querySelector('#view-title');
   dialog.classList.toggle('book-dialog', currentView === 'bestiary');
   dialog.classList.toggle('landscape-dialog', ['world-map', 'expedition'].includes(currentView));
+  dialog.classList.toggle('map-dialog', currentView === 'world-map');
   dialog.classList.toggle('generator-dialog', currentView === 'generator');
   if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
