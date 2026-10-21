@@ -144,8 +144,8 @@ export const generatorConfig = {
     { id: 'type', name: 'Typ', values: ['Wasser', 'Luft', 'Pflanze', 'Gestein', 'Fee', 'Geist', 'Elektro', 'Metall', 'Drache', 'Feuer', 'Käfer'] },
     { id: 'color', name: 'Farbe', values: ['blau', 'gelb', 'grün', 'lila', 'braun', 'orange', 'rot', 'rosa', 'schwarz', 'bunt', 'türkis'] },
     { id: 'pattern', name: 'Muster', values: ['einfarbig', 'gestreift', 'gepunktet', 'kariert', 'gefleckt', 'verlaufend', 'abwechselnd', 'verblassend', 'geometrisch', 'verschlungen', 'Kreise'] },
-    { id: 'similarity1', name: 'Ähnlichkeit 1', values: ['Schildkröte', 'Vogel', 'Reh', 'Käfer', 'Schnecke', 'Fledermaus', 'Kaktus', 'Wurm', 'Pinguin', 'Salamander', 'Biene'] },
-    { id: 'similarity2', name: 'Ähnlichkeit 2', values: ['Raupe', 'Schlange', 'Blume', 'Oktopus', 'Baum', 'Blätter', 'Stein', 'Phönix', 'Schnabeltier', 'Frucht', 'Gemüse'] }
+    { id: 'similarity1', name: 'Vorbild 1', values: ['Schildkröte', 'Vogel', 'Reh', 'Käfer', 'Schnecke', 'Fledermaus', 'Kaktus', 'Wurm', 'Pinguin', 'Salamander', 'Biene'] },
+    { id: 'similarity2', name: 'Vorbild 2', values: ['Raupe', 'Schlange', 'Blume', 'Oktopus', 'Baum', 'Blätter', 'Stein', 'Phönix', 'Schnabeltier', 'Frucht', 'Gemüse'] }
   ].map(category => ({ ...category, values: [...category.values, 'Freie Wahl – wählt zwei!'] }))
 };
 

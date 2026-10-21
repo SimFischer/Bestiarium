@@ -31,10 +31,11 @@ export function createGenerator(showHelp) {
       reroll.hidden = !result;
       reroll.disabled = mixing;
       if (!mixing) value.textContent = result ? generatorValue(generatorConfig.categories.find(c => c.id === id), result[id]) : 'Noch offen';
+      value.classList.toggle('is-long', value.textContent.length > 16);
     });
     if (mixing) return;
     status.textContent = result ? 'Euer Ergebnis ist bereit. Zeichnet und beschreibt euer Tierwesen auf Papier.' : 'Startet den Apparat und sammelt Ideen für euer eigenes Tierwesen.';
-    note.replaceChildren(element('h3', 'Euer Forschungsauftrag'));
+    note.replaceChildren(element('h3', 'Unser Tierwesen'));
     if (!result) {
       note.append(element('p', 'Hier erscheinen gleich eure acht Eigenschaften. Daraus entwickelt ihr selbst euer Tierwesen.'));
       return;
@@ -71,6 +72,7 @@ export function createGenerator(showHelp) {
         const stopped = elapsed >= 800 + index * 90;
         const display = displays.get(id);
         display.value.textContent = generatorValue(category, stopped ? result[id] : rollCategory());
+        display.value.classList.toggle('is-long', display.value.textContent.length > 16);
         display.card.classList.toggle('is-mixing', !stopped);
       });
       if (elapsed >= 800 + (ids.length - 1) * 90) finish();
@@ -105,12 +107,14 @@ export function createGenerator(showHelp) {
     const actions = element('div', '', 'generator-actions');
     mainButton = button('Tierwesen erzeugen', () => run(generatorConfig.categories.map(c => c.id)), 'generator-start');
     resetButton = button('Neu beginnen', () => { cancel(); updateClass(c => { c.generatorResult = null; }); }, 'generator-reset');
-    actions.append(mainButton, resetButton);
+    actions.append(mainButton);
+    top.append(resetButton);
     status = element('p', '', 'generator-status');
     status.setAttribute('role', 'status');
     note = element('section', '', 'generator-note');
     note.setAttribute('aria-live', 'polite');
-    root.append(top, machine, actions, status, note);
+    machine.append(actions, status, note);
+    root.append(top, machine);
     content.replaceChildren(root);
   }
   function render(content, classroom) {
