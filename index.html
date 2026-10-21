@@ -7,7 +7,8 @@
   <title>Bestiarium · Forschungsstation</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
+<body class="app-loading">
+  <div id="app-loading" role="status">Forschungsstation wird vorbereitet …</div>
   <header class="topbar">
     <h1><button id="app-title" type="button">Bestiarium <span>Forschungsstation</span></button></h1>
     <p id="class-label" hidden></p>
@@ -40,6 +41,7 @@
   <dialog id="view-dialog" aria-labelledby="view-title">
     <div class="dialog-heading"><h2 id="view-title"></h2><button type="button" data-close aria-label="Zurück zur Forschungsstation">Zur Station <span aria-hidden="true">×</span></button></div>
     <div id="view-content"></div>
+    <div id="view-loading" role="status">Forschung wird vorbereitet …</div>
   </dialog>
   <dialog id="teacher-dialog" class="teacher-dialog" aria-labelledby="teacher-title">
     <div class="dialog-heading"><div><p class="eyebrow">Klassenstand verwalten</p><h2 id="teacher-title">Lehrkraftmodus</h2></div><button type="button" data-close>Zur Station <span aria-hidden="true">×</span></button></div>

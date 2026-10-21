@@ -128,7 +128,7 @@ export const hotspots = [
 
 export const classBestiaryPages = [];
 export const bestiaryConfig = {
-  indexAsset: 'assets/bestiary/bestiary-index-page.png',
+  indexAsset: 'assets/bestiary/master-bestiary.png',
   order: ['niffler', 'pandanaflora', 'wolf', 'bowtruckle', 'wespuin', 'zuckerdornechse', 'codex', 'classBestiary']
 };
 

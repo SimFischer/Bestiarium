@@ -1,3 +1,5 @@
+import { decodeImage } from './images.js';
+
 export function element(tag, text = '', className = '') {
   const node = document.createElement(tag);
   node.textContent = text;
@@ -20,9 +22,12 @@ export function asset(parent, path, alt, className = '') {
   image.hidden = true;
   image.draggable = false;
   parent.classList.add('asset-missing');
-  image.addEventListener('load', () => { image.hidden = false; fallback.hidden = true; parent.classList.remove('asset-missing'); });
-  image.addEventListener('error', () => { image.hidden = true; fallback.hidden = false; parent.classList.add('asset-missing'); });
   parent.append(image, fallback);
   image.src = path;
+  decodeImage(image).then(ready => {
+    image.hidden = !ready;
+    fallback.hidden = ready;
+    parent.classList.toggle('asset-missing', !ready);
+  });
   return image;
 }

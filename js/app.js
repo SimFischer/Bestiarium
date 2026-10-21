@@ -8,6 +8,10 @@ import { element } from './ui.js';
 import { initVidiDialogs } from './story.js';
 import { createGenerator } from './generator.js';
 import { initFullscreen } from './fullscreen.js';
+import { criticalImages, backgroundImages, preloadImages, decodeImage } from './images.js';
+
+await preloadImages(criticalImages(activeClass().roomPhase));
+
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
 const stationAction = element('div', '', 'station-action');
@@ -16,6 +20,21 @@ let currentView = '';
 let selectedId = null;
 let detailId = null;
 let noticeTimer;
+let viewRevision = 0;
+function prepareView(focus = false) {
+  const revision = ++viewRevision;
+  dialog.classList.add('view-loading');
+  dialog.setAttribute('aria-busy', 'true');
+  content.inert = true;
+  return Promise.all([...content.querySelectorAll('img')].map(decodeImage)).then(() => {
+    if (revision !== viewRevision) return false;
+    dialog.classList.remove('view-loading');
+    dialog.removeAttribute('aria-busy');
+    content.inert = false;
+    if (focus && dialog.open && !document.querySelector('#teacher-dialog[open], .vidi-dialog[open]')) content.querySelector('button')?.focus();
+    return true;
+  });
+}
 function notify(message) {
   clearTimeout(noticeTimer);
   const feedback = document.querySelector('#teacher-dialog .dialog-notice');
@@ -37,15 +56,16 @@ const images = roomPhases.map(phase => {
 });
 function navigate(view, id = null, detail = null) {
   generator.cancel();
-  if (view === 'station') { dialog.close(); return; }
+  if (view === 'station') { viewRevision++; dialog.close(); return; }
   currentView = view;
   selectedId = id;
   detailId = detail;
   content.replaceChildren();
   renderView();
+  const prepared = prepareView(dialog.open);
   if (!dialog.open) dialog.showModal();
-  else content.querySelector('button')?.focus();
   messages.check();
+  return prepared;
 }
 const buttons = hotspots.map(hotspot => {
   const button = element('button', '', 'hotspot');
@@ -95,10 +115,13 @@ function renderView() {
 }
 function render() {
   const classroom = activeClass();
-  images.forEach((img, index) => {
-    const active = index === classroom.roomPhase;
-    img.classList.toggle('active', active);
-    img.setAttribute('aria-hidden', String(!active));
+  decodeImage(images[classroom.roomPhase]).then(ready => {
+    if (!ready || activeClass().id !== classroom.id || activeClass().roomPhase !== classroom.roomPhase) return;
+    images.forEach((img, index) => {
+      const active = index === classroom.roomPhase;
+      img.classList.toggle('active', active);
+      img.setAttribute('aria-hidden', String(!active));
+    });
   });
   document.querySelector('#class-label').textContent = `${classroom.name} · ${roomPhases[classroom.roomPhase].name}`;
   buttons.forEach(({ button, hotspot }) => {
@@ -107,7 +130,7 @@ function render() {
     button.disabled = locked;
     button.setAttribute('aria-label', hotspot.name);
   });
-  if (dialog.open) renderView();
+  if (dialog.open) { renderView(); prepareView(); }
   stationAction.replaceChildren();
   messages.renderAction(stationAction, 'station');
   story.sync();
@@ -133,10 +156,10 @@ const messages = initVidiDialogs(
     }
   },
   () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; },
-  milestone => {
+  async milestone => {
     const bookId = milestone.unlocks.bestiary?.[0];
     if (!bookId) { navigate('station'); return; }
-    navigate('bestiary', bookId);
+    if (!await navigate('bestiary', bookId)) return;
     const spread = content.querySelector('.bestiary-spread');
     const image = spread.querySelector('.book-art');
     const shine = () => spread.classList.add('book-revealed');
@@ -145,8 +168,17 @@ const messages = initVidiDialogs(
   }
 );
 const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
-dialog.addEventListener('close', () => { generator.cancel(); messages.check(); });
+dialog.addEventListener('close', () => { viewRevision++; generator.cancel(); messages.check(); });
 initTeacher(notify, story.start, messages.replay);
 initFullscreen();
 subscribe(render);
 render();
+await Promise.all([
+  images[activeClass().roomPhase], ...document.querySelectorAll('#story-intro img')
+].map(decodeImage));
+document.body.classList.remove('app-loading');
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  const preload = () => { void preloadImages(backgroundImages); };
+  if ('requestIdleCallback' in window) requestIdleCallback(preload, { timeout: 1500 });
+  else setTimeout(preload, 0);
+}));

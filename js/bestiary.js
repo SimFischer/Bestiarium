@@ -81,8 +81,8 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     const target = books[index + direction];
     if (!target) continue;
     const navClass = direction < 0 ? 'book-previous' : 'book-next';
-    const turn = button(direction < 0 ? '‹' : '›', () => {
-      navigate('bestiary', target.id);
+    const turn = button(direction < 0 ? '‹' : '›', async () => {
+      if (!await navigate('bestiary', target.id)) return;
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
         content.querySelector('.bestiary-spread')?.animate([{ opacity: .35, transform: `translateX(${direction * 8}px)` }, { opacity: 1, transform: 'translateX(0)' }], { duration: 220, easing: 'ease-out' });
       }

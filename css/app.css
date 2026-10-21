@@ -1,6 +1,12 @@
 :root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #f2e7d3; background: #15120f; --gold: #dab87b; --border: #776043; }
 * { box-sizing: border-box; }
 body { margin: 0; height: 100vh; height: 100dvh; overflow: hidden; display: grid; grid-template-rows: 54px 1fr; }
+body.app-loading > :not(#app-loading) { visibility: hidden; }
+#app-loading { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: #201a14; color: #e9cd98; font: 1.3rem Georgia, serif; }
+body:not(.app-loading) #app-loading { display: none; }
+#view-loading { display: none; position: absolute; inset: 75px 0 0; place-items: center; background: #201a14; color: #e9cd98; font: 1.2rem Georgia, serif; }
+.view-loading #view-content { visibility: hidden; }
+.view-loading #view-loading { display: grid; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 button, select, input[type="text"] { border: 1px solid var(--border); border-radius: 7px; color: #f2e7d3; background: #31281e; padding: .65rem .9rem; }

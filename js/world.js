@@ -1,6 +1,7 @@
 import { regions, expeditions, mapConfig } from './data.js';
 import { activeClass } from './state.js';
 import { element, button, asset, position } from './ui.js';
+import { decodeImage } from './images.js';
 
 export function renderMap(content, classroom, navigate) {
   const mapRegions = regions.filter(region => region.id !== 'station');
@@ -85,9 +86,9 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
         images.push(walkingIdle);
         motion.append(walking);
       }
-      Promise.all(images.map(image => image.decode())).then(() => {
-        wrapper.classList.add('walking-ready');
-      }).catch(() => {});
+      Promise.all(images.map(decodeImage)).then(ready => {
+        if (ready.every(Boolean)) wrapper.classList.add('walking-ready');
+      });
     } else {
       asset(motion, creature.asset, name, 'creature-image');
     }
