@@ -79,18 +79,24 @@ export const regions = [
 export const expeditions = [
   { id: 'forest-observation', regionId: 'forest', title: 'Beobachtung im Wald', creatureId: 'wild-boar', animationType: 'walk',
     background: 'forest-expedition-background.png',
-    creature: { name: 'Wildschwein', x: 38, y: 62, scale: 1.3,
-      frames: ['wild-boar-idle.png', 'wild-boar-step-a.png', 'wild-boar-step-b.png'],
-      travel: 24, duration: 28, cadence: 0.9 } },
+    creatures: [
+      { id: 'wild-boar', name: 'Wildschwein', x: 24, y: 64, scale: 1.1, animationType: 'walk',
+        frames: ['wild-boar-idle.png', 'wild-boar-step-a.png', 'wild-boar-step-b.png'],
+        travel: 12, duration: 28, cadence: 1.2 },
+      { id: 'mooshorn', name: 'Mooshorn', x: 77, y: 51, scale: 1.45, animationType: 'walk',
+        frames: ['forest-fantasy-idle.png', 'forest-fantasy-step-a.png', 'forest-fantasy-step-b.png'],
+        travel: -9, duration: 44, cadence: 2 }
+    ] },
   { id: 'plant-observation', regionId: 'plant', title: 'Beobachtung in der Pflanzenregion', creatureId: 'pandanaflora', animationType: 'idle' },
   { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland', creatureId: 'zuckerdornechse', animationType: 'idle' }
 ].map(item => ({
   ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/${item.background || 'background.png'}`,
   hint: 'Beobachtet genau. Welche Merkmale fallen euch auf?',
   vidiDialog: `expedition-${item.regionId}`,
-  creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType,
-    ...item.creature,
-    frames: item.creature?.frames.map(file => `assets/expeditions/${item.id}/${file}`) }]
+  creatures: (item.creatures || [{ id: item.creatureId, x: 52, y: 62, scale: 1, animationType: item.animationType }]).map(creature => ({
+    ...creature, asset: `assets/expeditions/${item.id}/${creature.id}.png`,
+    frames: creature.frames?.map(file => `assets/expeditions/${item.id}/${file}`)
+  }))
 }));
 export const features = [
   { id: 'generator', name: 'Tierwesen-Generator', description: 'Mischt Eigenschaften für neue Tierwesen. Zeichnet und beschreibt sie anschließend auf Papier.' },

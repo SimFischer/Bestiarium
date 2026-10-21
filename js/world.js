@@ -71,6 +71,10 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
         (index ? walking : motion).append(image);
         return image;
       });
+      const walkingIdle = images[0].cloneNode();
+      walkingIdle.className = 'creature-image creature-frame frame-between';
+      walking.append(walkingIdle);
+      images.push(walkingIdle);
       motion.append(walking);
       Promise.all(images.map(image => image.decode())).then(() => {
         wrapper.classList.add('walking-ready');

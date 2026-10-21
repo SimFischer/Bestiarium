@@ -177,8 +177,9 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .walking-ready .motion-walk { animation: creature-direction var(--walk-duration) step-end infinite; }
 .walking-ready .walking-frames { animation: creature-walking var(--walk-duration) step-end infinite; }
 .walking-ready .frame-0 { animation: creature-resting var(--walk-duration) step-end infinite; }
-.walking-ready .frame-1 { animation: creature-step var(--frame-duration) step-end infinite; }
-.walking-ready .frame-2 { animation: creature-step var(--frame-duration) step-end infinite reverse; }
+.walking-ready .frame-1 { animation: creature-step-a var(--frame-duration) step-end infinite; }
+.walking-ready .frame-2 { animation: creature-step-b var(--frame-duration) step-end infinite; }
+.walking-ready .frame-between { animation: creature-step-rest var(--frame-duration) step-end infinite; }
 @keyframes creature-travel {
   0%, 100% { transform: translate(-50%, -50%); }
   40%, 50% { transform: translate(calc(-50% + var(--travel)), -50%); }
@@ -187,7 +188,9 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 @keyframes creature-direction { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(-1); } }
 @keyframes creature-walking { 0%, 50% { opacity: 1; } 40%, 90% { opacity: 0; } }
 @keyframes creature-resting { 0%, 50% { opacity: 0; } 40%, 90% { opacity: 1; } }
-@keyframes creature-step { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes creature-step-a { 0%, 100% { opacity: 1; } 25% { opacity: 0; } }
+@keyframes creature-step-b { 0%, 75%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes creature-step-rest { 0%, 50%, 100% { opacity: 0; } 25%, 75% { opacity: 1; } }
 dialog:not([open]) .walking-ready, dialog:not([open]) .walking-ready * { animation-play-state: paused; }
 .creature-motion.asset-missing { border: 1px dashed #87775c; background: #e7ddc4; border-radius: 12px; }
 .creature-motion .asset-fallback { top: 40%; bottom: auto; }
