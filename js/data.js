@@ -66,7 +66,7 @@ export const animals = [
   { id: 'classBestiary', name: 'Klassen-Bestiarium', type: 'class', feature: 'classBestiary', assetName: 'class-bestiary-page', textContent: [] }
 ].map(entry => ({ type: 'animal', unlocked: false, ...entry, pageAsset: `assets/bestiary/${entry.assetName || `${entry.id}-bestiary-page`}.png` }));
 
-export const mapConfig = { asset: 'assets/map/worldmap-full.png' };
+export const mapConfig = { asset: 'assets/map/worldmap-full.png', revealDuration: 3600 };
 export const regions = [
   { id: 'station', name: 'Forschungsstation', unlocked: true, x: 7, y: 57, width: 25, height: 31 },
   { id: 'forest', name: 'Waldregion', unlocked: false, x: 2, y: 20, width: 32, height: 43,

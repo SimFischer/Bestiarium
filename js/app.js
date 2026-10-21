@@ -1,4 +1,4 @@
-import { roomPhases, hotspots, animals, features, expeditions, generatorConfig } from './data.js';
+import { roomPhases, hotspots, animals, features, expeditions, generatorConfig, mapConfig } from './data.js';
 import { activeClass, subscribe, getStorageWarning, bookUnlocked } from './state.js';
 import { initTeacher } from './teacher.js';
 import { initIntro } from './intro.js';
@@ -147,12 +147,17 @@ document.querySelectorAll('dialog').forEach(modal => {
 const story = initIntro();
 const messages = initVidiDialogs(
   () => ({ view: dialog.open ? currentView : 'station', id: selectedId }),
-  regionId => {
-    navigate('world-map');
+  async regionId => {
+    const prepared = navigate('world-map');
     const scene = content.querySelector('.world-scene');
     scene.inert = true;
+    if (!await prepared || !scene.isConnected) return;
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      scene.querySelector(`[data-region="${regionId}"] .region-fog`).animate([{ opacity: 1 }, { opacity: 0 }], { duration: 650, easing: 'ease-out' });
+      await scene.querySelector(`[data-region="${regionId}"] .region-fog`).animate([
+        { opacity: 1, transform: 'scale(1)' },
+        { opacity: .85, transform: 'scale(1.02)', offset: .3 },
+        { opacity: 0, transform: 'scale(1.12)' }
+      ], { duration: mapConfig.revealDuration, easing: 'cubic-bezier(.4, 0, .2, 1)' }).finished.catch(() => {});
     }
   },
   () => { const scene = content.querySelector('.world-scene'); if (scene) scene.inert = false; },

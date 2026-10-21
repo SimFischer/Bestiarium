@@ -32,7 +32,7 @@ function renderIndex(content, books, navigate) {
   else discoveries.append(element('p', 'Hier beginnt unser Forschungsbuch. Wir beobachten genau und halten unsere Entdeckungen fest.', 'index-intro'));
   const special = books.filter(entry => entry.type !== 'animal');
   if (special.length) { chapters.append(element('h3', 'Forschernotizen')); addEntries(chapters, special); }
-  chapters.append(element('p', 'Je genauer wir beobachten und beschreiben, desto mehr können wir entdecken.', 'index-motto'));
+  chapters.append(element('p', 'Je genauer wir beobachten und\nbeschreiben, desto mehr können wir\nentdecken.', 'index-motto'));
   pages.append(discoveries, chapters);
   spread.append(pages);
   content.append(spread);

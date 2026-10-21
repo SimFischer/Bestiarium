@@ -9,6 +9,7 @@ export function renderMap(content, classroom, navigate) {
   if (!scene) {
     content.replaceChildren();
     scene = element('div', '', 'world-scene observation-scene');
+    scene.style.setProperty('--fog-duration', `${mapConfig.revealDuration}ms`);
     scene.setAttribute('aria-label', 'Weltkarte der Forschungsgebiete');
     asset(scene, mapConfig.asset, 'Weltkarte der Forschungsstation', 'scene-background');
     mapRegions.forEach(region => {

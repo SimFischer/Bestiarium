@@ -16,7 +16,6 @@ export function initVidiDialogs(getRoute, revealRegion, finishReveal, finishPres
   let presenting;
   let replayId;
   let pendingRegion;
-  let timer;
   let confirming;
   let completion;
   function acknowledge() {
@@ -70,17 +69,18 @@ export function initVidiDialogs(getRoute, revealRegion, finishReveal, finishPres
     const region = regions.find(item => item.vidiDialog && classroom.unlockedRegions.includes(item.id) && unseen(item.vidiDialog));
     if (region) {
       if (pendingRegion?.classId !== classroom.id || pendingRegion?.id !== region.id) {
-        clearTimeout(timer);
-        pendingRegion = { classId: classroom.id, id: region.id, ready: false };
-        revealRegion(region.id);
-        timer = setTimeout(() => { pendingRegion.ready = true; check(); }, 700);
+        const reveal = pendingRegion = { classId: classroom.id, id: region.id, ready: false };
+        Promise.resolve(revealRegion(region.id)).then(() => {
+          if (pendingRegion !== reveal) return;
+          reveal.ready = true;
+          check();
+        });
         return;
       }
       if (!pendingRegion.ready) return;
       show(region.vidiDialog);
       return;
     }
-    clearTimeout(timer);
     pendingRegion = null;
     finishReveal();
     const milestone = milestones.find(item => classroom.completedMilestones.includes(item.id) && unseen(item.vidiDialog) && !regions.some(region => region.vidiDialog === item.vidiDialog));
