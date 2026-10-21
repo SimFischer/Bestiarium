@@ -62,6 +62,11 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
       if (creature.cadence) wrapper.style.setProperty('--frame-duration', `${creature.cadence}s`);
       wrapper.style.setProperty('--motion-delay', `${creature.delay || 0}s`);
       if (motionType === 'glide') wrapper.classList.add('gliding');
+      if (motionType === 'fly') {
+        wrapper.classList.add('flying');
+        wrapper.style.setProperty('--float-duration', `${creature.floatDuration}s`);
+        wrapper.style.setProperty('--flight-lift', `${creature.lift}cqw`);
+      }
       motion.setAttribute('role', 'img');
       motion.setAttribute('aria-label', name);
       const walking = element('div', '', 'walking-frames');

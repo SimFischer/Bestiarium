@@ -176,6 +176,9 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .walking-ready { animation: creature-travel var(--walk-duration) ease-in-out infinite; }
 .walking-ready .motion-walk, .walking-ready .motion-glide { animation: creature-direction var(--walk-duration) step-end infinite; }
 .walking-ready.gliding { animation-name: creature-glide; }
+.walking-ready .motion-fly { animation: creature-direction var(--walk-duration) step-end infinite, creature-float var(--float-duration) ease-in-out infinite; }
+.walking-ready.flying .walking-frames { animation: none; opacity: 1; }
+.walking-ready.flying .frame-0 { animation: none; opacity: 0; }
 .walking-ready .walking-frames { animation: creature-walking var(--walk-duration) step-end infinite; }
 .walking-ready .frame-0 { animation: creature-resting var(--walk-duration) step-end infinite; }
 .walking-ready .frame-1 { animation: creature-step-a var(--frame-duration) step-end infinite; }
@@ -185,6 +188,10 @@ dialog.landscape-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 @keyframes creature-glide {
   0%, 80%, 100% { transform: translate(-50%, -50%); }
   30%, 50% { transform: translate(calc(-50% + var(--travel)), -50%); }
+}
+@keyframes creature-float {
+  0%, 100% { translate: 0 calc(-1 * var(--flight-lift)); }
+  50% { translate: 0 var(--flight-lift); }
 }
 @keyframes creature-travel {
   0%, 100% { transform: translate(-50%, -50%); }
@@ -216,6 +223,8 @@ dialog:not([open]) .walking-ready, dialog:not([open]) .walking-ready * { animati
 @media (prefers-reduced-motion: reduce) {
   .creature-motion, .walking-ready, .walking-ready.gliding, .walking-ready .creature-motion,
   .walking-ready .walking-frames, .walking-ready .creature-frame { animation: none; }
+  .walking-ready.flying .walking-frames { opacity: 0; }
+  .walking-ready.flying .frame-0 { opacity: 1; }
   .region-fog { transition: none; }
 }
 

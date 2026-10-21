@@ -96,7 +96,15 @@ export const expeditions = [
         frames: ['bloomwing-idle.png', 'bloomwing-step-a.png', 'bloomwing-step-b.png'],
         travel: -14, duration: 32, cadence: 1.6, delay: 1 }
     ] },
-  { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland', creatureId: 'zuckerdornechse', animationType: 'idle' }
+  { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland',
+    background: 'volcano-expedition-background.png',
+    creatures: [
+      { id: 'fire-salamander', name: 'Feuersalamander', x: 27, y: 71, scale: 0.95, motionType: 'glide',
+        frames: ['fire-salamander.png'], travel: 8, duration: 96, delay: 3 },
+      { id: 'ash-phoenix', name: 'Aschenphönix', x: 77, y: 29, scale: 1.25, motionType: 'fly',
+        frames: ['phoenix-hover.png', 'phoenix-flap-a.png', 'phoenix-flap-b.png'],
+        travel: -40, duration: 76, cadence: 2.4, floatDuration: 8, lift: 0.8 }
+    ] }
 ].map(item => ({
   ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/${item.background || 'background.png'}`,
   hint: 'Beobachtet genau. Welche Merkmale fallen euch auf?',
