@@ -77,14 +77,20 @@ export const regions = [
     vidiDialog: 'region-volcano' }
 ];
 export const expeditions = [
-  { id: 'forest-observation', regionId: 'forest', title: 'Beobachtung im Wald', creatureId: 'bowtruckle', animationType: 'sway' },
+  { id: 'forest-observation', regionId: 'forest', title: 'Beobachtung im Wald', creatureId: 'wild-boar', animationType: 'walk',
+    background: 'forest-expedition-background.png',
+    creature: { name: 'Wildschwein', x: 38, y: 62, scale: 1.3,
+      frames: ['wild-boar-idle.png', 'wild-boar-step-a.png', 'wild-boar-step-b.png'],
+      travel: 24, duration: 28, cadence: 0.9 } },
   { id: 'plant-observation', regionId: 'plant', title: 'Beobachtung in der Pflanzenregion', creatureId: 'pandanaflora', animationType: 'idle' },
   { id: 'volcano-observation', regionId: 'volcano', title: 'Beobachtung im Vulkanland', creatureId: 'zuckerdornechse', animationType: 'idle' }
 ].map(item => ({
-  ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/background.png`,
+  ...item, unlocked: false, backgroundAsset: `assets/expeditions/${item.id}/${item.background || 'background.png'}`,
   hint: 'Beobachtet genau. Welche Merkmale fallen euch auf?',
   vidiDialog: `expedition-${item.regionId}`,
-  creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType }]
+  creatures: [{ id: item.creatureId, asset: `assets/expeditions/${item.id}/${item.creatureId}.png`, x: 52, y: 62, scale: 1, animationType: item.animationType,
+    ...item.creature,
+    frames: item.creature?.frames.map(file => `assets/expeditions/${item.id}/${file}`) }]
 }));
 export const features = [
   { id: 'generator', name: 'Tierwesen-Generator', description: 'Mischt Eigenschaften für neue Tierwesen. Zeichnet und beschreibt sie anschließend auf Papier.' },

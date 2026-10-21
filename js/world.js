@@ -55,8 +55,29 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
     wrapper.style.width = `${24 * creature.scale}%`;
     wrapper.style.height = `${40 * creature.scale}%`;
     const motion = element('div', '', `creature-motion motion-${creature.animationType}`);
-    const name = creature.id.charAt(0).toUpperCase() + creature.id.slice(1);
-    asset(motion, creature.asset, name, 'creature-image');
+    const name = creature.name || creature.id.charAt(0).toUpperCase() + creature.id.slice(1);
+    if (creature.frames) {
+      wrapper.style.setProperty('--travel', `${creature.travel}cqw`);
+      wrapper.style.setProperty('--walk-duration', `${creature.duration}s`);
+      wrapper.style.setProperty('--frame-duration', `${creature.cadence}s`);
+      motion.setAttribute('role', 'img');
+      motion.setAttribute('aria-label', name);
+      const walking = element('div', '', 'walking-frames');
+      const images = creature.frames.map((src, index) => {
+        const image = element('img', '', `creature-image creature-frame frame-${index}`);
+        image.alt = '';
+        image.draggable = false;
+        image.src = src;
+        (index ? walking : motion).append(image);
+        return image;
+      });
+      motion.append(walking);
+      Promise.all(images.map(image => image.decode())).then(() => {
+        wrapper.classList.add('walking-ready');
+      }).catch(() => {});
+    } else {
+      asset(motion, creature.asset, name, 'creature-image');
+    }
     wrapper.append(motion);
     scene.append(wrapper);
   });
