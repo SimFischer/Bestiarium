@@ -60,7 +60,7 @@ export const teacherGuideConfig = {
         ['Bestiarium', 'Offenes Buch anklicken → bekannte Seiten. Pfeile zum Blättern; „Inhaltsverzeichnis“ für die Übersicht.'],
         ['Weltkarte', 'Wandkarte anklicken. Nebel = noch nicht entdeckt. Freigegebene Region → freigegebene Expedition.'],
         ['Expedition', 'Gemeinsam beobachten; anschließend auf Arbeitsblatt / im Heft weiterarbeiten.'],
-        ['Generator · ab M6', 'Über Vidi aktivieren → „Tierwesen erzeugen“ / einzelne Eigenschaften „neu“. Bei „Freie Wahl – wählt zwei!“ entscheidet die Klasse.'],
+        ['Generator · ab M6', 'Über Vidi aktivieren → „Tierwesen erzeugen“ / einzelne Eigenschaften antippen. Bei „Freie Wahl – wählt zwei!“ entscheidet die Klasse.'],
         ['Lehrkraftmodus', '„Bestiarium“ oben links: Tests, Überspringen, Zurücksetzen und Korrekturen; „Manuelle Steuerung“ für Freigaben.'],
         ['Speicherung', 'Lehrkraftmodus → Daten → JSON exportieren / importieren. Lokal pro Klasse; Import ersetzt alle Zielstände.']
       ],
