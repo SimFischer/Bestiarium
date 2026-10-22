@@ -173,7 +173,18 @@ export const generatorBuilderConfig = {
   headExtras: [['none', 'keines'], ['antlers', 'Geweih / Horn']],
   extras: [['wings', 'Flügel'], ['antlers', 'Geweih / Horn'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']],
   // Kleine Anschlusskorrektur in % der Canvasbreite: Der glatte Schwanzstummel rutscht unter den Hinterkörper.
-  tailAdjustments: { bushy: { x: -2.8 }, reptile: { x: -2.8 }, leaf: { x: -4.2 }, feather: { x: -5.5 }, spiked: { x: -2.8 } }
+  tailAdjustments: { bushy: { x: -2.8 }, reptile: { x: -2.8 }, leaf: { x: -4.2 }, feather: { x: -5.5 }, spiked: { x: -2.8 } },
+  // Sitz der Köpfe auf dem Hals (x/y in % der Canvas, scale um den Halsansatz). Kopf-Extras hängen in derselben Kopfgruppe.
+  headAdjustments: {
+    wolf: { x: 1.1, y: 7, scale: 1 }, bird: { x: 1.1, y: 7, scale: 1 }, reptile: { x: 1.2, y: 7.5, scale: 1 },
+    deer: { x: 1.3, y: 8, scale: 1 }, insect: { x: 1.1, y: 7, scale: 1 }
+  },
+  // Feinsitz von Geweih / Horn relativ zum Kopf (x/y in % der Canvas, rotate in Grad um origin).
+  headExtraAdjustments: {
+    wolf: { x: 0, y: 0, rotate: 0, scale: 1, origin: '35% 15%' }, bird: { x: 0, y: 0, rotate: 0, scale: 1, origin: '31% 15%' },
+    reptile: { x: 7.3, y: -3.9, rotate: 15, scale: 1, origin: '22% 15%' }, deer: { x: 2.2, y: 1.2, rotate: 4, scale: 1, origin: '28% 16%' },
+    insect: { x: 0, y: 0, rotate: 0, scale: 1, origin: '27% 15%' }
+  }
 };
 // Versionskennung erzwingt nach einem Assetwechsel mit gleichen Dateinamen frische Bilder statt Browser-Cache.
 const GENERATOR_B_ASSET_VERSION = '2';

@@ -68,6 +68,8 @@ export function createGeneratorBuilder(showHelp) {
       image.dataset.layer = layer.id;
       const adjustment = layer.id === 'tail' && config.tailAdjustments[result.tail];
       if (adjustment) image.style.translate = `${adjustment.x}% 0`;
+      const fit = layer.id === 'headExtra' && config.headExtraAdjustments[result.head];
+      if (fit) Object.assign(image.style, { transformOrigin: fit.origin, transform: `translate(${fit.x}%, ${fit.y}%) rotate(${fit.rotate}deg) scale(${fit.scale})` });
       image.src = src;
       return [image];
     });
@@ -75,7 +77,13 @@ export function createGeneratorBuilder(showHelp) {
     if (token !== revision || !root.isConnected || activeClass().id !== classId) return;
     pendingKey = null;
     if (!decoded.every(Boolean)) { setBusy(false); return; }
-    stage.replaceChildren(...images);
+    // Kopf und Kopf-Extra liegen zuoberst und werden gemeinsam versetzt, damit Geweih / Horn dem Kopf folgt.
+    const head = element('div', '', 'builder-head');
+    const seat = config.headAdjustments[result.head];
+    if (seat) Object.assign(head.style, { translate: `${seat.x}% ${seat.y}%`, scale: String(seat.scale) });
+    const isHead = image => image.dataset.layer === 'head' || image.dataset.layer === 'headExtra';
+    head.append(...images.filter(isHead));
+    stage.replaceChildren(...images.filter(image => !isHead(image)), head);
     selected = result;
     show(result);
     setBusy(false);

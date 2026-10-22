@@ -351,6 +351,9 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .builder-view { width: 100%; height: 100%; }
 .builder-layout { display: grid; grid-template-columns: minmax(0, 1fr) clamp(260px, 23vw, 420px); gap: clamp(20px, 3vw, 64px); align-items: center; width: min(100%, 2100px); flex: 1; min-height: 0; padding: 10px 12px; }
 .builder-stage { position: relative; isolation: isolate; justify-self: center; width: min(100%, calc((100dvh - 170px) * 4 / 3)); aspect-ratio: 4 / 3; background: radial-gradient(ellipse at 50% 40%, #f6e6bf, #d8ba80); border-radius: 5px; box-shadow: 0 0 0 3px #a17b42, 0 0 0 8px #493020, 0 8px 24px #0006, inset 0 0 60px #8b632b40; }
+.builder-head { position: absolute; inset: 0; transform-origin: 34% 30%; pointer-events: none; }
+/* Der kurze Halsstummel unter jedem Kopf (y 350–378 der Canvas) endet hart; ausgeblendet geht der Kopf nahtlos in den Körperhals über. */
+.builder-head .builder-layer[data-layer="head"] { -webkit-mask-image: linear-gradient(to bottom, #000 29.2%, transparent 31.3%); mask-image: linear-gradient(to bottom, #000 29.2%, transparent 31.3%); }
 .builder-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transform-origin: 50% 50%; pointer-events: none; }
 .builder-controls { padding: clamp(16px, 1.5vw, 32px); border: 2px solid #96703c; border-radius: 8px; background: linear-gradient(110deg, #4b3524, #302418); box-shadow: inset 0 0 0 3px #21180f, 0 8px 24px #0004; }
 .builder-control { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding: clamp(10px, 1.2vh, 20px) 0; border-bottom: 1px solid #a984453b; }
