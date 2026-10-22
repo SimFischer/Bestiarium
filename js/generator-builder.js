@@ -1,4 +1,4 @@
-import { generatorBuilderConfig as config, builderAssets } from './data.js';
+import { generatorBuilderConfig as config, builderAssets, builderAsset, variantAssets } from './data.js';
 import { activeClass, updateClass } from './state.js';
 import { element, button } from './ui.js';
 import { preloadImages, decodeImage } from './images.js';
@@ -23,7 +23,7 @@ export function createGeneratorBuilder(showHelp) {
     const loaded = await preloadImages(builderAssets);
     if (token !== revision) return;
     available = new Map(config.layers.map(layer => [layer.id,
-      config[layer.collection].filter(variant => loaded[builderAssets.indexOf(variant.asset)])]));
+      config[layer.collection].filter(variant => variantAssets(variant).every(src => loaded[builderAssets.indexOf(src)]))]));
     if (config.layers.some(layer => !available.get(layer.id).length)) {
       console.warn('Tierbaukasten: Eine Kategorie konnte nicht vorbereitet werden.');
       setBusy(false);
@@ -41,7 +41,7 @@ export function createGeneratorBuilder(showHelp) {
       image.alt = '';
       image.draggable = false;
       image.dataset.layer = layer.id;
-      image.src = available.get(layer.id).find(variant => variant.id === result[layer.id]).asset;
+      image.src = builderAsset(available.get(layer.id).find(variant => variant.id === result[layer.id]), result);
       return image;
     });
     const decoded = await Promise.all(images.map(decodeImage));
@@ -90,7 +90,7 @@ export function createGeneratorBuilder(showHelp) {
       const row = element('section', '', 'builder-control');
       row.dataset.layer = id;
       const value = element('p', '', 'builder-value');
-      const reroll = button('neu', () => mix([id]), 'builder-reroll');
+      const reroll = button('', () => mix([id]), 'builder-reroll');
       reroll.setAttribute('aria-label', `${layer.name} neu mischen`);
       row.append(element('h3', layer.name), value, reroll);
       panel.append(row);

@@ -164,11 +164,17 @@ export const generatorBuilderConfig = {
   bodies: [['furry', 'Fell'], ['slender', 'Schlank'], ['heavy', 'Kräftig'], ['scaled', 'Schuppen'], ['plant', 'Pflanze']],
   legs: [['paws', 'Pfoten'], ['hooves', 'Hufe'], ['claws', 'Krallen'], ['bird', 'Vogelbeine'], ['insect', 'Insektenbeine']],
   tails: [['bushy', 'Buschig'], ['reptile', 'Reptil'], ['leaf', 'Blatt'], ['feather', 'Federn'], ['spiked', 'Stacheln']],
-  extras: [['wings', 'Flügel'], ['antlers', 'Geweih'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']]
+  extras: [['wings', 'Flügel'], ['antlers', 'Geweih / Horn'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']]
 };
 generatorBuilderConfig.layers.forEach(layer => {
   generatorBuilderConfig[layer.collection] = generatorBuilderConfig[layer.collection].map(([id, name]) => ({
     id, name, asset: `assets/generator-builder/${layer.collection}/${layer.id}-${id}.png`
   }));
 });
-export const builderAssets = generatorBuilderConfig.layers.flatMap(layer => generatorBuilderConfig[layer.collection].map(variant => variant.asset));
+// Geweih / Horn bleibt logisch ein Extra; die Datei richtet sich nach dem gewählten Kopf.
+const antlers = generatorBuilderConfig.extras.find(variant => variant.id === 'antlers');
+antlers.assetsByHead = Object.fromEntries(generatorBuilderConfig.heads.map(head => [head.id, `assets/generator-builder/extras/extra-antlers-${head.id}.png`]));
+delete antlers.asset;
+export const variantAssets = variant => variant.assetsByHead ? Object.values(variant.assetsByHead) : [variant.asset];
+export const builderAsset = (variant, result) => variant.assetsByHead?.[result.head] || variant.asset;
+export const builderAssets = generatorBuilderConfig.layers.flatMap(layer => generatorBuilderConfig[layer.collection].flatMap(variantAssets));

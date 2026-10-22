@@ -323,11 +323,11 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .generator-machine { position: relative; isolation: isolate; container-type: inline-size; width: min(100%, calc((100dvh - 140px) * 16 / 9)); aspect-ratio: 16 / 9; flex-shrink: 0; }
 .generator-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .generator-displays { position: absolute; left: 8.9%; top: 17.1%; width: 82.2%; height: 38.2%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); column-gap: 2%; row-gap: 11%; }
-.generator-display { display: flex; flex-direction: column; align-items: center; min-width: 0; min-height: 0; padding: .3cqw .7cqw; text-align: center; color: #50351e; }
+.generator-display { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; min-height: 0; padding: .3cqw .7cqw; text-align: center; color: #50351e; }
 .generator-display h3 { margin: 0; color: #71502c; font: 600 1.05cqw/1.25 'Palatino Linotype', Georgia, serif; text-transform: uppercase; letter-spacing: .06em; }
 .generator-value { display: flex; align-items: center; justify-content: center; flex: 1; width: 100%; min-height: 0; margin: 0; font: 600 2.05cqw/1.12 'Palatino Linotype', Georgia, serif; overflow-wrap: break-word; }
 .generator-value.is-long { font-size: 1.6cqw; }
-.generator-view .generator-reroll { min-height: 44px; min-width: 64px; padding: 0 .8cqw; border: 0; border-radius: 3px; background: transparent; color: #79552d; font: italic 1.05cqw Georgia, serif; }
+.generator-view .generator-reroll { position: absolute; inset: 0; padding: 0; border: 0; border-radius: 3px; background: transparent; }
 .generator-view .generator-reroll:hover { background: #a8783020; }
 .generator-machine button:focus-visible { outline: 2px solid #8e622e; outline-offset: -2px; }
 .generator-display.is-mixing .generator-value { color: #8c602e; }
@@ -353,10 +353,10 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .builder-stage { position: relative; isolation: isolate; justify-self: center; width: min(100%, calc((100dvh - 170px) * 4 / 3)); aspect-ratio: 4 / 3; background: radial-gradient(ellipse at 50% 40%, #f6e6bf, #d8ba80); border-radius: 5px; box-shadow: 0 0 0 3px #a17b42, 0 0 0 8px #493020, 0 8px 24px #0006, inset 0 0 60px #8b632b40; }
 .builder-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transform-origin: 50% 50%; pointer-events: none; }
 .builder-controls { padding: clamp(16px, 1.5vw, 32px); border: 2px solid #96703c; border-radius: 8px; background: linear-gradient(110deg, #4b3524, #302418); box-shadow: inset 0 0 0 3px #21180f, 0 8px 24px #0004; }
-.builder-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: clamp(10px, 1.2vh, 20px) 0; border-bottom: 1px solid #a984453b; }
+.builder-control { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding: clamp(10px, 1.2vh, 20px) 0; border-bottom: 1px solid #a984453b; }
 .builder-control h3 { grid-column: 1; margin: 0 0 4px; color: #c7a66c; font: 400 clamp(1rem, 1.2vw, 1.6rem)/1.2 Georgia, serif; }
 .builder-value { grid-column: 1; margin: 0; color: #f4e2b9; font: 600 clamp(1.25rem, 1.65vw, 2rem)/1.3 'Palatino Linotype', Georgia, serif; overflow-wrap: anywhere; }
-.builder-control .builder-reroll { grid-column: 2; grid-row: 1 / 3; min-width: 64px; min-height: 48px; padding: .4rem .7rem; border: 1px solid #b49051; border-radius: 5px; color: #f3dcaa; background: #97713b26; font: italic clamp(1rem, 1.25vw, 1.5rem) Georgia, serif; }
+.builder-control .builder-reroll { position: absolute; inset: 0; padding: 0; border: 0; border-radius: 5px; background: transparent; }
 .builder-control .builder-reroll:hover { background: #b38a4845; }
 .builder-controls .builder-start { width: 100%; min-height: 58px; margin-top: clamp(18px, 2vh, 30px); padding: .7rem; border: 1px solid #d0ad65; border-radius: 6px; background: linear-gradient(#e1c28a, #b98f4b); color: #3d2917; box-shadow: inset 0 1px #fff0c5, 0 3px #21180f; font: 700 clamp(1.1rem, 1.4vw, 1.8rem)/1.2 'Palatino Linotype', Georgia, serif; }
 .builder-controls .builder-start:hover { background: linear-gradient(#efdaa8, #c69d57); }

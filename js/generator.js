@@ -97,7 +97,7 @@ export function createGenerator(showHelp) {
       card.dataset.category = category.id;
       const label = element('h3', category.name);
       const value = element('p', '', 'generator-value');
-      const reroll = button('neu', () => run([category.id]), 'generator-reroll');
+      const reroll = button('', () => run([category.id]), 'generator-reroll');
       reroll.setAttribute('aria-label', `${category.name} neu mischen`);
       card.append(label, value, reroll);
       displays.set(category.id, { card, value, reroll });
