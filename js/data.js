@@ -166,14 +166,17 @@ export const generatorBuilderConfig = {
   tails: [['bushy', 'Buschig'], ['reptile', 'Reptil'], ['leaf', 'Blatt'], ['feather', 'Federn'], ['spiked', 'Stacheln']],
   extras: [['wings', 'Flügel'], ['antlers', 'Geweih / Horn'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']]
 };
+// Versionskennung erzwingt nach einem Assetwechsel mit gleichen Dateinamen frische Bilder statt Browser-Cache.
+const GENERATOR_B_ASSET_VERSION = '2';
+const builderPath = file => `assets/generator-builder/${file}.png?v=${GENERATOR_B_ASSET_VERSION}`;
 generatorBuilderConfig.layers.forEach(layer => {
   generatorBuilderConfig[layer.collection] = generatorBuilderConfig[layer.collection].map(([id, name]) => ({
-    id, name, asset: `assets/generator-builder/${layer.collection}/${layer.id}-${id}.png`
+    id, name, asset: builderPath(`${layer.collection}/${layer.id}-${id}`)
   }));
 });
 // Geweih / Horn bleibt logisch ein Extra; die Datei richtet sich nach dem gewählten Kopf.
 const antlers = generatorBuilderConfig.extras.find(variant => variant.id === 'antlers');
-antlers.assetsByHead = Object.fromEntries(generatorBuilderConfig.heads.map(head => [head.id, `assets/generator-builder/extras/extra-antlers-${head.id}.png`]));
+antlers.assetsByHead = Object.fromEntries(generatorBuilderConfig.heads.map(head => [head.id, builderPath(`extras/extra-antlers-${head.id}`)]));
 delete antlers.asset;
 export const variantAssets = variant => variant.assetsByHead ? Object.values(variant.assetsByHead) : [variant.asset];
 export const builderAsset = (variant, result) => variant.assetsByHead?.[result.head] || variant.asset;
