@@ -1,4 +1,4 @@
-import { animals, regions, expeditions, features, roomPhases, generatorConfig, generatorBuilderConfig } from './data.js';
+import { animals, regions, expeditions, features, roomPhases, generatorConfig, generatorBuilderConfig, extraParts } from './data.js';
 import { milestones, federhainClues, vidiDialogs, applyMilestone, setUnlock } from './progress.js';
 const STORAGE_KEY = 'bestiarium.classroom.v4';
 const listeners = new Set();
@@ -42,7 +42,12 @@ export function validateState(value) {
     }
     let generatorBuilderResult = null;
     if (c.generatorBuilderResult != null) {
-      const result = c.generatorBuilderResult;
+      let result = c.generatorBuilderResult;
+      // Ältere Stände kennen nur ein einziges Extra.
+      if (object(result) && 'extra' in result) {
+        const { extra, ...parts } = result;
+        result = { ...parts, ...extraParts(extra) };
+      }
       if (!object(result) || Object.keys(result).length !== generatorBuilderConfig.layers.length) throw new Error('Ungültige Tierbaukasten-Kombination.');
       generatorBuilderResult = Object.fromEntries(generatorBuilderConfig.layers.map(layer => {
         if (!generatorBuilderConfig[layer.collection].some(variant => variant.id === result[layer.id])) throw new Error('Ungültige Tierbaukasten-Kombination.');

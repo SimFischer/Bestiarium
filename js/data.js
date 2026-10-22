@@ -152,32 +152,44 @@ export const generatorConfig = {
 export const generatorBuilderConfig = {
   id: 'builder', title: 'Tierwesen zusammensetzen',
   canvas: { width: 1600, height: 1200 },
+  modes: [['random', 'Zufall'], ['manual', 'Selbst zusammenstellen']],
+  // Zufallsmodus: fünf Kategorien wie bisher, „Extra“ ist genau eines der fünf Extras.
   categoryOrder: ['head', 'body', 'legs', 'tail', 'extra'],
+  manualOrder: ['head', 'body', 'legs', 'tail', 'backExtra', 'headExtra'],
+  // Zeichenreihenfolge: Der Körper überdeckt den Schwanzansatz.
   layers: [
+    { id: 'tail', name: 'Schwanz', collection: 'tails' },
     { id: 'body', name: 'Körper', collection: 'bodies' },
     { id: 'legs', name: 'Beine', collection: 'legs' },
-    { id: 'tail', name: 'Schwanz', collection: 'tails' },
+    { id: 'backExtra', name: 'Rücken-Extra', collection: 'backExtras', file: 'extras/extra' },
     { id: 'head', name: 'Kopf', collection: 'heads' },
-    { id: 'extra', name: 'Extra', collection: 'extras' }
+    { id: 'headExtra', name: 'Kopf-Extra', collection: 'headExtras', file: 'extras/extra' }
   ],
   heads: [['wolf', 'Wolf'], ['bird', 'Vogel'], ['reptile', 'Reptil'], ['deer', 'Hirsch'], ['insect', 'Insekt']],
   bodies: [['furry', 'Fell'], ['slender', 'Schlank'], ['heavy', 'Kräftig'], ['scaled', 'Schuppen'], ['plant', 'Pflanze']],
   legs: [['paws', 'Pfoten'], ['hooves', 'Hufe'], ['claws', 'Krallen'], ['bird', 'Vogelbeine'], ['insect', 'Insektenbeine']],
   tails: [['bushy', 'Buschig'], ['reptile', 'Reptil'], ['leaf', 'Blatt'], ['feather', 'Federn'], ['spiked', 'Stacheln']],
-  extras: [['wings', 'Flügel'], ['antlers', 'Geweih / Horn'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']]
+  backExtras: [['none', 'keines'], ['wings', 'Flügel'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']],
+  headExtras: [['none', 'keines'], ['antlers', 'Geweih / Horn']],
+  extras: [['wings', 'Flügel'], ['antlers', 'Geweih / Horn'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']],
+  // Kleine Anschlusskorrektur in % der Canvasbreite: Der glatte Schwanzstummel rutscht unter den Hinterkörper.
+  tailAdjustments: { bushy: { x: -2.8 }, reptile: { x: -2.8 }, leaf: { x: -4.2 }, feather: { x: -5.5 }, spiked: { x: -2.8 } }
 };
 // Versionskennung erzwingt nach einem Assetwechsel mit gleichen Dateinamen frische Bilder statt Browser-Cache.
 const GENERATOR_B_ASSET_VERSION = '2';
 const builderPath = file => `assets/generator-builder/${file}.png?v=${GENERATOR_B_ASSET_VERSION}`;
 generatorBuilderConfig.layers.forEach(layer => {
   generatorBuilderConfig[layer.collection] = generatorBuilderConfig[layer.collection].map(([id, name]) => ({
-    id, name, asset: builderPath(`${layer.collection}/${layer.id}-${id}`)
+    id, name, asset: id === 'none' ? null : builderPath(`${layer.file || `${layer.collection}/${layer.id}`}-${id}`)
   }));
 });
-// Geweih / Horn bleibt logisch ein Extra; die Datei richtet sich nach dem gewählten Kopf.
-const antlers = generatorBuilderConfig.extras.find(variant => variant.id === 'antlers');
+generatorBuilderConfig.extras = generatorBuilderConfig.extras.map(([id, name]) => ({ id, name }));
+// Geweih / Horn bleibt logisch eine Auswahl; die Datei richtet sich nach dem gewählten Kopf.
+const antlers = generatorBuilderConfig.headExtras.find(variant => variant.id === 'antlers');
 antlers.assetsByHead = Object.fromEntries(generatorBuilderConfig.heads.map(head => [head.id, builderPath(`extras/extra-antlers-${head.id}`)]));
 delete antlers.asset;
-export const variantAssets = variant => variant.assetsByHead ? Object.values(variant.assetsByHead) : [variant.asset];
+export const extraParts = id => id === 'antlers' ? { backExtra: 'none', headExtra: 'antlers' } : { backExtra: id, headExtra: 'none' };
+export const extraOf = result => result.backExtra !== 'none' ? result.backExtra : result.headExtra !== 'none' ? result.headExtra : null;
+export const variantAssets = variant => variant.assetsByHead ? Object.values(variant.assetsByHead) : variant.asset ? [variant.asset] : [];
 export const builderAsset = (variant, result) => variant.assetsByHead?.[result.head] || variant.asset;
 export const builderAssets = generatorBuilderConfig.layers.flatMap(layer => generatorBuilderConfig[layer.collection].flatMap(variantAssets));

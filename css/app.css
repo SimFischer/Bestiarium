@@ -360,6 +360,15 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .builder-control .builder-reroll:hover { background: #b38a4845; }
 .builder-controls .builder-start { width: 100%; min-height: 58px; margin-top: clamp(18px, 2vh, 30px); padding: .7rem; border: 1px solid #d0ad65; border-radius: 6px; background: linear-gradient(#e1c28a, #b98f4b); color: #3d2917; box-shadow: inset 0 1px #fff0c5, 0 3px #21180f; font: 700 clamp(1.1rem, 1.4vw, 1.8rem)/1.2 'Palatino Linotype', Georgia, serif; }
 .builder-controls .builder-start:hover { background: linear-gradient(#efdaa8, #c69d57); }
+.builder-view[data-builder-mode="manual"] .builder-layout { grid-template-columns: minmax(0, 1fr) clamp(300px, 34vw, 620px); gap: clamp(16px, 2vw, 40px); }
+.builder-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: clamp(6px, 1vh, 14px); }
+.builder-controls .builder-modes button, .builder-options button { min-height: 48px; padding: .4rem .6rem; border: 1px solid #8d6a3a; border-radius: 5px; background: #97713b26; color: #f3dcaa; font: 600 clamp(1rem, 1vw, 1.35rem)/1.15 'Palatino Linotype', Georgia, serif; }
+.builder-controls .builder-modes button[aria-pressed="true"], .builder-options button[aria-pressed="true"] { color: #302113; border-color: #d4b16b; background: linear-gradient(#e5c58b, #ba914e); box-shadow: inset 0 1px #fff0c2; }
+.builder-choice { padding: clamp(5px, .8vh, 12px) 0; border-bottom: 1px solid #a984453b; }
+.builder-choice:last-child { border-bottom: 0; }
+.builder-choice h3 { margin: 0 0 5px; color: #c7a66c; font: 400 clamp(.95rem, 1vw, 1.35rem)/1.2 Georgia, serif; }
+.builder-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.builder-options button { flex: 1 1 auto; }
 @media (max-height: 760px) {
   .builder-layout { gap: 20px; padding: 8px; }
   .builder-controls { padding: 10px 18px; }
@@ -367,4 +376,11 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
   .builder-control h3 { font-size: 1rem; }
   .builder-value { font-size: 1.2rem; }
   .builder-controls .builder-start { margin-top: 12px; min-height: 48px; }
+}
+@media (max-height: 900px) {
+  .builder-view[data-builder-mode="manual"] .builder-layout { grid-template-columns: minmax(0, 1fr) clamp(300px, 40vw, 620px); }
+  .builder-choice { padding: 3px 0; }
+  .builder-choice h3 { margin-bottom: 3px; font-size: .95rem; }
+  .builder-options { gap: 5px; }
+  .builder-controls .builder-modes button, .builder-options button { min-height: 44px; padding: .3rem .45rem; font-size: .95rem; }
 }
