@@ -1,4 +1,4 @@
-import { roomPhases, mapConfig, bestiaryConfig, animals, classBestiaryPages, expeditions, generatorConfig } from './data.js';
+import { roomPhases, mapConfig, bestiaryConfig, animals, classBestiaryPages, expeditions, generatorConfig, builderAssets } from './data.js';
 
 const pending = new Map();
 export const criticalImages = phase => [
@@ -8,6 +8,7 @@ export const criticalImages = phase => [
 ];
 export const backgroundImages = [
   generatorConfig.frameAsset,
+  ...builderAssets,
   ...roomPhases.map(phase => phase.image),
   ...animals.map(animal => animal.pageAsset), ...classBestiaryPages.map(page => page.asset),
   ...expeditions.flatMap(expedition => [expedition.backgroundAsset,

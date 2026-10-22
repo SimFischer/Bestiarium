@@ -1,4 +1,4 @@
-import { animals, regions, expeditions, features, roomPhases, generatorConfig } from './data.js';
+import { animals, regions, expeditions, features, roomPhases, generatorConfig, generatorBuilderConfig } from './data.js';
 import { milestones, federhainClues, vidiDialogs, applyMilestone, setUnlock } from './progress.js';
 const STORAGE_KEY = 'bestiarium.classroom.v4';
 const listeners = new Set();
@@ -11,7 +11,7 @@ export function newClass(name = 'Klasse 5') {
   const classroom = {
     id: id(), name: name.trim(), roomPhase: 0, introCompleted: false,
     completedMilestones: [], unlockedBestiaryEntries: [], unlockedRegions: [],
-    unlockedExpeditions: [], unlockedFeatures: [], seenVidiDialogs: [], discoveredFederhainClues: [], generatorResult: null
+    unlockedExpeditions: [], unlockedFeatures: [], seenVidiDialogs: [], discoveredFederhainClues: [], generatorResult: null, generatorBuilderResult: null
   };
   applyMilestone(classroom, 'station-found', true);
   return classroom;
@@ -40,6 +40,15 @@ export function validateState(value) {
         return [category.id, roll];
       }));
     }
+    let generatorBuilderResult = null;
+    if (c.generatorBuilderResult != null) {
+      const result = c.generatorBuilderResult;
+      if (!object(result) || Object.keys(result).length !== generatorBuilderConfig.layers.length) throw new Error('Ungültige Tierbaukasten-Kombination.');
+      generatorBuilderResult = Object.fromEntries(generatorBuilderConfig.layers.map(layer => {
+        if (!generatorBuilderConfig[layer.collection].some(variant => variant.id === result[layer.id])) throw new Error('Ungültige Tierbaukasten-Kombination.');
+        return [layer.id, result[layer.id]];
+      }));
+    }
     const classroom = {
       id: c.id, name: c.name.trim(), roomPhase: c.roomPhase, introCompleted: c.introCompleted,
       completedMilestones: readIds('completedMilestones', milestones),
@@ -48,7 +57,7 @@ export function validateState(value) {
       unlockedExpeditions: readIds('unlockedExpeditions', expeditions),
       unlockedFeatures: readIds('unlockedFeatures', features),
       seenVidiDialogs: readIds('seenVidiDialogs', vidiDialogs),
-      discoveredFederhainClues: readIds('discoveredFederhainClues', federhainClues), generatorResult
+      discoveredFederhainClues: readIds('discoveredFederhainClues', federhainClues), generatorResult, generatorBuilderResult
     };
     if (classroom.unlockedBestiaryEntries.includes('classBestiary') !== classroom.unlockedFeatures.includes('classBestiary')) throw new Error('Widersprüchlicher Freischaltstatus des Klassen-Bestiariums.');
     return classroom;

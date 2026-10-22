@@ -149,17 +149,26 @@ export const generatorConfig = {
   ].map(category => ({ ...category, values: [...category.values, 'Freie Wahl – wählt zwei!'] }))
 };
 
-// Module: { id, name, asset, tags: [] }. Alle PNGs: transparent, 1600 × 1200, Blick nach links/links-vorne.
-// Gleiche Körperposition, Grundperspektive, Bodenhöhe, Körpermitte sowie Hals-/Kopf-, Bein- und Schwanzansatz.
 export const generatorBuilderConfig = {
-  id: 'builder', title: 'Mischwesen bauen', enabled: false,
+  id: 'builder', title: 'Tierwesen zusammensetzen',
   canvas: { width: 1600, height: 1200 },
+  categoryOrder: ['head', 'body', 'legs', 'tail', 'extra'],
   layers: [
-    { id: 'body', collection: 'bodies', directory: 'assets/generator-builder/bodies/' },
-    { id: 'legs', collection: 'legs', directory: 'assets/generator-builder/legs/' },
-    { id: 'tail', collection: 'tails', directory: 'assets/generator-builder/tails/' },
-    { id: 'head', collection: 'heads', directory: 'assets/generator-builder/heads/' },
-    { id: 'extra', collection: 'extras', directory: 'assets/generator-builder/extras/' }
+    { id: 'body', name: 'Körper', collection: 'bodies' },
+    { id: 'legs', name: 'Beine', collection: 'legs' },
+    { id: 'tail', name: 'Schwanz', collection: 'tails' },
+    { id: 'head', name: 'Kopf', collection: 'heads' },
+    { id: 'extra', name: 'Extra', collection: 'extras' }
   ],
-  heads: [], bodies: [], legs: [], tails: [], extras: []
+  heads: [['wolf', 'Wolf'], ['bird', 'Vogel'], ['reptile', 'Reptil'], ['deer', 'Hirsch'], ['insect', 'Insekt']],
+  bodies: [['furry', 'Fell'], ['slender', 'Schlank'], ['heavy', 'Kräftig'], ['scaled', 'Schuppen'], ['plant', 'Pflanze']],
+  legs: [['paws', 'Pfoten'], ['hooves', 'Hufe'], ['claws', 'Krallen'], ['bird', 'Vogelbeine'], ['insect', 'Insektenbeine']],
+  tails: [['bushy', 'Buschig'], ['reptile', 'Reptil'], ['leaf', 'Blatt'], ['feather', 'Federn'], ['spiked', 'Stacheln']],
+  extras: [['wings', 'Flügel'], ['antlers', 'Geweih'], ['leaves', 'Blätter'], ['crystals', 'Kristalle'], ['spines', 'Rückenstacheln']]
 };
+generatorBuilderConfig.layers.forEach(layer => {
+  generatorBuilderConfig[layer.collection] = generatorBuilderConfig[layer.collection].map(([id, name]) => ({
+    id, name, asset: `assets/generator-builder/${layer.collection}/${layer.id}-${id}.png`
+  }));
+});
+export const builderAssets = generatorBuilderConfig.layers.flatMap(layer => generatorBuilderConfig[layer.collection].map(variant => variant.asset));

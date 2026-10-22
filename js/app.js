@@ -4,9 +4,10 @@ import { initTeacher } from './teacher.js';
 import { initIntro } from './intro.js';
 import { renderBestiary } from './bestiary.js';
 import { renderMap, renderExpedition } from './world.js';
-import { element } from './ui.js';
+import { element, button } from './ui.js';
 import { initVidiDialogs } from './story.js';
 import { createGenerator } from './generator.js';
+import { createGeneratorBuilder } from './generator-builder.js';
 import { initFullscreen } from './fullscreen.js';
 import { criticalImages, backgroundImages, preloadImages, decodeImage } from './images.js';
 
@@ -21,12 +22,12 @@ let selectedId = null;
 let detailId = null;
 let noticeTimer;
 let viewRevision = 0;
-function prepareView(focus = false) {
+function prepareView(focus = false, readiness) {
   const revision = ++viewRevision;
   dialog.classList.add('view-loading');
   dialog.setAttribute('aria-busy', 'true');
   content.inert = true;
-  return Promise.all([...content.querySelectorAll('img')].map(decodeImage)).then(() => {
+  return Promise.all([readiness, ...[...content.querySelectorAll('img')].map(decodeImage)]).then(() => {
     if (revision !== viewRevision) return false;
     dialog.classList.remove('view-loading');
     dialog.removeAttribute('aria-busy');
@@ -56,13 +57,14 @@ const images = roomPhases.map(phase => {
 });
 function navigate(view, id = null, detail = null) {
   generator.cancel();
+  builder.cancel();
   if (view === 'station') { viewRevision++; dialog.close(); return; }
   currentView = view;
   selectedId = id;
   detailId = detail;
   content.replaceChildren();
-  renderView();
-  const prepared = prepareView(dialog.open);
+  const readiness = renderView();
+  const prepared = prepareView(dialog.open, readiness);
   if (!dialog.open) dialog.showModal();
   messages.check();
   return prepared;
@@ -102,9 +104,22 @@ function renderView() {
     heading.textContent = expeditions.find(e => e.id === selectedId)?.title || 'Expedition';
     renderExpedition(content, classroom, selectedId, navigate);
   } else if (currentView === 'generator') {
-    if (!classroom.unlockedFeatures.includes('generator')) { generator.cancel(); dialog.close(); return; }
+    if (!classroom.unlockedFeatures.includes('generator')) { generator.cancel(); builder.cancel(); dialog.close(); return; }
     heading.textContent = 'Tierwesen-Generator';
-    generator.render(content, classroom);
+    const mode = selectedId === 'builder' ? 'builder' : 'traits';
+    const readiness = mode === 'builder' ? builder.render(content, classroom) : generator.render(content, classroom);
+    const top = content.querySelector('.generator-topline');
+    if (!top.querySelector('.generator-modes')) {
+      const modes = element('nav', '', 'generator-modes');
+      modes.setAttribute('aria-label', 'Generatormodus');
+      [['traits', 'Eigenschaften erzeugen'], ['builder', 'Tierwesen zusammensetzen']].forEach(([id, label]) => {
+        const choice = button(label, () => { if (id !== mode) navigate('generator', id); });
+        choice.setAttribute('aria-pressed', String(id === mode));
+        modes.append(choice);
+      });
+      top.querySelector('p').replaceWith(modes);
+    }
+    return readiness;
   } else {
     content.replaceChildren();
     const feature = features.find(f => f.id === currentView);
@@ -130,7 +145,7 @@ function render() {
     button.disabled = locked;
     button.setAttribute('aria-label', hotspot.name);
   });
-  if (dialog.open) { renderView(); prepareView(); }
+  if (dialog.open) { const readiness = renderView(); prepareView(false, readiness); }
   stationAction.replaceChildren();
   messages.renderAction(stationAction, 'station');
   story.sync();
@@ -173,7 +188,8 @@ const messages = initVidiDialogs(
   }
 );
 const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
-dialog.addEventListener('close', () => { viewRevision++; generator.cancel(); messages.check(); });
+const builder = createGeneratorBuilder(() => messages.replay(generatorConfig.vidiDialog));
+dialog.addEventListener('close', () => { viewRevision++; generator.cancel(); builder.cancel(); messages.check(); });
 initTeacher(notify, story.start, messages.replay);
 initFullscreen();
 subscribe(render);
