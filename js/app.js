@@ -65,6 +65,11 @@ function navigate(view, id = null, detail = null) {
   content.replaceChildren();
   const readiness = renderView();
   const prepared = prepareView(dialog.open, readiness);
+  if (view === 'world-map') prepared.then(ready => {
+    if (ready && currentView === view && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      content.querySelector('.world-scene')?.animate([{ opacity: .5, scale: '.992' }, { opacity: 1, scale: '1' }], { duration: 320, easing: 'ease-out' });
+    }
+  });
   if (!dialog.open) dialog.showModal();
   messages.check();
   return prepared;

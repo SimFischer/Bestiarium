@@ -2,6 +2,7 @@ import { regions, expeditions, mapConfig } from './data.js';
 import { activeClass } from './state.js';
 import { element, button, asset, position } from './ui.js';
 import { decodeImage } from './images.js';
+import { addResearchTask } from './research.js';
 
 export function renderMap(content, classroom, navigate) {
   const mapRegions = regions.filter(region => region.id !== 'station');
@@ -40,7 +41,9 @@ export function renderMap(content, classroom, navigate) {
 }
 export function renderExpedition(content, classroom, expeditionId, navigate) {
   content.replaceChildren();
-  content.append(button('Zur Weltkarte', () => navigate('world-map'), 'bestiary-back'));
+  const toolbar = element('div', '', 'expedition-toolbar');
+  toolbar.append(button('Zur Weltkarte', () => navigate('world-map'), 'bestiary-back'));
+  content.append(toolbar);
   const expedition = expeditions.find(e => e.id === expeditionId);
   if (!expedition || !classroom.unlockedRegions.includes(expedition.regionId) || !classroom.unlockedExpeditions.includes(expedition.id)) {
     navigate('world-map');
@@ -51,6 +54,7 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   asset(scene, expedition.backgroundAsset, expedition.title, 'scene-background');
   expedition.creatures.forEach(creature => {
     const wrapper = element('div', '', 'expedition-creature');
+    wrapper.dataset.creature = creature.id;
     wrapper.style.left = `${creature.x}%`;
     wrapper.style.top = `${creature.y}%`;
     wrapper.style.width = `${24 * creature.scale}%`;
@@ -102,5 +106,6 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   portrait.alt = 'Vidi';
   hint.append(portrait, element('p', `Vidi: „${expedition.hint}“`));
   scene.append(hint);
+  addResearchTask(toolbar, scene, expedition);
   content.append(scene);
 }

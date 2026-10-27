@@ -1,6 +1,7 @@
 import { animals, classBestiaryPages, bestiaryConfig } from './data.js';
 import { bookUnlocked } from './state.js';
-import { element, button, asset, position } from './ui.js';
+import { element, button, asset } from './ui.js';
+import { renderCodex } from './research.js';
 
 export const availableBooks = classroom => bestiaryConfig.order.map(id => animals.find(entry => entry.id === id)).filter(entry => entry && bookUnlocked(classroom, entry));
 
@@ -49,17 +50,16 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
   }
   heading.textContent = `Bestiarium · ${entry.name}`;
   content.append(button('Inhaltsverzeichnis', () => navigate('bestiary'), 'bestiary-back'));
+  if (entry.type === 'codex' && detailId === 'check') {
+    renderCodex(content, null, classroom, detailId, navigate);
+    return;
+  }
   const stage = element('div', '', 'book-stage');
   const spread = element('article', '', `bestiary-spread book-${entry.type}`);
   const preparedPage = entry.type === 'class' ? classBestiaryPages.find(page => page.id === detailId) : null;
   asset(spread, preparedPage?.asset || entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
   if (entry.type === 'codex') {
-    entry.textContent.forEach(section => {
-      const text = element('section', '', 'codex-text');
-      position(text, section);
-      text.append(element('h3', section.heading), element('p', section.text));
-      spread.append(text);
-    });
+    renderCodex(content, spread, classroom, detailId, navigate);
   } else if (entry.type === 'class') {
     if (preparedPage) {
       heading.textContent = preparedPage.title;

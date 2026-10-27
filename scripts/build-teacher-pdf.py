@@ -118,7 +118,8 @@ def furniture(canvas, doc):
     canvas.restoreState()
 
 
-overview, quick, sequence, problems = guide["tabs"]
+overview, quick, sequence, problems = [next(tab for tab in guide["tabs"] if tab["id"] == key)
+                                       for key in ["overview", "quick", "sequence", "problems"]]
 story = [paragraph("BESTIARIUM", "title"), paragraph(overview["subtitle"]),
          paragraph("Worum geht es?", "card")]
 prose({"paragraphs": overview["paragraphs"]}, story)
@@ -135,6 +136,9 @@ right += [Spacer(1, 8), paragraph("Unterrichtsweg", "card"),
 story += [columns(left, right), Spacer(1, 9),
           note("Reale und phantastische Tiere", overview["didactics"], green=True), PageBreak()]
 
+regular_small = styles["small"]
+styles["small"] = ParagraphStyle("quick-small", parent=regular_small,
+                                fontSize=9.4, leading=11.2, spaceAfter=3)
 story += [paragraph(quick["title"], "title")]
 left = [paragraph("Im Unterricht", "heading")]
 for label, text in quick["cards"]:
@@ -144,7 +148,15 @@ left += [note(quick["notes"][0][0], quick["notes"][0][1], half), Spacer(1, 8),
 right = [paragraph("Wenn etwas hakt – Kurzfassung", "heading"),
          problems_table(quick["quickProblems"], half, compact=True), Spacer(1, 9),
          note(quick["notes"][2][0], quick["notes"][2][1], half)]
-story += [columns(left, right), PageBreak(), paragraph("Unterrichtsverlauf", "title")]
+story += [columns(left, right), PageBreak(), paragraph("Was mache ich wann?", "title")]
+styles["small"] = regular_small
+styles["compact"] = ParagraphStyle("compact", parent=styles["small"], fontSize=9, leading=11, spaceAfter=0)
+rows = [[paragraph(text, "label") for text in ["Abschnitt", "APP", "MATERIAL", "ABSCHLUSS-\nAKTION"]]]
+for block in sequence["blocks"]:
+    step = block["quick"]
+    rows.append([paragraph(step[key], "compact") for key in ["title", "app", "material", "finish"]])
+story += [boxed(rows, [WIDTH * .17, WIDTH * .31, WIDTH * .31, WIDTH * .21], header=True, padding=5),
+          PageBreak(), paragraph("Unterrichtsverlauf", "title")]
 story += [paragraph(text, "small") for text in sequence["notes"][1:]]
 story += [note("Drei Ebenen", ["APP: Rahmen & Freischaltungen · PRÄSENTATION: Unterrichtsführung · MATERIAL: analoge Schülerarbeit"])]
 for number, block in enumerate(sequence["blocks"], 1):

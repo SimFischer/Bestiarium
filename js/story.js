@@ -18,31 +18,45 @@ export function initVidiDialogs(getRoute, revealRegion, finishReveal, finishPres
   let pendingRegion;
   let confirming;
   let completion;
+  let closing = false;
+  async function closeVidi(after) {
+    if (closing) return;
+    closing = true;
+    accept.disabled = defer.disabled = true;
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      await dialog.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-in' }).finished.catch(() => {});
+    }
+    dialog.close();
+    closing = false;
+    accept.disabled = defer.disabled = false;
+    after?.();
+  }
   function acknowledge() {
+    if (closing) return;
     if (confirming) {
       confirming = null;
-      dialog.close();
+      closeVidi();
       return;
     }
     const completed = completion?.classId === activeClass().id && completion.milestone.vidiDialog === presenting?.id ? completion.milestone : null;
     if (presenting && activeClass().id === presenting.classId) markVidiDialogSeen(presenting.id);
     finishReveal();
-    dialog.close();
-    if (completed) { completion = null; finishPresentation(completed); }
+    closeVidi(() => { if (completed) { completion = null; finishPresentation(completed); } });
   }
   const accept = button('Weiterforschen', () => {
+    if (closing) return;
     if (!confirming) { acknowledge(); return; }
     const classroom = activeClass();
     const milestone = nextPresentationMilestone(classroom);
     if (classroom.id !== confirming.classId || milestone?.id !== confirming.milestoneId) {
       confirming = null;
-      dialog.close();
+      closeVidi();
       return;
     }
     completion = { classId: classroom.id, milestone };
     confirming = null;
     setMilestone(milestone.id, true);
-    dialog.close();
+    closeVidi();
   });
   const defer = button('Noch weiterforschen', acknowledge);
   const actions = element('div', '', 'vidi-actions');

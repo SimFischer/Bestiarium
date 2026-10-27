@@ -38,7 +38,7 @@ export function createGeneratorBuilder(showHelp) {
     const description = config.manualOrder.filter(id => result[id] !== 'none').map(id => `${categoryName(id)}: ${variantName(id, result[id])}`);
     stage.setAttribute('aria-label', `Euer Tierwesen. ${description.join(', ')}`);
   }
-  async function present(requested) {
+  async function present(requested, materialize = false) {
     const token = ++revision;
     requestedResult = requested;
     setBusy(true);
@@ -84,6 +84,9 @@ export function createGeneratorBuilder(showHelp) {
     const isHead = image => image.dataset.layer === 'head' || image.dataset.layer === 'headExtra';
     head.append(...images.filter(isHead));
     stage.replaceChildren(...images.filter(image => !isHead(image)), head);
+    if (materialize && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      [...stage.children].forEach(layer => layer.animate([{ opacity: .45 }, { opacity: 1 }], { duration: 230, easing: 'ease-out' }));
+    }
     selected = result;
     show(result);
     setBusy(false);
@@ -101,7 +104,7 @@ export function createGeneratorBuilder(showHelp) {
       const alternatives = available.get(id).filter(variant => variant.id !== selected[id]);
       if (alternatives.length) result[id] = pick(alternatives).id;
     });
-    preparation = present(result);
+    preparation = present(result, ids.length === config.categoryOrder.length);
   }
   function choose(id, value) {
     // Bei schnellen Klicks auf der noch ladenden Auswahl aufbauen, damit keine Änderung verloren geht.

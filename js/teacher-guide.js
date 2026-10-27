@@ -297,6 +297,29 @@ export const teacherGuideConfig = {
   ]
 };
 
+const compactSteps = [
+  ['Einstieg / Niffler', 'Intro / Station → leeres Bestiarium; nach der Textarbeit Niffler eintragen.', 'Niffler-AB, Seite 1; Begleitpräsentation.'],
+  ['Pandanaflora', 'Bild erst nach Zeichnung und Vergleich dokumentieren; Pflanzenregion gemeinsam beobachten.', 'Begleitpräsentation; Zeichenpapier und Heft.'],
+  ['Forschercodex / Kriterien', 'Kriterien sichern → Codex als Spickzettel; gemeinsam „Tierbeschreibung prüfen“.', 'Merkblatt; beide Adjektivblätter.'],
+  ['Wildschwein überarbeiten', 'Codex / Checkliste als Prüfhilfe; optional Forscherauftrag in der Waldexpedition, sobald freigegeben.', '„AB_Eine Tierbeschreibung überarbeiten.pdf“; Lösungsfassungen.'],
+  ['Wolf planen und beschreiben', 'Nach Planung und Beschreibung Wolf dokumentieren; Waldexpedition mit Forscherauftrag nutzen.', '„Fordern und fördern 3 – Ein Tier beschreiben.pdf“; Heft.'],
+  ['Schreibkonferenz', 'Codex / Checkliste öffnen; nach Rückmeldung und Überarbeitung Forschung bestätigen.', '„Schreibkonferenz_Tierbeschreibung.pdf“; eigene Texte und Merkblatt.'],
+  ['Generator / eigene Tierwesen', 'Generator nach M5 aktivieren; Eigenschaften erzeugen oder Tierwesen zusammensetzen.', '„Tierwesen würfeln.pdf“ / Präsentation; Zeichenpapier und Heft.'],
+  ['Weitere Übung mit realen Tieren', 'Kriterien / Checkliste nutzen; kein zusätzlicher App-Abschluss.', 'Übungsarbeiten Pferd / Schnecke; zugehörige Erwartungshorizonte.'],
+  ['Wespuin', 'Nach der vereinbarten Übungsarbeit Wespuin dokumentieren.', 'Begleitpräsentation: Wespuin-Übungsarbeit; Klassenarbeitsvorlage getrennt beachten.'],
+  ['Zuckerdornechse', 'Nach der Textarbeit dokumentieren; Vulkanexpedition gemeinsam beobachten.', '„Steckbrief_Zuckerdornechse.pdf“; Heft.'],
+  ['Eigene Tierwesen / Klassenbestiarium', 'Generator / Codex als Hilfe; fertige Beschreibungen analog sammeln und Klassenband eröffnen.', '„AB_Erschaffung eines Tierwesens.pdf“ oder Tierwesen-AB, Seite 2.']
+];
+const sequence = teacherGuideConfig.tabs.find(tab => tab.id === 'sequence');
+sequence.blocks.forEach((block, index) => {
+  const [title, app, material] = compactSteps[index];
+  const milestone = milestones.find(item => item.id === block.milestones.at(-1));
+  block.quick = { title, app, material, finish: milestone?.presentationAction?.label || 'Kein eigener App-Abschluss.' };
+});
+teacherGuideConfig.tabs.splice(2, 0, { id: 'when', label: 'Was mache ich wann?', title: 'Was mache ich wann?', quickBlocks: sequence.blocks });
+teacherGuideConfig.tabs[0].cards.find(([title]) => title === 'Forschercodex')[1] = 'Vier Nachschlagebereiche und „Tierbeschreibung prüfen“ für die gemeinsame Arbeit am Beispieltext.';
+teacherGuideConfig.tabs[1].cards.find(([title]) => title === 'Expedition')[1] = 'Gemeinsam beobachten: „Forscherauftrag“ öffnen, Impulse durchgehen und bei Bedarf ein Tier fokussieren. Danach analog weiterarbeiten.';
+
 export function teacherGuideMilestoneLabel(block) {
   return block.milestones.map(id => {
     const index = milestones.findIndex(milestone => milestone.id === id);
@@ -373,6 +396,31 @@ export function initTeacherGuide(teacherDialog) {
     });
     panel.setAttribute('aria-labelledby', tabButtons[index].id);
     panel.replaceChildren(element('h3', data.title));
+    if (data.quickBlocks) {
+      const layout = element('div', '', 'guide-when');
+      const choices = element('nav', '', 'guide-when-choices');
+      choices.setAttribute('aria-label', 'Unterrichtsabschnitt');
+      const detail = element('section', '', 'guide-when-detail');
+      const buttons = [];
+      function choose(index) {
+        const quick = data.quickBlocks[index].quick;
+        buttons.forEach((control, i) => control.setAttribute('aria-pressed', String(i === index)));
+        detail.replaceChildren(element('h4', quick.title));
+        [['APP', quick.app], ['MATERIAL', quick.material], ['ABSCHLUSSAKTION', quick.finish]].forEach(([label, text]) => {
+          const row = element('section');
+          row.append(element('h5', label), element('p', text));
+          detail.append(row);
+        });
+      }
+      data.quickBlocks.forEach((block, index) => {
+        const control = button(`${index + 1}. ${block.quick.title}`, () => choose(index));
+        buttons.push(control);
+        choices.append(control);
+      });
+      layout.append(choices, detail);
+      panel.append(layout);
+      choose(0);
+    }
     if (data.subtitle) panel.append(element('p', data.subtitle, 'guide-subtitle'));
     data.paragraphs?.forEach(text => panel.append(element('p', text)));
     if (data.motto) panel.append(element('blockquote', data.motto));
@@ -417,6 +465,7 @@ export function initTeacherGuide(teacherDialog) {
       const goal = element('p');
       goal.append(element('strong', 'Ziel: '), document.createTextNode(block.focus));
       node.append(goal);
+      if (block.quick) note(node, 'Kurzführung', [`APP · ${block.quick.app}`, `MATERIAL · ${block.quick.material}`, `ABSCHLUSSAKTION · ${block.quick.finish}`]);
       note(node, 'Du brauchst', [`MATERIAL · ${block.material}`, `PRÄSENTATION · ${block.presentation}`], 'guide-important');
       const table = element('table', '', 'guide-flow');
       const head = element('thead');

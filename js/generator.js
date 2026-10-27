@@ -54,6 +54,9 @@ export function createGenerator(showHelp) {
     const result = { ...classroom.generatorResult };
     ids.forEach(id => { result[id] = rollCategory(); displays.get(id).card.classList.add('is-mixing'); });
     mixing = true;
+    if (ids.length === generatorConfig.categories.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      root.querySelector('.generator-art')?.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(1.08)', offset: .4 }, { filter: 'brightness(1)' }], { duration: 480, easing: 'ease-in-out' });
+    }
     refresh(classroom);
     status.textContent = 'Der Apparat mischt die Eigenschaften …';
     const finish = () => {
