@@ -57,7 +57,7 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
   const stage = element('div', '', 'book-stage');
   const spread = element('article', '', `bestiary-spread book-${entry.type}`);
   const preparedPage = entry.type === 'class' ? classBestiaryPages.find(page => page.id === detailId) : null;
-  asset(spread, preparedPage?.asset || entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
+  asset(spread, entry.type === 'codex' ? bestiaryConfig.indexAsset : preparedPage?.asset || entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
   if (entry.type === 'codex') {
     renderCodex(content, spread, classroom, detailId, navigate);
   } else if (entry.type === 'class') {
@@ -67,6 +67,7 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     } else renderClassPages(spread, id => navigate('bestiary', entry.id, id));
   } else {
     const text = element('div', '', 'bestiary-page-text');
+    text.classList.toggle('is-dense', entry.textContent.length > 3);
     text.append(element('h3', entry.name));
     entry.textContent.forEach(section => {
       const paragraph = element('p');

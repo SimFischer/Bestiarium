@@ -137,7 +137,7 @@ export function addResearchTask(toolbar, scene, expedition) {
   }, 'research-launch');
   launch.setAttribute('aria-expanded', 'false');
   toolbar.append(launch);
-  scene.append(panel);
+  toolbar.append(panel);
   show();
   focus('both');
 }
