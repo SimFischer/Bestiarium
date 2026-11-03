@@ -50,6 +50,16 @@ const steps = [
     motto: 'Je genauer ihr beobachtet und beschreibt, desto mehr könnt ihr entdecken.',
     closing: 'Vielleicht finden wir so auch Professor Federhain.',
     button: 'Forschung beginnen'
+  },
+  {
+    title: 'Das Buch der unentdeckten Wesen',
+    paragraphs: [
+      'Vidi hat noch ein besonderes Buch im Archiv. Es wartet auf Wesen, die bisher niemand erforscht hat.',
+      'Erfinde ein Tierwesen und beschreibe es so genau, dass andere es sich vorstellen können.',
+      'Eure ersten Ideen sind willkommen. Ihr könnt später weiterforschen und eure Beschreibungen überarbeiten.',
+      'Über „Buch der unentdeckten Wesen“ könnt ihr eure Sammlung jederzeit öffnen.'
+    ],
+    button: 'Unsere Forschung beginnt'
   }
 ];
 

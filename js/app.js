@@ -1,6 +1,7 @@
 import { roomPhases, hotspots, animals, features, expeditions, generatorConfig, mapConfig } from './data.js';
 import { activeClass, subscribe, getStorageWarning, bookUnlocked } from './state.js';
 import { initTeacher } from './teacher.js';
+import { renderCollection, collectionTitle } from './collection.js';
 import { initIntro } from './intro.js';
 import { renderBestiary } from './bestiary.js';
 import { renderMap, renderExpedition } from './world.js';
@@ -90,11 +91,17 @@ const buttons = hotspots.map(hotspot => {
 function renderView() {
   const classroom = activeClass();
   const heading = document.querySelector('#view-title');
-  dialog.classList.toggle('book-dialog', currentView === 'bestiary');
+  dialog.classList.toggle('book-dialog', currentView === 'bestiary' && selectedId !== 'classBestiary');
+  dialog.classList.toggle('collection-dialog', currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary'));
   dialog.classList.toggle('landscape-dialog', ['world-map', 'expedition'].includes(currentView));
   dialog.classList.toggle('map-dialog', currentView === 'world-map');
   dialog.classList.toggle('generator-dialog', currentView === 'generator');
-  if (currentView === 'bestiary') {
+  if (currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary' && classroom.unlockedBestiaryEntries.includes('classBestiary'))) {
+    heading.textContent = collectionTitle;
+    return renderCollection(content, classroom.id).then(() => {
+      if (currentView === 'bestiary' && selectedId === 'classBestiary') content.prepend(button('Zum Bestiarium-Inhaltsverzeichnis', () => navigate('bestiary'), 'bestiary-back'));
+    });
+  } else if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
     const tools = element('div', '', 'book-tools');
     const back = content.querySelector('.bestiary-back');
@@ -186,6 +193,7 @@ const messages = initVidiDialogs(
     if (!bookId) { navigate('station'); return; }
     if (!await navigate('bestiary', bookId)) return;
     const spread = content.querySelector('.bestiary-spread');
+    if (!spread) return;
     const image = spread.querySelector('.book-art');
     const shine = () => spread.classList.add('book-revealed');
     if (image.complete) shine();
@@ -195,6 +203,10 @@ const messages = initVidiDialogs(
 const generator = createGenerator(() => messages.replay(generatorConfig.vidiDialog));
 const builder = createGeneratorBuilder(() => messages.replay(generatorConfig.vidiDialog));
 dialog.addEventListener('close', () => { viewRevision++; generator.cancel(); builder.cancel(); messages.check(); });
+document.querySelector('#collection-open').addEventListener('click', () => navigate('collection'));
+window.addEventListener('collection-changed', event => {
+  if (event.detail === activeClass().id && dialog.open && (currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary'))) renderView();
+});
 initTeacher(notify, story.start, messages.replay);
 initFullscreen();
 subscribe(render);

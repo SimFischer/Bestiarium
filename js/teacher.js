@@ -3,6 +3,7 @@ import { bookUnlocked, setBookUnlocked, setClassUnlock, setMilestone, getState, 
 
 import { milestones, federhainClues, storyStage } from './progress.js';
 import { initTeacherGuide } from './teacher-guide.js';
+import { renderCollectionTeacher } from './collection-teacher.js';
 
 export function initTeacher(notify, replayIntro, replayStory) {
   const dialog = document.querySelector('#teacher-dialog');
@@ -50,6 +51,7 @@ export function initTeacher(notify, replayIntro, replayStory) {
     button(help, 'Hilfe & Stundenverlauf', openGuide);
     help.append(element('p', 'Neu dabei? Kurz erklärt, Spickzettel, Unterrichtsbausteine und Hilfe bei Problemen.', 'muted'));
     content.append(help);
+    void renderCollectionTeacher(content, classroom.id);
     const progress = section('Unterrichtsfortschritt');
     progress.classList.add('milestone-section');
     progress.append(element('p', 'Die Lehrkraft erklärt den Unterrichtsschritt für abgeschlossen. Die App schaltet die passenden Seiten und Forschungsgebiete frei.', 'muted'));
@@ -127,9 +129,9 @@ export function initTeacher(notify, replayIntro, replayStory) {
     button(actions, 'Klasse löschen', () => {
       if (confirm(`Klasse „${activeClass().name}“ und ihren gesamten Fortschritt löschen?`)) { deleteClass(); render(); }
     }, true);
-    classes.append(element('p', 'Zum Anlegen einer Klasse den gewünschten Namen eintragen. Die letzte gelöschte Klasse wird durch eine leere Klasse ersetzt.', 'muted small'));
+    classes.append(element('p', 'Zum Anlegen einer Klasse den gewünschten Namen eintragen. Vor dem Löschen einer Klasse Fortschritt und Sammlung exportieren: Die Sammlung ist an die Klassenkennung gebunden. Die letzte gelöschte Klasse wird durch eine leere Klasse ersetzt.', 'muted small'));
     const data = section('Daten');
-    data.append(element('p', 'JSON sichert alle Klassen einschließlich der aktiven Klasse. Ein Import ersetzt den vollständigen App-Stand.', 'muted'));
+    data.append(element('p', 'Diese JSON-Sicherung enthält den Unterrichtsfortschritt aller Klassen. Schülerwerke und Bilder werden oben separat als Sammlung exportiert. Beim Import des Fortschritts werden die Klassen-IDs wiederhergestellt; importiere danach die passende Sammlung in die aktive Klasse.', 'muted'));
     const dataActions = element('div', '', 'actions');
     data.append(dataActions);
     button(dataActions, 'JSON exportieren', () => {
@@ -161,7 +163,7 @@ export function initTeacher(notify, replayIntro, replayStory) {
     data.append(file);
     button(dataActions, 'JSON importieren', () => file.click());
     button(dataActions, 'Klassenstand zurücksetzen', () => {
-      if (confirm(`Fortschritt von „${activeClass().name}“ auf den Anfang zurücksetzen? Die übrigen Klassen bleiben erhalten.`)) {
+      if (confirm(`Fortschritt von „${activeClass().name}“ auf den Anfang zurücksetzen? Die Schülersammlung und die übrigen Klassen bleiben erhalten.`)) {
         resetClass(); render(); notify('Klassenstand zurückgesetzt.');
       }
     }, true);

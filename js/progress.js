@@ -14,7 +14,7 @@ export const vidiDialogs = [
   { id: 'research-generator', text: 'Wartet mal … dieses Gerät hat der Professor benutzt, wenn er neue Tierwesen entworfen hat. Vielleicht bekommen wir es wieder zum Laufen. Seid ihr bereit, eigene Wesen zu erfinden?' },
   { id: 'research-wespuin', text: 'Habt ihr eure Forschungsarbeit über den Wespuin abgeschlossen? Dann geben wir euren Beobachtungen einen Platz im Bestiarium.' },
   { id: 'research-zuckerdornechse', text: 'Die jüngste Spur in Federhains Aufzeichnungen führt zu einer außergewöhnlichen Kreatur aus einem vulkanischen Gebiet. Habt ihr die Zuckerdornechse fertig beschrieben? Dann tragen wir sie ein.' },
-  { id: 'research-class', text: 'Jetzt habt ihr so viel über Tierwesen gelernt, dass es Zeit für eure eigenen Entdeckungen ist. Sollen wir einen zweiten Bestiariumsband für eure Klasse aufschlagen?' },
+  { id: 'research-class', text: 'Erinnert ihr euch an eure ersten erfundenen Wesen? Schlagen wir unser Buch der unentdeckten Wesen noch einmal auf. Was könnt ihr inzwischen genauer beschreiben?' },
   { id: 'generator-first-open', text: 'Professor Federhain hat diesen Apparat benutzt, wenn ihm die Ideen für neue Tierwesen ausgingen. Startet ihn – aber was daraus entsteht, müsst ihr selbst zum Leben erwecken!' },
   { id: 'clue-station', text: 'Ich bin Vidi, der Hauself und frühere Assistent von Professor Elian Federhain. Der Professor ist zu einer Expedition aufgebrochen. Wo er jetzt ist, weiß Vidi leider nicht. Aber seine Aufzeichnungen sind noch hier!' },
   { id: 'milestone-niffler', text: 'Da ist sie – unsere erste neue Forschungsseite! Ihr habt wirklich genau hingeschaut. Jede gute Beschreibung hilft uns bei Federhains Forschung.' },
@@ -25,7 +25,7 @@ export const vidiDialogs = [
   { id: 'milestone-generator', text: 'Das alte Forschungsgerät funktioniert wieder! Nun könnt ihr eigene Tierwesen entwerfen. Vidi ist gespannt, welche sinnvollen Verbindungen euch einfallen.' },
   { id: 'milestone-wespuin', text: 'Der Wespuin hat seinen Platz im Bestiarium bekommen! Eure Übungsarbeit hilft euch, Merkmale genau und in einer guten Reihenfolge zu beschreiben.' },
   { id: 'region-volcano', text: 'Das ist die jüngste Spur, die Vidi kennt. Federhains Aufzeichnungen über die Zuckerdornechse führen genau dorthin.' },
-  { id: 'milestone-class', text: 'Ein zweiter Band für eure eigenen Entdeckungen! Hier können später eure fertigen Tierwesenseiten ihren Platz finden. Federhains Geschichte bleibt noch offen – wir forschen weiter.' },
+  { id: 'milestone-class', text: 'Unser Buch der unentdeckten Wesen ist mit euch gewachsen! Vergleicht eure ersten Ideen mit den überarbeiteten Beschreibungen. Federhains Geschichte bleibt noch offen – wir forschen weiter.' },
   { id: 'expedition-forest', text: 'Schaut euch im Wald in Ruhe um. Welche Formen und Farben fallen euch auf? Haltet eure Beobachtungen auf dem Arbeitsblatt oder im Heft fest.' },
   { id: 'expedition-plant', text: 'Hier lohnt sich ein genauer Blick auf die Pflanzenwesen. Beobachtet erst und beschreibt dann. Vielleicht versteht ihr so auch Federhains Notizen besser.' },
   { id: 'expedition-volcano', text: 'Hierher führt Federhains jüngste Spur. Wir beobachten die Tierwesen ganz genau. Was mit dem Professor geschehen ist, wissen wir aber noch nicht.' }
@@ -40,7 +40,7 @@ export const milestones = [
   { id: 'generator-activated', title: 'Tierwesen-Generator aktiviert', shortTitle: 'Generator', description: 'Eigene Tierwesen würfeln oder entwerfen.', roomPhase: 3, unlocks: { features: ['generator'] }, vidiDialog: 'milestone-generator' },
   { id: 'wespuin-documented', title: 'Wespuin dokumentiert', shortTitle: 'Wespuin', description: 'Eine erste Übungsarbeit zur Tierbeschreibung abschließen.', roomPhase: 3, unlocks: { bestiary: ['wespuin'] }, vidiDialog: 'milestone-wespuin' },
   { id: 'zuckerdornechse-documented', title: 'Zuckerdornechse dokumentiert', shortTitle: 'Zuckerdornechse', description: 'Eine zweite Übungsarbeit abschließen und die jüngste Forschungsspur entdecken.', roomPhase: 4, unlocks: { bestiary: ['zuckerdornechse'], regions: ['volcano'], expeditions: ['volcano-observation'] }, vidiDialog: 'region-volcano', federhainClue: 'volcano' },
-  { id: 'class-discoveries', title: 'Entdeckungen unserer Klasse', shortTitle: 'Eigene Tierwesen', description: 'Eigene Tierwesen beschreiben und einen zweiten Bestiariumsband eröffnen.', roomPhase: 4, unlocks: { bestiary: ['classBestiary'], features: ['classBestiary'] }, vidiDialog: 'milestone-class' }
+  { id: 'class-discoveries', title: 'Entdeckungen unserer Klasse', shortTitle: 'Eigene Tierwesen', description: 'Die früh begonnene Sammlung wieder aufgreifen, eigene Tierwesen überarbeiten und die Fortschritte vergleichen.', roomPhase: 4, unlocks: { bestiary: ['classBestiary'], features: ['classBestiary'] }, vidiDialog: 'milestone-class' }
 ];
 const presentationActions = {
   'niffler-researched': { location: 'bestiary', label: 'Niffler ins Bestiarium eintragen', dialog: 'research-niffler', completeLabel: 'Eintrag übernehmen' },
@@ -51,7 +51,7 @@ const presentationActions = {
   'generator-activated': { location: 'station', label: 'Generator aktivieren', dialog: 'research-generator', completeLabel: 'Generator aktivieren' },
   'wespuin-documented': { location: 'bestiary', label: 'Wespuin dokumentieren', dialog: 'research-wespuin', completeLabel: 'Eintrag übernehmen' },
   'zuckerdornechse-documented': { location: 'bestiary', label: 'Zuckerdornechse dokumentieren', dialog: 'research-zuckerdornechse', completeLabel: 'Eintrag übernehmen' },
-  'class-discoveries': { location: 'bestiary', label: 'Klassen-Bestiarium öffnen', dialog: 'research-class', completeLabel: 'Zweiten Band öffnen' }
+  'class-discoveries': { location: 'bestiary', label: 'Unsere Entdeckungen wieder aufgreifen', dialog: 'research-class', completeLabel: 'Zum gemeinsamen Rückblick' }
 };
 milestones.forEach(milestone => { milestone.presentationAction = presentationActions[milestone.id]; });
 export function nextPresentationMilestone(classroom) {

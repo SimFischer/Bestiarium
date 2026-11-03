@@ -73,7 +73,12 @@ export function validateState(value) {
 function load() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? validateState(JSON.parse(saved)) : initialState();
+    if (saved) return validateState(JSON.parse(saved));
+    const fresh = initialState();
+    // The collection is keyed by this ID, even before the first progress change.
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh)); }
+    catch { storageWarning = 'Die Klassenkennung kann nicht gespeichert werden. Bitte Browserspeicher erlauben und Sammlungen vor dem Schließen exportieren.'; }
+    return fresh;
   } catch {
     storageWarning = 'Gespeicherte Daten konnten nicht geladen werden. Bitte eine JSON-Sicherung importieren. Der bisherige Speicher wird erst bei einer Änderung ersetzt.';
     return initialState();
