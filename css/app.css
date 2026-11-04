@@ -186,11 +186,13 @@ dialog.book-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .bestiary-back { align-self: flex-start; font-size: .9rem; padding: .45rem .8rem; }
 .bestiary-spread { --page-top: 8%; --page-left: 9%; --page-right: 55%; --page-width: 36%; position: relative; width: min(100%, calc((100dvh - 150px) * 1.5)); aspect-ratio: 3 / 2; container-type: inline-size; flex-shrink: 0; }
 .bestiary-spread > img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.bestiary-page-text { position: absolute; left: 53%; top: 7%; width: 39%; height: 44%; color: #50351e; font: clamp(18px, 1.5cqw, 30px)/1.48 Georgia, 'Times New Roman', serif; }
-.bestiary-page-text.is-dense { top: 5%; font-size: clamp(18px, 1.34cqw, 28px); line-height: 1.45; }
-.bestiary-page-text h3 { font: bold 2.6cqw/1.2 Georgia, 'Times New Roman', serif; margin: 0 0 .9cqw; color: #54351c; }
-.bestiary-page-text p { line-height: inherit; margin: 0 0 .8cqw; }
-.bestiary-page-text.is-dense h3 { margin-bottom: .5cqw; }
+/* Text ends at 45% of the spread; the lower 55% is reserved for the artwork.
+   All metrics scale with the book, without a pixel floor that can overflow it. */
+.bestiary-page-text { position: absolute; left: 54%; top: 8%; width: 38%; height: 37%; max-width: 38%; padding: 0; color: #50351e; font: 1.32cqw/1.38 Georgia, 'Times New Roman', serif; overflow-wrap: break-word; hyphens: auto; }
+.bestiary-page-text.is-dense { font-size: 1.18cqw; line-height: 1.34; }
+.bestiary-page-text h3 { font: bold 2.25cqw/1.16 Georgia, 'Times New Roman', serif; margin: 0 0 .7cqw; color: #54351c; }
+.bestiary-page-text p { line-height: inherit; margin: 0 0 .55cqw; }
+.bestiary-page-text p:last-child { margin-bottom: 0; }
 .bestiary-page-text.is-dense p { margin-bottom: .4cqw; }
 
 img[hidden], .asset-fallback[hidden] { display: none !important; }
@@ -485,3 +487,11 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
   .builder-options { gap: 5px; }
   .builder-controls .builder-modes button, .builder-options button { min-height: 44px; padding: .3rem .45rem; font-size: .95rem; }
 }
+
+/* Use the remaining dialog height for animal spreads, including presentation tools. */
+.book-dialog:has(.book-animal) { padding: 8px 12px; }
+.book-dialog:has(.book-animal) .dialog-heading { margin-bottom: 4px; padding-bottom: 4px; }
+.book-dialog:has(.book-animal) .dialog-heading h2 { font-size: 1.2rem; }
+.book-dialog #view-content:has(.book-animal) { display: grid; grid-template-rows: auto minmax(0, 1fr); justify-items: center; align-items: stretch; }
+.book-stage:has(> .book-animal) { width: calc(100% - 112px); height: 100%; min-height: 0; container-type: size; }
+.book-stage > .book-animal { width: min(100%, 150cqh); margin-inline: auto; }
