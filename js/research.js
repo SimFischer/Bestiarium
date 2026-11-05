@@ -1,4 +1,5 @@
 import { element, button } from './ui.js';
+import { paginateBook } from './book-layout.js';
 
 export const researchPrompts = [
   'Achtet zuerst nur auf den Körperbau.',
@@ -46,7 +47,7 @@ export const descriptionCriteria = [
 ];
 const checkedByClass = new Map();
 
-export function renderCodex(content, spread, classroom, sectionId, navigate) {
+export function renderCodex(content, spread, classroom, sectionId, navigate, footer) {
   const open = id => navigate('bestiary', 'codex', id);
   const nav = element('nav', '', 'codex-navigation');
   nav.setAttribute('aria-label', 'Forschercodex');
@@ -66,30 +67,40 @@ export function renderCodex(content, spread, classroom, sectionId, navigate) {
     panel.append(element('h3', 'Tierbeschreibung prüfen'), element('p', 'Lest euren Beispieltext auf Papier oder am Smartboard. Markiert gemeinsam, welche Kriterien er erfüllt.'));
     if (!checkedByClass.has(classroom.id)) checkedByClass.set(classroom.id, new Set());
     const checked = checkedByClass.get(classroom.id);
-    const list = element('div', '', 'description-criteria');
+    const list = element('div', '', 'description-criteria is-paged');
+    const blocks = [];
     descriptionCriteria.forEach((criterion, index) => {
-      const control = button('', () => {
-        if (checked.has(index)) checked.delete(index); else checked.add(index);
-        control.setAttribute('aria-pressed', String(checked.has(index)));
-      });
+      const control = button('', () => {});
+      control.dataset.criterion = String(index);
       control.setAttribute('aria-pressed', String(checked.has(index)));
       const mark = element('span', '', 'criterion-mark');
       mark.setAttribute('aria-hidden', 'true');
       control.append(mark, element('span', criterion));
-      list.append(control);
+      blocks.push(control);
+    });
+    list.addEventListener('click', event => {
+      const control = event.target.closest('[data-criterion]');
+      if (!control) return;
+      const index = Number(control.dataset.criterion);
+      if (checked.has(index)) checked.delete(index); else checked.add(index);
+      control.setAttribute('aria-pressed', String(checked.has(index)));
     });
     panel.append(list);
-    content.append(panel);
+    const controls = element('nav');
+    content.append(panel, controls);
+    paginateBook(list, blocks, controls, 'Kriterien', area => {
+      area.querySelectorAll('[data-criterion]').forEach(control => control.setAttribute('aria-pressed', String(checked.has(Number(control.dataset.criterion)))));
+    });
     return;
   }
   const split = Math.ceil(section.items.length / 2);
   [section.items.slice(0, split), section.items.slice(split)].forEach((items, index) => {
     const column = element('section', '', `codex-reference codex-reference-${index}`);
-    column.append(element('h3', index ? 'Darauf achten wir' : section.title));
-    const list = element('ul');
-    items.forEach(text => list.append(element('li', text)));
-    column.append(list);
+    const blocks = [element('h3', index ? 'Darauf achten wir' : section.title), ...items.map(text => element('p', text))];
     spread.append(column);
+    const controls = element('nav');
+    footer.append(controls);
+    paginateBook(column, blocks, controls, index ? 'Rechts' : 'Links');
   });
 }
 

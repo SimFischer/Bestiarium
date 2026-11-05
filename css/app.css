@@ -186,12 +186,12 @@ dialog.book-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
 .bestiary-back { align-self: flex-start; font-size: .9rem; padding: .45rem .8rem; }
 .bestiary-spread { --page-top: 8%; --page-left: 9%; --page-right: 55%; --page-width: 36%; position: relative; width: min(100%, calc((100dvh - 150px) * 1.5)); aspect-ratio: 3 / 2; container-type: inline-size; flex-shrink: 0; }
 .bestiary-spread > img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.bestiary-page-text { position: absolute; left: 53%; top: 7%; width: 39%; height: 44%; color: #50351e; font: clamp(18px, 1.5cqw, 30px)/1.48 Georgia, 'Times New Roman', serif; }
-.bestiary-page-text.is-dense { top: 5%; font-size: clamp(18px, 1.34cqw, 28px); line-height: 1.45; }
-.bestiary-page-text h3 { font: bold 2.6cqw/1.2 Georgia, 'Times New Roman', serif; margin: 0 0 .9cqw; color: #54351c; }
-.bestiary-page-text p { line-height: inherit; margin: 0 0 .8cqw; }
-.bestiary-page-text.is-dense h3 { margin-bottom: .5cqw; }
-.bestiary-page-text.is-dense p { margin-bottom: .4cqw; }
+/* The lower 55% of every animal illustration is excluded from text layout.
+   book-layout.js measures and paginates at the actual readable font size. */
+.bestiary-page-text { position: absolute; left: 54%; top: 8%; width: 38%; height: 37%; padding: 0; color: #50351e; font: max(1.25rem, 1.65cqw)/1.45 Georgia, 'Times New Roman', serif; overflow-wrap: anywhere; hyphens: auto; }
+.bestiary-page-text h3 { font: bold max(1.5rem, 2.25cqw)/1.18 Georgia, serif; margin: 0 0 .4em; color: #54351c; }
+.bestiary-page-text p { line-height: inherit; margin: 0 0 .55em; }
+.bestiary-page-text > :last-child { margin-bottom: 0; }
 
 img[hidden], .asset-fallback[hidden] { display: none !important; }
 .asset-fallback { position: absolute; inset: auto 0 4%; text-align: center; color: #665845; pointer-events: none; font-size: .9rem; }
@@ -485,3 +485,67 @@ dialog.generator-dialog[open] { display: grid; grid-template-rows: auto 1fr; }
   .builder-options { gap: 5px; }
   .builder-controls .builder-modes button, .builder-options button { min-height: 44px; padding: .3rem .45rem; font-size: .95rem; }
 }
+
+/* Classroom reader: chrome takes its natural height, the book gets the remainder. */
+dialog.book-dialog, dialog.collection-dialog:has(.is-reading) { padding: 8px 12px; margin: 0; }
+dialog.book-dialog[open], dialog.collection-dialog:has(.is-reading)[open] { display: flex; flex-direction: column; gap: 6px; }
+.book-dialog .dialog-heading, .collection-dialog:has(.is-reading) .dialog-heading { flex: 0 0 auto; margin: 0; padding: 0 0 4px; gap: 10px; flex-wrap: wrap; align-items: center; }
+.book-dialog .dialog-heading h2, .collection-dialog:has(.is-reading) .dialog-heading h2 { font-size: 1.1rem; margin: 0; }
+.book-dialog .dialog-heading > button, .collection-dialog:has(.is-reading) .dialog-heading > button { min-height: 44px; padding: .3rem .65rem; margin-left: auto; }
+.book-dialog .dialog-heading .book-tools { width: auto; flex: 1; min-width: 0; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.book-dialog .book-tools button { min-height: 44px; padding: .3rem .65rem; font-size: 1rem; }
+.book-dialog .book-tools .presentation-action { font-size: 1rem; line-height: 1.2; }
+.book-dialog .vidi-seal { width: 30px; height: 30px; }
+.book-dialog #view-content { display: flex; flex: 1; min-height: 0; width: 100%; gap: 6px; }
+.book-dialog #view-content > :not(.fitted-book-stage) { flex-shrink: 0; }
+.book-dialog #view-content > .fitted-book-stage { position: relative; width: 100%; height: auto; flex: 1 1 0; min-height: 0; }
+.fitted-book-stage > .bestiary-spread { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-width: 100%; flex-shrink: 1; }
+.book-footer { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 18px; width: 100%; }
+.book-footer .book-previous { order: -1; }
+.entry-turn { min-height: 44px; font-size: 1rem; padding: .3rem .65rem; }
+.text-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; color: #eed6ac; }
+.text-pagination button { min-height: 44px; font: 1rem/1.15 system-ui, sans-serif; padding: .35rem .7rem; }
+.text-page-status { font: .9rem/1.2 system-ui, sans-serif; white-space: nowrap; }
+button:disabled { opacity: .5; cursor: default; }
+.codex-navigation { gap: 6px; }
+.codex-navigation button { min-height: 44px; padding: .3rem .6rem; font-size: 1rem; }
+.codex-reference { top: 17%; width: 33%; height: 65%; font: max(1.25rem, 1.65cqw)/1.45 Georgia, serif; overflow-wrap: anywhere; }
+.codex-reference h3 { font: bold max(1.5rem, 2.25cqw)/1.18 Georgia, serif; margin: 0 0 .4em; }
+.codex-reference p { margin: 0 0 .55em; }
+.codex-reference > :last-child { margin-bottom: 0; }
+/* No raster artwork lies behind the collection text; retain all original data. */
+.collection-dialog:has(.is-reading) #view-content { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.creature-book.is-reading { display: flex; flex: 1; flex-direction: column; min-height: 0; width: 100%; max-width: none; gap: 6px; }
+.is-reading .creature-subtitle { display: none; }
+.is-reading .creature-tools { display: flex; flex-wrap: wrap; margin: 0; gap: 6px; }
+.is-reading .creature-tools button, .is-reading .creature-turns button { font-size: 1rem; min-height: 44px; padding: .3rem .6rem; }
+.is-reading .creature-spread { flex: 1 1 0; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin: 0; }
+.is-reading .creature-leaf { min-height: 0; padding: clamp(12px, 1.8vw, 32px); font: max(1.25rem, 1.4vw)/1.45 Georgia, serif; }
+.is-reading .creature-leaf h3 { font-size: 1.5em; margin: 0 0 .4em; }
+.is-reading .creature-words { display: flex; border-top: 0; border-left: 2px solid #bc9864; }
+.collection-page-text { flex: 1; min-width: 0; min-height: 0; overflow-wrap: anywhere; }
+.collection-page-text p { margin: 0 0 .55em; }
+.collection-page-text .creature-description, .collection-page-text .creature-note { white-space: break-spaces; }
+.collection-page-text > :last-child { margin-bottom: 0; }
+.is-reading .creature-art img { width: 100%; height: 100%; min-height: 0; max-height: 100%; object-fit: contain; }
+.is-reading .creature-turns { display: flex; justify-content: space-between; gap: 6px; margin: 0; }
+.is-reading .creature-prompts { margin: 0; font-size: 1rem; line-height: 1.3; }
+@media (max-width: 1000px) {
+  .book-dialog .dialog-heading { gap: 4px 8px; }
+  .book-dialog .dialog-heading h2 { font-size: 1rem; }
+  .book-footer { gap: 4px 10px; }
+  .entry-turn, .text-pagination button { font-size: .9rem; padding-inline: .45rem; }
+}
+.index-leaf { display: block; font: max(1rem, 1.45cqw)/1.4 Georgia, serif; }
+.index-leaf h3 { font-family: Georgia, serif; font-size: max(1.25rem, 2cqw); line-height: 1.3; margin: 0 0 .5em; }
+.index-leaf li { list-style: none; }
+.index-entry { min-height: 44px; font-size: max(1rem, 1.7cqw); }
+.index-intro, .index-motto { font-size: inherit; margin: 0 0 .5em; padding: 0; }
+.index-number { font-size: .9em; }
+.book-type-probe { position: fixed; left: -10000px; top: 0; width: max-content; height: auto; visibility: hidden; pointer-events: none; white-space: nowrap; }
+.book-dialog #view-content > .description-review { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; max-height: none; padding: 12px; }
+.description-review h3 { font-size: 1.35rem; }
+.description-review > p { font-size: 1rem; margin: .5em 0; }
+.description-criteria.is-paged { display: block; flex: 1; min-height: 0; }
+.description-criteria.is-paged button { width: 100%; min-height: 44px; padding: 8px 12px; margin: 0 0 6px; font-size: 1rem; line-height: 1.3; }
+.description-criteria.is-paged button:last-child { margin-bottom: 0; }
