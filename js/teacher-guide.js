@@ -13,11 +13,11 @@ export const teacherGuideConfig = {
       motto: 'Je genauer wir Tiere beobachten und beschreiben können, desto mehr von ihrer Welt können wir entdecken.',
       cards: [
         ['Forschungsstation', 'Zentraler Ausgangspunkt mit unsichtbaren Klickflächen: offenes Buch, Wandkarte und später Gerät rechts. Die Station verändert sich mit dem Fortschritt.'],
-        ['Bestiarium', 'Zeigt nur entdeckte Seiten. Nutze Inhaltsverzeichnis und seitliche Blätterpfeile.'],
+        ['Bestiarium', 'Zeigt nur entdeckte Seiten. Textfolgeseiten und der Wechsel zum nächsten Tier haben eigene Schaltflächen unter dem Buch. Schrift und Aufteilung passen sich der verfügbaren Fläche an.'],
         ['Weltkarte & Expeditionen', 'Pflanzen-, Wald- und Vulkanregion werden sichtbar. Region und Expedition müssen freigegeben sein; gemeinsam beobachten, anschließend analog beschreiben.'],
         ['Forschercodex', 'Kapitel im Bestiarium mit den gemeinsam gesicherten Regeln guter Tierbeschreibungen.'],
         ['Generator', 'Mischt Eigenschaften für eigene Wesen. Zeichnung, Planung und Beschreibung entstehen weiterhin auf Papier.'],
-        ['Klassen-Bestiarium', 'Vorbereiteter zweiter Band für eigene Entdeckungen. Noch keine Verwaltung oder Uploads eigener Schülerseiten.']
+        ['Klassen-Bestiarium', 'Das Buch der unentdeckten Wesen ist vom Einstieg an erreichbar. Werke und Bilder verwaltest du im Lehrkraftmodus; die erste Idee bleibt neben einer optionalen Überarbeitung erhalten. Derselbe Laptop zeigt sie per HDMI direkt am Smartboard. Export/Import dienen der Sicherung oder einem Geräte-/Browserwechsel.']
       ],
       knowledge: [
         'Nur du bedienst die App; keine Schülergeräte oder Schülerkonten.',

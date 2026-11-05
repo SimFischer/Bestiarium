@@ -105,7 +105,12 @@ export function renderExpedition(content, classroom, expeditionId, navigate) {
   portrait.src = 'assets/story/vidi-fullbody.png';
   portrait.alt = 'Vidi';
   hint.append(portrait, element('p', `Vidi: „${expedition.hint}“`));
-  scene.append(hint);
+  hint.hidden = true;
+  const hintToggle = button('Vidis Hinweis', () => {
+    hint.hidden = !hint.hidden;
+    hintToggle.setAttribute('aria-expanded', String(!hint.hidden));
+  });
+  hintToggle.setAttribute('aria-expanded', 'false'); toolbar.append(hintToggle);
   addResearchTask(toolbar, scene, expedition);
-  content.append(scene);
+  content.append(scene, hint);
 }

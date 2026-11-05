@@ -2,7 +2,8 @@ import { animals, classBestiaryPages, bestiaryConfig } from './data.js';
 import { bookUnlocked } from './state.js';
 import { element, button, asset } from './ui.js';
 import { renderCodex } from './research.js';
-import { fitBook, paginateBook } from './book-layout.js';
+import { addBookReader } from './book-reader.js';
+import { paginateBook } from './book-layout.js';
 
 export const availableBooks = classroom => bestiaryConfig.order.map(id => animals.find(entry => entry.id === id)).filter(entry => entry && bookUnlocked(classroom, entry));
 
@@ -38,18 +39,15 @@ function renderIndex(content, books, navigate) {
   chapters.append(element('p', 'Je genauer wir beobachten und\nbeschreiben, desto mehr können wir\nentdecken.', 'index-motto'));
   pages.append(discoveries, chapters);
   spread.append(pages);
-  const stage = element('div', '', 'book-stage fitted-book-stage');
+  const stage = element('div', '', 'book-stage');
   const footer = element('div', '', 'book-footer');
   for (const [index, leaf] of [discoveries, chapters].entries()) {
     const blocks = [...leaf.children].flatMap(node => node.matches('ol') ? [...node.children] : [node]);
-    leaf.addEventListener('click', event => {
-      const id = event.target.closest('[data-entry-id]')?.dataset.entryId;
-      if (id) navigate('bestiary', id);
-    });
+    leaf.addEventListener('click', event => { const id = event.target.closest('[data-entry-id]')?.dataset.entryId; if (id) navigate('bestiary', id); });
     const controls = element('nav'); footer.append(controls);
     paginateBook(leaf, blocks, controls, index ? 'Rechts' : 'Links');
   }
-  stage.append(spread); content.append(stage, footer); fitBook(stage, spread);
+  stage.append(spread); content.append(stage, footer);
 }
 export function renderBestiary(content, classroom, entryId, detailId, navigate) {
   const heading = document.querySelector('#view-title');
@@ -67,49 +65,50 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     renderCodex(content, null, classroom, detailId, navigate);
     return;
   }
-  const stage = element('div', '', 'book-stage fitted-book-stage');
-  const footer = element('div', '', 'book-footer');
+  const stage = element('div', '', 'book-stage');
   const spread = element('article', '', `bestiary-spread book-${entry.type}`);
   const preparedPage = entry.type === 'class' ? classBestiaryPages.find(page => page.id === detailId) : null;
   asset(spread, entry.type === 'codex' ? bestiaryConfig.indexAsset : preparedPage?.asset || entry.pageAsset, `Vollständige Bestiariums-Doppelseite: ${entry.name}`, 'book-art');
+  stage.append(spread);
+  content.append(stage);
   if (entry.type === 'codex') {
-    renderCodex(content, spread, classroom, detailId, navigate, footer);
+    const index = books.indexOf(entry);
+    renderCodex(content, spread, classroom, detailId, navigate, {
+      previous: books[index - 1] ? () => navigate('bestiary', books[index - 1].id) : null,
+      next: books[index + 1] ? () => navigate('bestiary', books[index + 1].id) : null,
+      previousLabel: '‹ Eintrag', nextLabel: 'Eintrag ›'
+    });
+    return;
   } else if (entry.type === 'class') {
     if (preparedPage) {
       heading.textContent = preparedPage.title;
       content.append(button('Zur Klassenübersicht', () => navigate('bestiary', entry.id), 'bestiary-back'));
     } else renderClassPages(spread, id => navigate('bestiary', entry.id, id));
   } else {
-    const text = element('div', '', 'bestiary-page-text');
-    const blocks = [element('h3', entry.name)];
-    entry.textContent.forEach(section => {
-      const paragraph = element('p');
-      paragraph.append(element('strong', `${section.heading}: `), document.createTextNode(section.text));
-      blocks.push(paragraph);
+    const index = books.indexOf(entry);
+    addBookReader(content, spread, {
+      id: entry.id, title: entry.name,
+      text: entry.textContent.map(section => `${section.heading}: ${section.text}`).join('\n\n'),
+      previous: books[index - 1] ? () => navigate('bestiary', books[index - 1].id) : null,
+      next: books[index + 1] ? () => navigate('bestiary', books[index + 1].id) : null
     });
-    spread.append(text);
-    const controls = element('nav');
-    footer.append(controls);
-    paginateBook(text, blocks, controls);
+    return;
   }
-  stage.append(spread);
   const index = books.indexOf(entry);
   for (const direction of [-1, 1]) {
     const target = books[index + direction];
     if (!target) continue;
     const navClass = direction < 0 ? 'book-previous' : 'book-next';
-    const turn = button(direction < 0 ? '‹ Vorheriger Eintrag' : 'Nächster Eintrag ›', async () => {
+    const turn = button(direction < 0 ? '‹' : '›', async () => {
       if (!await navigate('bestiary', target.id)) return;
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        content.querySelector('.bestiary-spread')?.animate([{ opacity: .35 }, { opacity: 1 }], { duration: 220, easing: 'ease-out' });
+        content.querySelector('.bestiary-spread')?.animate([{ opacity: .35, transform: `translateX(${direction * 8}px)` }, { opacity: 1, transform: 'translateX(0)' }], { duration: 220, easing: 'ease-out' });
       }
       (content.querySelector(`.${navClass}`) || content.querySelector('.bestiary-back'))?.focus();
-    }, `entry-turn ${navClass}`);
-    turn.setAttribute('aria-label', `${direction < 0 ? 'Vorheriger' : 'Nächster'} Eintrag: ${target.name}`);
-    footer.append(turn);
+    }, `book-turn ${navClass}`);
+    turn.setAttribute('aria-label', `${direction < 0 ? 'Vorherige' : 'Nächste'} Buchseite: ${target.name}`);
+    stage.append(turn);
   }
-  content.append(stage, footer);
-  fitBook(stage, spread);
 }
 function renderClassPages(spread, open) {
   const text = element('section', '', 'class-book-text');

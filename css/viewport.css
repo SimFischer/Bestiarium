@@ -1,0 +1,86 @@
+/* One viewport budget, measured below the actual heading and navigation. */
+body { grid-template-rows: 52px minmax(0, 1fr); }
+.topbar { gap: 10px; padding: 0 14px; }
+.topbar button { min-height: 42px; }
+#view-dialog[open] { display: flex; flex-direction: column; width: 100vw; height: 100dvh; max-width: none; max-height: 100dvh; margin: 0; padding: 8px 14px; border-radius: 0; overflow: auto; }
+#view-dialog .dialog-heading { flex: none; flex-wrap: nowrap; gap: 10px; margin: 0 0 6px; padding: 0 0 6px; }
+#view-dialog .dialog-heading h2 { flex: 1; font-size: clamp(20px, 1.8vw, 28px); }
+#view-dialog .dialog-heading button { min-height: 42px; padding: 7px 12px; font-size: 17px; }
+#view-dialog #view-content { display: flex; flex: 1; flex-direction: column; align-items: center; gap: 6px; width: 100%; min-height: 0; }
+#view-content > * { flex-shrink: 0; }
+#view-content .book-tools { width: 100%; min-height: 0; }
+#view-content .bestiary-back { min-height: 38px; padding: 5px 12px; font-size: 17px; }
+#view-content .book-stage { position: relative; flex: none; max-width: 100%; }
+#view-content .book-stage > .bestiary-spread { width: 100%; height: 100%; aspect-ratio: 3 / 2; }
+#view-content .bestiary-spread > img { object-fit: contain; }
+.safe-book-text { position: absolute; min-height: 0; color: #493018; display: flex; flex-direction: column; }
+.safe-book-text h3 { flex: none; font: 600 26px/1.15 Georgia, serif; margin: 0 0 10px; overflow-wrap: anywhere; }
+.safe-book-copy { flex: none; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: var(--book-font, 26px)/1.45 Georgia, serif; }
+.book-reader-controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; }
+.book-reader-controls button { min-height: 42px; padding: 7px 14px; font-size: 18px; }
+.book-page-count { min-width: 145px; font-size: 18px; text-align: center; }
+.book-reader-controls > button:first-child { margin-right: auto; }
+.book-reader-controls > button:last-child { margin-left: auto; }
+#view-content .book-stage .book-turn { width: 44px; min-height: 52px; }
+#view-content .book-stage .book-previous { left: -48px; }
+#view-content .book-stage .book-next { right: -48px; }
+.codex-navigation { gap: 7px; }
+.codex-navigation button { min-height: 40px; padding: 5px 12px; font-size: 18px; }
+.index-pages { inset: 15% 10% 20%; grid-template-columns: 44% 44%; gap: 12%; }
+.index-leaf h3 { font-size: 25px; margin-bottom: 12px; }
+.index-entry { min-height: 36px; padding: 4px 0; font-size: 22px; }
+.index-number, .index-intro, .index-motto { font-size: 19px; }
+.index-motto { padding-top: 8px; }
+.description-review { width: 100%; min-height: 0; }
+.description-review h3 { font-size: 24px; }
+.description-criteria { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.description-criteria button { min-height: 52px; font-size: 21px; }
+#view-content .observation-scene, #view-content .generator-machine { flex: none; max-width: 100%; aspect-ratio: 16 / 9; }
+#view-content .generator-view { width: 100%; height: 100%; gap: 6px; min-height: 0; }
+.generator-topline { min-height: 40px; }
+.generator-topline button { min-height: 38px; }
+.expedition-toolbar { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.expedition-toolbar button { min-height: 40px; }
+.research-task { width: 100%; flex-basis: 100%; padding: 8px 12px; }
+.research-task h3 { font-size: 20px; }
+.research-prompt { font-size: 22px; }
+.research-task button { min-height: 38px; }
+.landscape-dialog #view-content:has(.research-task:not([hidden])) { display: flex; }
+.expedition-hint { position: static; width: 100%; max-width: none; max-height: none; padding: 6px 12px; margin: 0; }
+.expedition-hint[hidden] { display: none; }
+.expedition-hint img { width: 42px; height: 56px; }
+.expedition-hint p { font-size: clamp(18px, 1.5cqw, 25px); }
+.builder-layout { height: calc(100% - 46px); padding: 8px; align-items: stretch; gap: 20px; }
+/* Rotated/scaled head canvases contain transparent pixels outside the stage.
+   Clip this drawing surface only; text and controls are never clipped. */
+.builder-stage { align-self: center; max-height: 100%; overflow: clip; }
+.builder-controls { align-self: center; padding: 10px 16px; }
+.builder-control { padding: 5px 0; }
+.builder-control h3 { font-size: 17px; }
+.builder-value { font-size: 21px; }
+.builder-controls .builder-start { min-height: 44px; margin-top: 10px; }
+.teacher-dialog { width: calc(100vw - 24px); max-height: calc(100dvh - 24px); padding: 18px; }
+.teacher-dialog .dialog-heading { position: sticky; top: -18px; background: #251f18; z-index: 3; padding: 10px 0; }
+#teacher-content { font-size: 18px; }
+.teacher-dialog .field input, .teacher-dialog .field select { min-height: 44px; }
+.vidi-dialog { max-height: calc(100dvh - 24px); overflow: auto; }
+.creature-book { width: 100%; }
+.creature-reader .creature-tools { margin: 0 0 4px; gap: 8px; }
+.creature-reader button, .reader-settings > summary { min-height: 44px; font-size: 18px; padding: 7px 12px; }
+.reader-options { gap: 8px; padding: 6px 0; }
+.creature-reader .creature-leaf { padding: 18px 24px; }
+.creature-reader-footer { gap: 8px 14px; padding-top: 6px; }
+.reader-combined-label { font-size: 18px; }
+.creature-question { font-size: 24px; margin-top: 6px; padding: 8px 14px; }
+.creature-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 10px 0; }
+.creature-card { font-size: 21px; padding: 12px; }
+.creature-card img { height: 125px; }
+.collection-index-turns { display: flex; justify-content: center; align-items: center; gap: 18px; }
+.collection-index-turns button { min-height: 42px; font-size: 18px; }
+@media (max-height: 700px) {
+  #view-dialog .dialog-heading button { font-size: 16px; min-height: 38px; }
+  .builder-controls .builder-modes button, .builder-options button { min-height: 34px; font-size: 16px; }
+  .builder-choice h3 { font-size: 16px; }
+  .builder-choice { padding: 3px 0; }
+  .creature-card img { height: 100px; }
+}

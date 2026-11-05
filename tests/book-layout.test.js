@@ -5,9 +5,11 @@ import { renderCollection } from '../js/collection.js';
 import { writeCollection, readCollection } from '../js/collection-store.js';
 import { element, button } from '../js/ui.js';
 import { codexSections, descriptionCriteria } from '../js/research.js';
+import { initLayout } from '../js/layout.js';
 if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) throw new Error('Nur lokal ausführen');
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
+initLayout();
 const classroom = { id: 'development-book-layout', unlockedBestiaryEntries: animals.map(a => a.id) };
 const original = animals[0].textContent;
 const pause = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -36,7 +38,7 @@ function audit() {
     const r = bounds(node);
     if (r.top < -1 || r.left < -1 || r.bottom > innerHeight + 1 || r.right > innerWidth + 1) errors.push('Außerhalb des Viewports: ' + node.className);
   }
-  for (const area of dialog.querySelectorAll('[data-page-count]')) {
+  for (const area of dialog.querySelectorAll('[data-page-count], .safe-book-copy, .creature-description')) {
     if (area.dataset.layoutPending) errors.push('Kein lesbarer Textplatz');
     const r = bounds(area);
     if (area.scrollHeight > area.clientHeight + 1 || area.scrollWidth > area.clientWidth + 1) errors.push('Text-Overflow');
@@ -53,6 +55,20 @@ function audit() {
 }
 async function readAllPages() {
   await settle();
+  if (content.querySelector('.safe-book-copy, .creature-reader')) {
+    const collection = Boolean(content.querySelector('.creature-reader'));
+    const previous = content.querySelector(collection ? '[data-text-previous]' : '.book-reader-controls button:nth-child(3)');
+    const next = content.querySelector(collection ? '[data-text-next]' : '.book-reader-controls button:nth-child(5)');
+    while (!previous.disabled) previous.click();
+    let text = '';
+    for (let page = 0; page < 500; page++) {
+      const errors = audit(); if (errors.length) throw new Error(errors.join(', '));
+      text += [...content.querySelectorAll(collection ? '.creature-description' : '.safe-book-copy')].map(p => p.textContent).join('');
+      if (next.disabled) break; next.click();
+    }
+    while (!previous.disabled) previous.click();
+    return [text];
+  }
   const output = [];
   const areas = [...dialog.querySelectorAll('[data-page-count]')];
   const controls = [...dialog.querySelectorAll('.text-pagination')];
@@ -76,12 +92,11 @@ const fixture = { id: 'development-creature', name: 'ENTWICKLUNGSBEISPIEL', rese
   revised: { description: 'Überarbeitete Fassung. '.repeat(60), image: null, note: 'Zweite Notiz', phase: 'Überarbeitet' } };
 window.bookTests = {
   render, settle, audit, readAllPages,
-  expected(id) { const entry = animals.find(a => a.id === id); return entry.name + entry.textContent.map(s => s.heading + ': ' + s.text).join(''); },
+  expected(id) { const entry = animals.find(a => a.id === id); return entry.textContent.map(s => s.heading + ': ' + s.text).join('\n\n'); },
   expectedCodex(detail) {
     if (detail === 'check') return [descriptionCriteria.join('')];
     const section = codexSections.find(s => s.id === detail);
-    const split = Math.ceil(section.items.length / 2);
-    return [section.title + section.items.slice(0, split).join(''), 'Darauf achten wir' + section.items.slice(split).join('')];
+    return [section.items.map(item => `• ${item}`).join('\n\n')];
   },
   longSection(on) { animals[0].textContent = on ? [{ heading: 'Langer Abschnitt', text: 'Einzelner langer Absatz mit allen Details. '.repeat(65) + 'Ungetrennt'.repeat(60) }] : original; },
   async collection() {

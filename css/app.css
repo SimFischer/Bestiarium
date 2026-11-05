@@ -549,3 +549,76 @@ button:disabled { opacity: .5; cursor: default; }
 .description-criteria.is-paged { display: block; flex: 1; min-height: 0; }
 .description-criteria.is-paged button { width: 100%; min-height: 44px; padding: 8px 12px; margin: 0 0 6px; font-size: 1rem; line-height: 1.3; }
 .description-criteria.is-paged button:last-child { margin-bottom: 0; }
+/* Shared front-of-class controls. Fullscreen and presentation are independent. */
+.presentation-controls { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+.presentation-controls button, .dialog-heading > button { min-height: 52px; font-size: 18px; }
+.presentation-controls button { touch-action: manipulation; }
+.presentation-controls [data-presentation-fullscreen] { min-width: 110px; }
+.topbar { gap: 12px; }
+.topbar .presentation-controls { margin-left: auto; }
+.topbar .presentation-controls button { min-height: 44px; font-size: 16px; padding: .4rem .7rem; }
+.topbar:has(.presentation-controls) #fullscreen-toggle { display: none; }
+#view-dialog .dialog-heading { flex-wrap: wrap; }
+#view-dialog .dialog-heading h2 { flex: 1 1 300px; }
+#view-dialog .dialog-heading .presentation-controls { order: 1; }
+#view-dialog .dialog-heading > button { order: 2; }
+.presentation-status:empty { display: none; }
+.presentation-status { color: #ffdda4; }
+.presentation-mode #app-title, .presentation-mode #teacher-dialog, .presentation-mode .presentation-action { display: none; }
+.presentation-mode .creature-subtitle, .presentation-mode .bestiary-back { display: none; }
+.presentation-mode *, .presentation-mode *::before, .presentation-mode *::after { animation: none !important; transition: none !important; }
+.presentation-mode .topbar h1 { display: none; }
+.presentation-mode .book-tools:empty { display: none; }
+button, summary { touch-action: manipulation; }
+summary:focus-visible { outline: 3px solid #f9d899; outline-offset: 3px; }
+
+/* The reader fills the landscape screen; only the outer dialog may scroll. */
+dialog.collection-dialog { padding: 10px 18px; }
+.collection-dialog .dialog-heading { margin: 0 0 8px; padding: 0 0 8px; gap: 12px; }
+.collection-dialog .dialog-heading h2 { font-size: clamp(22px, 1.8vw, 32px); }
+.creature-book { max-width: none; }
+.creature-reader .creature-subtitle { display: none; }
+.creature-reader .creature-tools { margin: 0 0 10px; display: flex; align-items: flex-start; gap: 12px; }
+.creature-reader button, .reader-settings > summary { min-height: 54px; font-size: 20px; padding: 10px 16px; }
+.reader-views { display: flex; flex-wrap: wrap; gap: 8px; }
+.reader-settings { flex: 1 1 280px; margin-left: auto; }
+.reader-settings > summary { cursor: pointer; border: 1px solid #987444; border-radius: 7px; width: max-content; margin-left: auto; background: #31281e; }
+.reader-options { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 0; }
+.reader-font-label { font-size: 20px; min-width: 55px; text-align: center; }
+.reader-extra { flex-basis: 100%; margin: 0; text-align: right; white-space: pre-wrap; font-size: 20px; }
+.creature-reader .creature-spread { height: var(--reader-height, 460px); margin: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.creature-reader .creature-leaf { height: 100%; min-height: 0; padding: clamp(18px, 1.8vw, 34px); }
+.creature-reader .creature-art { gap: 10px; }
+.creature-reader .creature-art img { width: 100%; height: 100%; max-height: none; min-height: 0; flex: 1; object-fit: contain; }
+.creature-reader .creature-words { display: flex; flex-direction: column; }
+.creature-reader .creature-words h3, .reader-entry-name { font: 600 clamp(26px, 2vw, 38px)/1.15 Georgia, serif; margin: 0 0 16px; flex-shrink: 0; }
+.creature-reader .creature-description { font: var(--reader-font, 32px)/1.45 Georgia, serif; margin: 0; flex: none; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
+.creature-reader [data-reader-view="image"], .creature-reader [data-reader-view="text"] { grid-template-columns: minmax(0, 1fr); }
+.creature-reader [data-reader-view="text"] .creature-leaf { border: 0; box-shadow: none; padding-left: clamp(28px, 4vw, 80px); padding-right: clamp(28px, 4vw, 80px); }
+.creature-reader [data-reader-view="text"] .creature-description { max-width: none; }
+.creature-reader .reader-entry-name { font-size: 26px; text-align: center; }
+.creature-reader-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding: 10px 0 0; }
+.reader-text-controls, .reader-question-controls { display: flex; align-items: center; gap: 10px; }
+.text-page-label { min-width: 140px; text-align: center; font-size: 18px; }
+.creature-reader .creature-turns { margin: 0; gap: 10px; font-size: 20px; }
+.creature-question { padding: 10px 18px; margin: 10px 0 0; border-left: 4px solid #d5af67; background: #40311f; font: 600 clamp(22px, 1.7vw, 30px)/1.35 Georgia, serif; color: #f6ddb0; }
+@media (min-width: 1600px) { .creature-reader button, .reader-settings > summary { min-height: 60px; font-size: 23px; } }
+@media (max-width: 1100px) {
+  .topbar .presentation-controls button { font-size: 14px; }
+  #app-title span { display: none; }
+  .reader-settings { flex-basis: 100%; }
+  .reader-settings > summary { margin-left: 0; }
+  .reader-options { justify-content: flex-start; }
+}
+@media (max-width: 760px) {
+  .topbar { flex-wrap: wrap; }
+  .topbar .presentation-controls { display: none; }
+  .creature-reader .creature-spread { grid-template-columns: 1fr; height: auto; }
+  .creature-reader .creature-art { height: 320px; }
+  .creature-reader .creature-words { height: 420px; }
+  .presentation-controls { flex-wrap: wrap; }
+}
+.reader-presentation-turns { display: none; align-items: center; gap: 12px; }
+.reader-combined-label { font-size: 20px; text-align: center; min-width: 200px; }
+.presentation-mode .creature-reader .reader-presentation-turns { display: flex; }
+.presentation-mode .creature-reader .reader-text-controls, .presentation-mode .creature-reader .creature-turns, .presentation-mode .creature-tools > button, .presentation-mode .reader-extra { display: none; }

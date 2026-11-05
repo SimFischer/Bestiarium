@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head><base href="../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#201a14">
+  <title>Bestiarium · Forschungsstation</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/viewport.css">
+</head>
+<body class="app-loading">
+  <div id="app-loading" role="status">Forschungsstation wird vorbereitet …</div>
+  <header class="topbar">
+    <h1><button id="app-title" type="button">Bestiarium <span>Forschungsstation</span></button></h1>
+    <p id="class-label" hidden></p>
+    <button id="collection-open" type="button">Buch der unentdeckten Wesen</button>
+    <button id="fullscreen-toggle" type="button" aria-label="Vollbild starten" aria-pressed="false" hidden>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path class="fullscreen-enter" d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/>
+        <path class="fullscreen-exit" d="M3 9h6V3m6 0v6h6M9 21v-6H3m18 0h-6v6"/>
+      </svg>
+    </button>
+  </header>
+  <main id="station" aria-label="Forschungsstation">
+    <div id="scene" class="scene">
+      <div id="room-images" class="room-images"></div>
+      <nav id="hotspots" aria-label="Bereiche der Forschungsstation"></nav>
+      <section id="story-intro" class="story-intro" aria-labelledby="story-title" hidden>
+        <img class="story-background" src="assets/story/station-exterior.png" alt="Die alte Forschungsstation am Rand der Tierwesenwelt">
+        <img id="story-vidi" class="story-vidi" src="assets/story/vidi-fullbody.png" alt="Vidi, Federhains Hauself und Forschungsassistent" hidden>
+        <div id="story-panel" class="story-panel">
+          <p id="story-step" class="eyebrow"></p>
+          <h2 id="story-title" tabindex="-1"></h2>
+          <div id="story-text"></div>
+          <div class="story-actions">
+            <span>Ihr seid dran</span>
+            <button id="story-next" type="button"></button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <dialog id="view-dialog" aria-labelledby="view-title">
+    <div class="dialog-heading"><h2 id="view-title"></h2><button type="button" data-close aria-label="Zurück zur Forschungsstation">Zur Station <span aria-hidden="true">×</span></button></div>
+    <div id="view-content"></div>
+    <div id="view-loading" role="status">Forschung wird vorbereitet …</div>
+  </dialog>
+  <dialog id="teacher-dialog" class="teacher-dialog" aria-labelledby="teacher-title">
+    <div class="dialog-heading"><div><p class="eyebrow">Klassenstand verwalten</p><h2 id="teacher-title">Lehrkraftmodus</h2></div><button type="button" data-close>Zur Station <span aria-hidden="true">×</span></button></div>
+    <div id="teacher-content"></div>
+  </dialog>
+  <script type="module" src="tests/layout.test.js"></script>
+</body>
+</html>
+

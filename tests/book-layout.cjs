@@ -56,9 +56,9 @@ async function main() {
       }
       await page.evaluate(() => bookTests.render()); await audit(); await read();
       await page.locator('[data-entry-id="niffler"]').click(); await audit();
-      await page.locator('.book-next').click(); await audit();
+      await page.locator('.book-animal-next').click(); await audit();
       assert.match(await page.locator('#view-title').innerText(), /Pandanaflora/);
-      await page.locator('.book-previous').click(); await audit();
+      await page.locator('.book-animal-previous').click(); await audit();
       assert.match(await page.locator('#view-title').innerText(), /Niffler/);
       for (const detail of ['structure', 'language', 'fantasy', 'revision', 'check']) {
         await page.evaluate(detail => bookTests.render('codex', detail), detail); await audit();
@@ -68,17 +68,17 @@ async function main() {
       await audit(); assert.equal((await read())[0], await expected('niffler'));
       await page.evaluate(() => { bookTests.longSection(false); bookTests.render('niffler'); });
       await settle();
-      await page.evaluate(() => document.querySelector('.bestiary-page-text').style.fontSize = '28px');
+      await page.getByRole('button', { name: 'Buchschrift vergrößern', exact: true }).click();
       await audit(); assert.equal((await read())[0], await expected('niffler'));
       await page.evaluate(() => bookTests.collection()); await audit();
       assert.equal((await read())[0], await page.evaluate(() => {
         const f = bookTests.fixture;
-        return 'Erste Idee' + f.name + 'Entdeckt von ' + f.researcher + f.first.description + f.first.note;
+        return f.first.description;
       }));
-      await page.getByRole('button', { name: 'Überarbeitet', exact: true }).click(); await audit();
+      await page.locator('.reader-settings > summary').click(); await page.getByRole('button', { name: 'Überarbeitet', exact: true }).click(); await audit();
       assert.equal((await read())[0], await page.evaluate(() => {
         const f = bookTests.fixture;
-        return 'Überarbeitet' + f.name + 'Entdeckt von ' + f.researcher + f.revised.description + f.revised.note;
+        return f.revised.description;
       }));
       assert(await page.evaluate(() => bookTests.unchanged()));
       report.push({ width, height, zoom, actual });
@@ -91,7 +91,7 @@ async function main() {
   await page.evaluate(() => document.documentElement.style.fontSize = '120%'); await audit();
   await page.evaluate(async () => {
     const font = new FontFace('LayoutTest', 'local(Arial)'); await font.load(); document.fonts.add(font);
-    document.querySelector('.bestiary-page-text').style.fontFamily = 'LayoutTest';
+    document.querySelector('.safe-book-copy').style.fontFamily = 'LayoutTest'; window.dispatchEvent(new Event('resize'));
   });
   await audit(); assert.equal((await read())[0], await expected('niffler'));
   assert.deepEqual(pageErrors, []);

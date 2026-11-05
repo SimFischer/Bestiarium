@@ -10,6 +10,8 @@ import { initVidiDialogs } from './story.js';
 import { createGenerator } from './generator.js';
 import { createGeneratorBuilder } from './generator-builder.js';
 import { initFullscreen } from './fullscreen.js';
+import { initPresentation } from './presentation.js';
+import { initLayout } from './layout.js';
 import { criticalImages, backgroundImages, preloadImages, decodeImage } from './images.js';
 
 await preloadImages(criticalImages(activeClass().roomPhase));
@@ -56,7 +58,7 @@ const images = roomPhases.map(phase => {
   document.querySelector('#room-images').append(img);
   return img;
 });
-function navigate(view, id = null, detail = null) {
+export function navigate(view, id = null, detail = null) {
   generator.cancel();
   builder.cancel();
   if (view === 'station') { viewRevision++; dialog.close(); return; }
@@ -210,6 +212,8 @@ window.addEventListener('collection-changed', event => {
 });
 initTeacher(notify, story.start, messages.replay);
 initFullscreen();
+initPresentation();
+initLayout();
 subscribe(render);
 render();
 await Promise.all([

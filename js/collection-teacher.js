@@ -7,7 +7,7 @@ export async function renderCollectionTeacher(parent, classId) {
   parent.append(section);
   const status = element('p', '', 'collection-status'); status.setAttribute('role', 'status');
   const body = element('div');
-  section.append(element('h3', collectionTitle), element('p', 'Diese Sammlung ist in diesem Browser gespeichert. Mit Export und Import kannst du sie auf das Smartboard übertragen.', 'muted'), element('p', 'Die Sammlung gehört zur aktiven Klasse. Der Fortschritts-Reset verändert sie nicht. Browserdaten löschen entfernt auch diese Sammlung; regelmäßig exportieren. Ein Upload veröffentlicht keine Dateien auf GitHub.', 'muted'), status, body);
+  section.append(element('h3', collectionTitle), element('p', 'Diese Sammlung ist in diesem Browser gespeichert. Wenn du diesen Laptop mit dem Smartboard verbindest, sind deine Einträge direkt vorhanden. Export und Import brauchst du als Sicherung oder bei einem Geräte- oder Browserwechsel.', 'muted'), element('p', 'Die Sammlung gehört zur aktiven Klasse. Der Fortschritts-Reset verändert sie nicht. Browserdaten löschen entfernt auch diese Sammlung; regelmäßig exportieren. Ein Upload veröffentlicht keine Dateien auf GitHub.', 'muted'), status, body);
   let entries, busy = false;
   const report = error => { status.textContent = error.message || error; };
   async function action(callback) {
