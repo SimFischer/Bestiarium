@@ -61,13 +61,13 @@ await test('Buchnavigation, Fassungswechsel, Bild/Text unabhängig verdecken und
   await renderCollection(sandbox,id);click('ENTWICKLUNGSBEISPIEL');
   await tick();
   assert(sandbox.querySelector('.creature-description').textContent===e.first.description);
-  sandbox.querySelector('.reader-settings').open=true;
+  sandbox.querySelector('.book-options').open=true;
   click('Überarbeitet');assert(sandbox.querySelector('.creature-description').textContent===e.revised.description);
-  click('Nur Text');assert(!sandbox.querySelector('.creature-art') && sandbox.querySelector('.creature-description'));
-  click('Nur Bild');assert(!sandbox.querySelector('.creature-description') && sandbox.querySelector('.creature-art'));
-  click('Forschungsfrage zeigen');assert(sandbox.querySelectorAll('.creature-question').length===1);
-  click('Nächste Frage');assert(sandbox.querySelector('.creature-question').textContent==='Welche Angaben fehlen noch?');
-  click('Zur Übersicht');assert(sandbox.querySelectorAll('.creature-card').length===1);
+  click('Text');assert(!sandbox.querySelector('.creature-art') && sandbox.querySelector('.creature-description'));
+  click('Bild');assert(!sandbox.querySelector('.creature-description') && sandbox.querySelector('.creature-art'));
+  click('Forschungsfrage zeigen');assert(sandbox.querySelectorAll('.book-question').length===1);
+  click('Nächste Forschungsfrage');assert(sandbox.querySelector('.book-question p').textContent==='Welche Angaben fehlen noch?');
+  click('Inhaltsverzeichnis');assert(sandbox.querySelectorAll('.creature-card').length===1);
 });
 await test('Lehrkraft: anlegen, Vorschau erforderlich, bearbeiten, umordnen, ausblenden und löschen',async()=>{
   sandbox.replaceChildren();await renderCollectionTeacher(sandbox,id);click('Eintrag anlegen');

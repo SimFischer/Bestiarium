@@ -2,7 +2,7 @@ import { element, button } from './ui.js';
 import { creatureSpread, collectionTitle } from './collection.js';
 import { readCollection, writeCollection, optimizePicture, parseCollectionFile, mergeCollection, collectionFile, MAX_FILE } from './collection-store.js';
 
-export async function renderCollectionTeacher(parent, classId) {
+export async function renderCollectionTeacher(parent, classId, editId) {
   const section = element('section', '', 'teacher-section collection-manager');
   parent.append(section);
   const status = element('p', '', 'collection-status'); status.setAttribute('role', 'status');
@@ -117,6 +117,6 @@ export async function renderCollectionTeacher(parent, classId) {
     form.append(element('h4', original ? 'Eintrag bearbeiten' : 'Neuer Eintrag'), element('p', 'Schülertexte werden unverändert gespeichert. Die erste Idee und die Überarbeitung bleiben getrennt erhalten.'), fields, previewButton, preview, saveButton, button('Abbrechen', () => { imageTask++; form.remove(); }));
     renderFields(); body.prepend(form); form.querySelector('input').focus();
   }
-  try { entries = await readCollection(classId); if (section.isConnected) render(); }
+  try { entries = await readCollection(classId); if (section.isConnected) { render(); const selected = entries.find(e => e.id === editId); if (selected) edit(selected); } }
   catch (e) { report(e); body.append(button('Erneut versuchen', () => { section.remove(); renderCollectionTeacher(parent, classId); })); }
 }

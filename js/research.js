@@ -1,6 +1,7 @@
 import { element, button } from './ui.js';
 import { addBookReader } from './book-reader.js';
 import { paginateBook } from './book-layout.js';
+import { bookChrome, bookEdges } from './book-chrome.js';
 
 export const researchPrompts = [
   'Achtet zuerst nur auf den Körperbau.',
@@ -81,8 +82,13 @@ export function renderCodex(content, spread, classroom, sectionId, navigate, boo
     });
     list.addEventListener('click', event => { const control = event.target.closest('[data-criterion]'); if (!control) return; const index = Number(control.dataset.criterion); if (checked.has(index)) checked.delete(index); else checked.add(index); control.setAttribute('aria-pressed', String(checked.has(index))); });
     panel.append(list);
-    const controls = element('nav'); content.append(panel, controls);
-    paginateBook(list, blocks, controls, 'Kriterien', area => { area.querySelectorAll('[data-criterion]').forEach(control => control.setAttribute('aria-pressed', String(checked.has(Number(control.dataset.criterion))))); });
+    const controls = element('nav'), shell = element('div', '', 'review-book-shell'), position = element('p', '', 'book-position');
+    shell.append(panel); content.append(shell, position);
+    let pager;
+    const edges = bookEdges(shell, direction => pager.show(pager.index + direction));
+    function sync() { if (!pager) return; edges.previous.disabled = pager.index === 0; edges.next.disabled = pager.index >= pager.count - 1; position.textContent = `Tierbeschreibung prüfen · Seite ${pager.index + 1} von ${pager.count}`; }
+    pager = paginateBook(list, blocks, controls, 'Kriterien', area => { area.querySelectorAll('[data-criterion]').forEach(control => control.setAttribute('aria-pressed', String(checked.has(Number(control.dataset.criterion))))); sync(); });
+    bookChrome(content, { index: () => navigate('bestiary'), options: [nav] });
     return;
   }
   addBookReader(content, spread, { id: 'codex', title: section.title, text: section.items.map(item => `• ${item}`).join('\n\n'), ...bookNav });

@@ -56,9 +56,9 @@ async function main() {
       }
       await page.evaluate(() => bookTests.render()); await audit(); await read();
       await page.locator('[data-entry-id="niffler"]').click(); await audit();
-      await page.locator('.book-animal-next').click(); await audit();
+      await page.evaluate(() => { const pair = () => document.querySelector('.book-position').textContent.match(/Seite (\d+) von (\d+)/); while (pair()[1] !== pair()[2]) document.querySelector('.book-edge-right').click(); document.querySelector('.book-edge-right').click(); }); await audit();
       assert.match(await page.locator('#view-title').innerText(), /Pandanaflora/);
-      await page.locator('.book-animal-previous').click(); await audit();
+      await page.locator('.book-edge-left').click(); await audit();
       assert.match(await page.locator('#view-title').innerText(), /Niffler/);
       for (const detail of ['structure', 'language', 'fantasy', 'revision', 'check']) {
         await page.evaluate(detail => bookTests.render('codex', detail), detail); await audit();
@@ -68,14 +68,14 @@ async function main() {
       await audit(); assert.equal((await read())[0], await expected('niffler'));
       await page.evaluate(() => { bookTests.longSection(false); bookTests.render('niffler'); });
       await settle();
-      await page.getByRole('button', { name: 'Buchschrift vergrößern', exact: true }).click();
+      await page.locator('.book-options > summary').click(); await page.getByRole('button', { name: 'Größer', exact: true }).click(); await page.locator('.book-options > summary').click();
       await audit(); assert.equal((await read())[0], await expected('niffler'));
       await page.evaluate(() => bookTests.collection()); await audit();
       assert.equal((await read())[0], await page.evaluate(() => {
         const f = bookTests.fixture;
         return f.first.description;
       }));
-      await page.locator('.reader-settings > summary').click(); await page.getByRole('button', { name: 'Überarbeitet', exact: true }).click(); await audit();
+      await page.locator('.book-options > summary').click(); await page.getByRole('button', { name: 'Überarbeitet', exact: true }).click(); await page.locator('.book-options > summary').click(); await audit();
       assert.equal((await read())[0], await page.evaluate(() => {
         const f = bookTests.fixture;
         return f.revised.description;

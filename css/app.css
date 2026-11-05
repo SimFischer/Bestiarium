@@ -564,11 +564,6 @@ button:disabled { opacity: .5; cursor: default; }
 #view-dialog .dialog-heading > button { order: 2; }
 .presentation-status:empty { display: none; }
 .presentation-status { color: #ffdda4; }
-.presentation-mode #app-title, .presentation-mode #teacher-dialog, .presentation-mode .presentation-action { display: none; }
-.presentation-mode .creature-subtitle, .presentation-mode .bestiary-back { display: none; }
-.presentation-mode *, .presentation-mode *::before, .presentation-mode *::after { animation: none !important; transition: none !important; }
-.presentation-mode .topbar h1 { display: none; }
-.presentation-mode .book-tools:empty { display: none; }
 button, summary { touch-action: manipulation; }
 summary:focus-visible { outline: 3px solid #f9d899; outline-offset: 3px; }
 
@@ -620,5 +615,3 @@ dialog.collection-dialog { padding: 10px 18px; }
 }
 .reader-presentation-turns { display: none; align-items: center; gap: 12px; }
 .reader-combined-label { font-size: 20px; text-align: center; min-width: 200px; }
-.presentation-mode .creature-reader .reader-presentation-turns { display: flex; }
-.presentation-mode .creature-reader .reader-text-controls, .presentation-mode .creature-reader .creature-turns, .presentation-mode .creature-tools > button, .presentation-mode .reader-extra { display: none; }

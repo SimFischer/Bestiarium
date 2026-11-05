@@ -15,7 +15,7 @@ export function initTeacher(notify, replayIntro, replayStory) {
     if (className) node.className = className;
     return node;
   };
-  function render() {
+  function render(editId) {
     const manualOpen = content.querySelector('.manual-controls')?.open || false;
     content.replaceChildren();
     const classroom = activeClass();
@@ -51,7 +51,7 @@ export function initTeacher(notify, replayIntro, replayStory) {
     button(help, 'Hilfe & Stundenverlauf', openGuide);
     help.append(element('p', 'Neu dabei? Kurz erklärt, Spickzettel, Unterrichtsbausteine und Hilfe bei Problemen.', 'muted'));
     content.append(help);
-    void renderCollectionTeacher(content, classroom.id);
+    void renderCollectionTeacher(content, classroom.id, editId);
     const progress = section('Unterrichtsfortschritt');
     progress.classList.add('milestone-section');
     progress.append(element('p', 'Die Lehrkraft erklärt den Unterrichtsschritt für abgeschlossen. Die App schaltet die passenden Seiten und Forschungsgebiete frei.', 'muted'));
@@ -169,9 +169,11 @@ export function initTeacher(notify, replayIntro, replayStory) {
     }, true);
   }
   const title = document.querySelector('#app-title');
-  title.addEventListener('click', () => {
-    render();
+  function open(editId) {
+    render(editId);
     if (!dialog.open) dialog.showModal();
     if (getStorageWarning()) notify(getStorageWarning());
-  });
+  }
+  title.addEventListener('click', () => open());
+  return open;
 }

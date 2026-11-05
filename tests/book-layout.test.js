@@ -6,6 +6,7 @@ import { writeCollection, readCollection } from '../js/collection-store.js';
 import { element, button } from '../js/ui.js';
 import { codexSections, descriptionCriteria } from '../js/research.js';
 import { initLayout } from '../js/layout.js';
+import { appendBookOption } from '../js/book-chrome.js';
 if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) throw new Error('Nur lokal ausführen');
 const dialog = document.querySelector('#view-dialog');
 const content = document.querySelector('#view-content');
@@ -27,7 +28,7 @@ function render(id, detail, action = true) {
   const back = content.querySelector('.bestiary-back');
   if (back) tools.append(back);
   if (action) tools.append(button('Vidi · Forschungsregeln eintragen', () => {}, 'presentation-action'));
-  document.querySelector('#view-title').after(tools);
+  if (action) appendBookOption(content, tools);
   if (!dialog.open) dialog.showModal();
 }
 function audit() {
@@ -55,18 +56,18 @@ function audit() {
 }
 async function readAllPages() {
   await settle();
-  if (content.querySelector('.safe-book-copy, .creature-reader')) {
-    const collection = Boolean(content.querySelector('.creature-reader'));
-    const previous = content.querySelector(collection ? '[data-text-previous]' : '.book-reader-controls button:nth-child(3)');
-    const next = content.querySelector(collection ? '[data-text-next]' : '.book-reader-controls button:nth-child(5)');
-    while (!previous.disabled) previous.click();
+  if (content.querySelector('.book-edge-right')) {
+    const previous = content.querySelector('.book-edge-left'), next = content.querySelector('.book-edge-right');
+    const numbers = () => content.querySelector('.book-position').textContent.match(/Seite (\d+) von (\d+)/).slice(1).map(Number);
+    while (numbers()[0] > 1) previous.click();
     let text = '';
     for (let page = 0; page < 500; page++) {
       const errors = audit(); if (errors.length) throw new Error(errors.join(', '));
-      text += [...content.querySelectorAll(collection ? '.creature-description' : '.safe-book-copy')].map(p => p.textContent).join('');
-      if (next.disabled) break; next.click();
+      const selector = content.querySelector('.safe-book-copy') ? '.safe-book-copy' : content.querySelector('.creature-description') ? '.creature-description' : '[data-page-count]';
+      text += [...content.querySelectorAll(selector)].map(p => p.textContent).join('');
+      if (numbers()[0] === numbers()[1]) break; next.click();
     }
-    while (!previous.disabled) previous.click();
+    while (numbers()[0] > 1) previous.click();
     return [text];
   }
   const output = [];

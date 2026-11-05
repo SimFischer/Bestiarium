@@ -13,7 +13,7 @@ export const teacherGuideConfig = {
       motto: 'Je genauer wir Tiere beobachten und beschreiben können, desto mehr von ihrer Welt können wir entdecken.',
       cards: [
         ['Forschungsstation', 'Zentraler Ausgangspunkt mit unsichtbaren Klickflächen: offenes Buch, Wandkarte und später Gerät rechts. Die Station verändert sich mit dem Fortschritt.'],
-        ['Bestiarium', 'Zeigt nur entdeckte Seiten. Textfolgeseiten und der Wechsel zum nächsten Tier haben eigene Schaltflächen unter dem Buch. Schrift und Aufteilung passen sich der verfügbaren Fläche an.'],
+        ['Bestiarium', 'Zeigt nur entdeckte Seiten. Die beiden Blätterpfeile führen erst durch die Textseiten und dann zum nächsten Tier. Inhaltsverzeichnis, Ansicht und Vollbild stehen in der Kopfzeile; Schrift und weitere Funktionen im Drei-Punkte-Menü.'],
         ['Weltkarte & Expeditionen', 'Pflanzen-, Wald- und Vulkanregion werden sichtbar. Region und Expedition müssen freigegeben sein; gemeinsam beobachten, anschließend analog beschreiben.'],
         ['Forschercodex', 'Kapitel im Bestiarium mit den gemeinsam gesicherten Regeln guter Tierbeschreibungen.'],
         ['Generator', 'Mischt Eigenschaften für eigene Wesen. Zeichnung, Planung und Beschreibung entstehen weiterhin auf Papier.'],

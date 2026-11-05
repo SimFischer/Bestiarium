@@ -23,8 +23,8 @@ function geometry(name) {
 }
 async function allText(expected) {
   let result='',count=0;
-  const next=content.querySelector('.book-reader-controls button:nth-child(5)');
-  while(true){geometry('Textseite');result+=[...content.querySelectorAll('.safe-book-copy')].map(p=>p.textContent).join('');count++;if(next.disabled)break;assert(count<500,'Zu viele Seiten');next.click();}
+  const next=content.querySelector('.book-edge-right');
+  while(true){geometry('Textseite');result+=[...content.querySelectorAll('.safe-book-copy')].map(p=>p.textContent).join('');count++;const pair=content.querySelector('.book-position').textContent.match(/Seite (\d+) von (\d+)/);if(pair[1]===pair[2])break;assert(count<500,'Zu viele Seiten');next.click();}
   assert(result===expected,'Text fehlt oder wurde verändert');return count;
 }
 const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=900;const ctx=canvas.getContext('2d');ctx.fillStyle='#456957';ctx.fillRect(0,0,1600,900);ctx.fillStyle='#fff3cf';ctx.font='70px Georgia';ctx.fillText('ENTWICKLUNGSBEISPIEL',160,450);
@@ -40,9 +40,8 @@ const run=button('Layout prüfen',async()=>{
   for(const entry of animals.filter(a=>a.type==='animal')){
    await navigate('bestiary',entry.id);await tick();geometry(entry.id);
    const text=entry.textContent.map(s=>`${s.heading}: ${s.text}`).join('\n\n');textPages+=await allText(text);
-   content.querySelector('[aria-label="Buchschrift vergrößern"]').click();await tick();
-   content.querySelector('.book-reader-controls button:nth-child(3)').click();await tick();
-   while(!content.querySelector('.book-reader-controls button:nth-child(3)').disabled){content.querySelector('.book-reader-controls button:nth-child(3)').click();}
+   document.querySelector('.book-font-options button:last-child').click();await tick();
+   while(Number(content.querySelector('.book-position').textContent.match(/Seite (\d+) von (\d+)/)[1])>1){content.querySelector('.book-edge-left').click();}
    textPages+=await allText(text);checked.push(entry.id);
   }
   await navigate('bestiary');await tick();geometry('Inhaltsverzeichnis');checked.push('Inhaltsverzeichnis');
@@ -52,10 +51,10 @@ const run=button('Layout prüfen',async()=>{
   for(const e of expeditions){await navigate('expedition',e.id);await tick();geometry(e.title);content.querySelector('.research-launch').click();await tick();geometry(e.title+' Auftrag');[...content.querySelectorAll('button')].find(b=>b.textContent==='Vidis Hinweis').click();await tick();geometry(e.title+' Hinweis');checked.push(e.title);}
   for(const mode of ['traits','builder']){await navigate('generator',mode);await tick();geometry('Generator '+mode);checked.push('Generator '+mode);if(mode==='builder'){[...content.querySelectorAll('button')].find(b=>b.textContent==='Selbst zusammenstellen').click();await tick();geometry('Baukasten manuell');checked.push('Baukasten manuell');}}
   await navigate('collection');await tick();checked.push('Sammlungsübersicht');
-  for(let i=0;i<3;i++){if(i)content.querySelector('.creature-tools > button').click();await tick();content.querySelectorAll('.creature-card')[i].click();await tick();for(const label of ['Bild und Text','Nur Bild','Nur Text']){[...content.querySelectorAll('button')].find(b=>b.textContent===label).click();await tick();geometry('Sammlung '+label);}checked.push(works[i].name);}
-  content.querySelector('.creature-tools > button').click();await tick();content.querySelector('.creature-card').click();await tick();
+  for(let i=0;i<3;i++){if(i)document.querySelector('.book-chrome > button').click();await tick();content.querySelectorAll('.creature-card')[i].click();await tick();for(const label of ['Bild + Text','Bild','Text']){[...document.querySelectorAll('.book-view-switch button')].find(b=>b.textContent===label).click();await tick();geometry('Sammlung '+label);}checked.push(works[i].name);}
+  document.querySelector('.book-chrome > button').click();await tick();content.querySelector('.creature-card').click();await tick();
   let complete='',collectionPages=0;
-  while(true){geometry('Langer Schülertext');complete+=content.querySelector('.creature-description').textContent;collectionPages++;const forward=content.querySelector('[data-text-next]');if(forward.disabled)break;assert(collectionPages<500,'Zu viele Schülertextseiten');forward.click();}
+  while(true){geometry('Langer Schülertext');complete+=content.querySelector('.creature-description').textContent;collectionPages++;const forward=content.querySelector('.book-edge-right');const pair=content.querySelector('.book-position').textContent.match(/Seite (\d+) von (\d+)/);if(pair[1]===pair[2])break;assert(collectionPages<500,'Zu viele Schülertextseiten');forward.click();}
   assert(complete===works[0].first.description,'Schülertextseiten unvollständig');textPages+=collectionPages;checked.push('Alle Schülertextseiten');
   navigate('station');document.querySelector('#app-title').click();await tick();
   const teacher=document.querySelector('#teacher-dialog');

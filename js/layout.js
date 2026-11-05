@@ -23,7 +23,7 @@ export function initLayout() {
         const top = node.getBoundingClientRect().top;
         const ratio = node.matches('.book-stage, .bestiary-index') ? 1.5 : 16 / 9;
         const height = Math.max(100, bounds.bottom - top - after - 4);
-        const width = Math.min(bounds.width, height * ratio);
+        const width = Math.min(bounds.width - (node.matches('.book-stage') ? 128 : 0), height * ratio);
         if (Math.abs(node.getBoundingClientRect().width - width) > .6) node.style.width = `${width}px`;
         node.style.height = `${width / ratio}px`;
       }

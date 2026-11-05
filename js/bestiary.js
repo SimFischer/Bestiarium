@@ -4,6 +4,7 @@ import { element, button, asset } from './ui.js';
 import { renderCodex } from './research.js';
 import { addBookReader } from './book-reader.js';
 import { paginateBook } from './book-layout.js';
+import { bookChrome, bookEdges } from './book-chrome.js';
 
 export const availableBooks = classroom => bestiaryConfig.order.map(id => animals.find(entry => entry.id === id)).filter(entry => entry && bookUnlocked(classroom, entry));
 
@@ -40,14 +41,23 @@ function renderIndex(content, books, navigate) {
   pages.append(discoveries, chapters);
   spread.append(pages);
   const stage = element('div', '', 'book-stage');
-  const footer = element('div', '', 'book-footer');
+  const pagers = [];
+  const position = element('p', '', 'book-position');
+  let indexPage = 0;
+  const edges = bookEdges(stage, direction => { indexPage += direction; pagers.forEach(p => p.show(Math.min(indexPage, p.count - 1))); sync(); });
+  function sync() {
+    const count = Math.max(1, ...pagers.map(p => p.count));
+    indexPage = Math.min(indexPage, count - 1);
+    edges.previous.disabled = indexPage <= 0; edges.next.disabled = indexPage >= count - 1;
+    position.textContent = `Inhaltsverzeichnis · Seite ${indexPage + 1} von ${count}`;
+  }
   for (const [index, leaf] of [discoveries, chapters].entries()) {
     const blocks = [...leaf.children].flatMap(node => node.matches('ol') ? [...node.children] : [node]);
     leaf.addEventListener('click', event => { const id = event.target.closest('[data-entry-id]')?.dataset.entryId; if (id) navigate('bestiary', id); });
-    const controls = element('nav'); footer.append(controls);
-    paginateBook(leaf, blocks, controls, index ? 'Rechts' : 'Links');
+    const controls = element('nav');
+    pagers.push(paginateBook(leaf, blocks, controls, index ? 'Rechts' : 'Links', sync));
   }
-  stage.append(spread); content.append(stage, footer);
+  stage.append(spread); content.append(stage, position); bookChrome(content); sync();
 }
 export function renderBestiary(content, classroom, entryId, detailId, navigate) {
   const heading = document.querySelector('#view-title');
@@ -60,7 +70,6 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     return;
   }
   heading.textContent = `Bestiarium · ${entry.name}`;
-  content.append(button('Inhaltsverzeichnis', () => navigate('bestiary'), 'bestiary-back'));
   if (entry.type === 'codex' && detailId === 'check') {
     renderCodex(content, null, classroom, detailId, navigate);
     return;
@@ -74,9 +83,9 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
   if (entry.type === 'codex') {
     const index = books.indexOf(entry);
     renderCodex(content, spread, classroom, detailId, navigate, {
-      previous: books[index - 1] ? () => navigate('bestiary', books[index - 1].id) : null,
+      previous: books[index - 1] ? tail => navigate('bestiary', books[index - 1].id, tail) : null,
       next: books[index + 1] ? () => navigate('bestiary', books[index + 1].id) : null,
-      previousLabel: '‹ Eintrag', nextLabel: 'Eintrag ›'
+      index: () => navigate('bestiary'), startLast: detailId === 'last'
     });
     return;
   } else if (entry.type === 'class') {
@@ -89,8 +98,9 @@ export function renderBestiary(content, classroom, entryId, detailId, navigate) 
     addBookReader(content, spread, {
       id: entry.id, title: entry.name,
       text: entry.textContent.map(section => `${section.heading}: ${section.text}`).join('\n\n'),
-      previous: books[index - 1] ? () => navigate('bestiary', books[index - 1].id) : null,
-      next: books[index + 1] ? () => navigate('bestiary', books[index + 1].id) : null
+      previous: books[index - 1] ? tail => navigate('bestiary', books[index - 1].id, tail) : null,
+      next: books[index + 1] ? () => navigate('bestiary', books[index + 1].id) : null,
+      index: () => navigate('bestiary'), startLast: detailId === 'last'
     });
     return;
   }

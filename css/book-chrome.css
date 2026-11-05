@@ -1,0 +1,64 @@
+/* Quiet classroom books: one header, one pair of edges, one position label. */
+#view-dialog .quiet-book-heading { display: flex; flex-wrap: nowrap; gap: 10px; min-height: 48px; padding: 0 0 5px; margin: 0 0 5px; }
+.quiet-book-heading > h2 { position: absolute; width: 1px; height: 1px; margin: -1px !important; overflow: hidden; clip-path: inset(50%); }
+#view-dialog .quiet-book-heading .book-station { order: 0; margin: 0; }
+.quiet-book-heading .book-chrome { order: 1; display: flex; align-items: center; gap: 16px; flex: 1; }
+#view-dialog .quiet-book-heading .presentation-controls { order: 2; margin: 0; }
+.quiet-book-heading .book-options { order: 3; margin: 0; }
+#view-dialog .quiet-book-heading button, .book-options summary { min-height: 44px; padding: 7px 14px; font-size: 18px; }
+.book-view-switch { display: inline-flex; gap: 0; border: 1px solid #997947; border-radius: 8px; }
+#view-dialog .book-view-switch button { border: 0; border-radius: 0; background: transparent; min-width: 65px; }
+#view-dialog .book-view-switch button:first-child { border-radius: 7px 0 0 7px; }
+#view-dialog .book-view-switch button:last-child { border-radius: 0 7px 7px 0; }
+#view-dialog .book-view-switch button[aria-pressed="true"] { color: #352414; background: #e8c88b; font-weight: 700; box-shadow: inset 0 -3px #986c31; }
+.book-options summary { display: grid; place-items: center; cursor: pointer; list-style: none; border: 1px solid #997947; border-radius: 7px; min-width: 48px; color: #f7dca6; font: 700 30px/1 Georgia, serif; }
+.book-options summary::-webkit-details-marker { display: none; }
+.book-options[open] summary { background: #59432c; }
+.book-options-panel { position: fixed; z-index: 20; top: 63px; right: 78px; width: min(400px, calc(100vw - 170px)); max-height: calc(100dvh - 100px); overflow: auto; padding: 18px; border: 1px solid #c09a5c; border-radius: 10px; color: #f5e6ca; background: #2c231b; box-shadow: 0 12px 45px #0009; font: 19px/1.5 system-ui, sans-serif; }
+.book-options-panel h3 { padding-right: 100px; margin: 0 0 16px; font: 600 23px/1.25 Georgia, serif; }
+.book-options-panel > button:first-of-type { position: absolute; right: 12px; top: 10px; }
+.book-options-panel > :not(h3):not(button:first-of-type) { margin-top: 14px; }
+.book-font-options { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: center; gap: 8px; }
+.book-font-options > span:first-child { grid-column: 1 / -1; }
+.book-font-value { text-align: center; }
+.book-version-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.book-version-options > span { flex-basis: 100%; }
+.book-question-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.book-entry-note { white-space: pre-wrap; font-size: 17px; overflow-wrap: anywhere; }
+.book-options-panel .codex-navigation { justify-content: flex-start; }
+.book-options-panel .book-tools { margin: 0; padding: 0; }
+.book-options-panel .presentation-action { width: 100%; font-size: 18px; }
+.book-options-panel button[aria-pressed="true"] { background: #e8c88b; color: #352414; }
+.book-edge-host { position: relative; }
+#view-content .book-edge { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 48px; height: 68px; min-height: 68px; padding: 0; border: 1px solid #8c704755; border-radius: 8px; background: #36291a80; color: #f6d69c; font: 48px/1 Georgia, serif; }
+#view-content .book-edge:hover { background: #715333; }
+#view-content .book-edge-left { left: -58px; }
+#view-content .book-edge-right { right: -58px; }
+#view-content .book-edge:disabled { opacity: .28; cursor: default; }
+.book-position { width: 100%; min-height: 24px; margin: 4px 0 0; color: #d8c29e; text-align: center; font: 18px/24px Georgia, serif; }
+.collection-book-shell { width: 100%; }
+.creature-book.creature-reader { padding: 0 64px; margin: 0; }
+.creature-book:focus { outline: none; }
+.creature-reader .creature-spread { margin: 0; }
+.creature-grid.book-edge-host { margin-inline: 64px; }
+.book-question { display: flex; align-items: center; gap: 20px; padding: 10px 16px; margin: 6px 0 0; border-left: 3px solid #d8b475; background: #42321e; }
+.book-question p { margin: 0; flex: 1; font: 600 clamp(23px, 1.7vw, 31px)/1.35 Georgia, serif; color: #ffedc9; }
+.book-question button { min-height: 44px; font-size: 18px; }
+.review-book-shell { position: relative; width: calc(100% - 128px); flex: 1; min-height: 0; }
+.review-book-shell .description-review { width: 100%; height: 100%; max-height: none; display: flex; flex-direction: column; }
+.review-book-shell .description-criteria { flex: 1; min-height: 0; }
+.collection-index-position { text-align: center; color: #d8c29e; font-size: 18px; }
+@media (max-width: 1100px) {
+  #view-dialog .quiet-book-heading button { font-size: 16px; padding-inline: 10px; }
+  .quiet-book-heading .book-chrome { gap: 8px; }
+  .book-options summary { padding-inline: 8px; }
+}
+@media (max-width: 760px) {
+  #view-dialog .quiet-book-heading { gap: 5px; }
+  #view-dialog .quiet-book-heading button { font-size: 13px; padding-inline: 6px; }
+  #view-dialog .book-view-switch button { min-width: 40px; }
+  .creature-book.creature-reader { padding-inline: 44px; }
+  #view-content .book-edge { width: 36px; }
+  #view-content .book-edge-left { left: -42px; }
+  #view-content .book-edge-right { right: -42px; }
+}

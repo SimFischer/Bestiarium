@@ -167,5 +167,5 @@ export function paginateBook(area, blocks, controls, label = 'Textseite', onPage
     layouts.delete(layout);
   } };
   layouts.add(layout); schedule();
-  return { refresh: schedule, destroy: layout.destroy };
+  return { refresh: schedule, destroy: layout.destroy, show, get count() { return pages.length; }, get index() { return index; } };
 }

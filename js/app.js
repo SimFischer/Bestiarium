@@ -12,6 +12,7 @@ import { createGeneratorBuilder } from './generator-builder.js';
 import { initFullscreen } from './fullscreen.js';
 import { initPresentation } from './presentation.js';
 import { initLayout } from './layout.js';
+import { clearBookChrome, appendBookOption } from './book-chrome.js';
 import { criticalImages, backgroundImages, preloadImages, decodeImage } from './images.js';
 
 await preloadImages(criticalImages(activeClass().roomPhase));
@@ -93,6 +94,7 @@ const buttons = hotspots.map(hotspot => {
 function renderView() {
   const classroom = activeClass();
   const heading = document.querySelector('#view-title');
+  clearBookChrome(content);
   dialog.querySelector('.dialog-heading .book-tools')?.remove();
   dialog.classList.toggle('book-dialog', currentView === 'bestiary' && selectedId !== 'classBestiary');
   dialog.classList.toggle('collection-dialog', currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary'));
@@ -101,17 +103,13 @@ function renderView() {
   dialog.classList.toggle('generator-dialog', currentView === 'generator');
   if (currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary' && classroom.unlockedBestiaryEntries.includes('classBestiary'))) {
     heading.textContent = collectionTitle;
-    return renderCollection(content, classroom.id).then(() => {
-      if (currentView === 'bestiary' && selectedId === 'classBestiary') content.prepend(button('Zum Bestiarium-Inhaltsverzeichnis', () => navigate('bestiary'), 'bestiary-back'));
-    });
+    return renderCollection(content, classroom.id, { onEdit: id => openTeacher(id) });
   } else if (currentView === 'bestiary') {
     renderBestiary(content, classroom, selectedId, detailId, navigate);
     const tools = element('div', '', 'book-tools');
-    const back = content.querySelector('.bestiary-back');
-    if (back) tools.append(back);
     const hasAction = messages.renderAction(tools, 'bestiary');
     content.classList.toggle('has-presentation-action', hasAction);
-    if (back || hasAction) heading.after(tools);
+    if (hasAction) appendBookOption(content, tools);
   } else if (currentView === 'world-map') {
     heading.textContent = 'Weltkarte';
     renderMap(content, classroom, navigate);
@@ -210,7 +208,7 @@ document.querySelector('#collection-open').addEventListener('click', () => navig
 window.addEventListener('collection-changed', event => {
   if (event.detail === activeClass().id && dialog.open && (currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary'))) renderView();
 });
-initTeacher(notify, story.start, messages.replay);
+const openTeacher = initTeacher(notify, story.start, messages.replay);
 initFullscreen();
 initPresentation();
 initLayout();
