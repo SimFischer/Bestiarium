@@ -1,6 +1,6 @@
 import { element, button } from './ui.js';
 import { readCollection } from './collection-store.js';
-import { paginateText } from './text-pages.js';
+import { paginateText, addNotePages } from './text-pages.js';
 import { creatureSpread, collectionTitle, invitation } from './collection.js';
 import { bookChrome, bookEdges, fontOptions } from './book-chrome.js';
 
@@ -17,7 +17,7 @@ export async function renderCollection(content, classId, { onEdit } = {}) {
     if (selected < 0) selected = null;
     let version = saved.version || 'first', view = saved.view || 'both', fontSize = saved.font || 32;
     let offset = saved.offset || 0, page = 0, pages = [], indexPage = 0, menuOpen = false, header, edges, position, frame;
-    let question = -1, lastPage = false;
+    let question = -1, lastPage = false, textHeight = 0;
     const questions = ['Welche Merkmale erkennst du wieder?', 'Welche Angaben fehlen noch?', 'Was zeigt das Bild, das im Text gar nicht beschrieben wurde?'];
     const sizes = [24, 28, 32, 36, 42, 48];
     function remember() { sessions.set(classId, { id: entries[selected]?.id, version, view, font: fontSize, offset }); }
@@ -33,7 +33,14 @@ export async function renderCollection(content, classId, { onEdit } = {}) {
       change(() => { selected += direction; version = 'first'; offset = 0; lastPage = direction < 0 && view !== 'image'; menuOpen = false; });
     }
     function showPage() {
-      if (view !== 'image') { root.querySelector('.creature-description').textContent = pages[page]?.text || ''; offset = pages[page]?.start || 0; }
+      if (view !== 'image') {
+        const paragraph = root.querySelector('.creature-description'), note = root.querySelector('.creature-note'), current = pages[page];
+        paragraph.textContent = current?.text || ''; offset = current?.start || 0;
+        if (note) {
+          note.hidden = !current?.note; note.textContent = current?.note || ''; note.style.height = 'auto';
+          paragraph.style.height = current?.note ? (current.text ? 'auto' : '0') : `${textHeight}px`;
+        }
+      }
       position.textContent = `${entries[selected].name}${view === 'image' ? ` · ${selected + 1} von ${entries.length}` : ` · Seite ${page + 1} von ${pages.length}`}`;
       edges.previous.disabled = selected === 0 && (view === 'image' || page === 0);
       edges.next.disabled = selected === entries.length - 1 && (view === 'image' || page === pages.length - 1);
@@ -47,10 +54,14 @@ export async function renderCollection(content, classId, { onEdit } = {}) {
         spread.style.setProperty('--reader-height', `${height}px`);
         const paragraph = spread.querySelector('.creature-description');
         if (paragraph) {
-          const words = spread.querySelector('.creature-words');
-          paragraph.style.height = `${Math.max(fontSize * 2, words.getBoundingClientRect().bottom - parseFloat(getComputedStyle(words).paddingBottom) - paragraph.getBoundingClientRect().top)}px`;
+          const words = spread.querySelector('.creature-words'), note = spread.querySelector('.creature-note');
+          const atEnd = lastPage || (offset > 0 && page === pages.length - 1);
+          if (note) note.hidden = true;
+          textHeight = Math.max(fontSize * 2, words.getBoundingClientRect().bottom - parseFloat(getComputedStyle(words).paddingBottom) - paragraph.getBoundingClientRect().top);
+          paragraph.style.height = `${textHeight}px`;
           pages = paginateText(entries[selected][version].description, paragraph);
-          page = lastPage ? pages.length - 1 : Math.max(0, pages.findIndex(p => p.end > offset)); lastPage = false;
+          if (note) pages = addNotePages(pages, entries[selected][version].note, paragraph, note, textHeight);
+          page = atEnd ? pages.length - 1 : Math.max(0, pages.findIndex(p => p.end > offset)); lastPage = false;
         }
         showPage();
       });
@@ -96,11 +107,12 @@ export async function renderCollection(content, classId, { onEdit } = {}) {
       prompts.append(button(question < 0 ? 'Forschungsfrage zeigen' : 'Nächste Forschungsfrage', () => change(() => { question = (question + 1) % questions.length; })));
       if (question >= 0) prompts.append(button('Forschungsfrage ausblenden', () => change(() => { question = -1; }))); options.push(prompts);
       if (onEdit) options.push(button('Eintrag bearbeiten', () => { header.details.open = false; onEdit(entry.id); }));
-      if (entry.researcher || entry[version].note || entry[version].phase) options.push(element('p', [entry.researcher && `Entdeckt von ${entry.researcher}`, entry[version].phase, entry[version].note].filter(Boolean).join('\n'), 'book-entry-note'));
+      const menuNote = view === 'image' ? entry[version].note : '';
+      if (entry.researcher || menuNote || entry[version].phase) options.push(element('p', [entry.researcher && `Entdeckt von ${entry.researcher}`, entry[version].phase, menuNote].filter(Boolean).join('\n'), 'book-entry-note'));
       header = bookChrome(content, { index: () => change(() => { selected = null; menuOpen = false; }), views: { value: view, change: id => change(() => { view = id; menuOpen = false; }) }, options, open: menuOpen, onToggle: open => { menuOpen = open; } });
       const shell = element('div', '', 'collection-book-shell');
       const spread = creatureSpread(entry, version); spread.dataset.readerView = view; spread.style.setProperty('--reader-font', `${fontSize}px`);
-      spread.querySelectorAll('.creature-phase, .creature-credit, .creature-note').forEach(n => n.remove());
+      spread.querySelectorAll('.creature-phase, .creature-credit').forEach(n => n.remove());
       if (view === 'image') { spread.querySelector('.creature-words').remove(); spread.querySelector('.creature-art').prepend(element('h3', entry.name, 'reader-entry-name')); }
       if (view === 'text') spread.querySelector('.creature-art').remove();
       shell.append(spread); root.append(shell); edges = bookEdges(shell, turn);

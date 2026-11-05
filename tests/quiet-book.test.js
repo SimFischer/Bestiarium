@@ -9,7 +9,8 @@ const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=90
 const gradient=ctx.createLinearGradient(0,0,1600,900);gradient.addColorStop(0,'#235e59');gradient.addColorStop(1,'#b68a47');ctx.fillStyle=gradient;ctx.fillRect(0,0,1600,900);ctx.strokeStyle='#f9e6b8';ctx.lineWidth=12;ctx.strokeRect(18,18,1564,864);ctx.fillStyle='#f9e6b8';ctx.font='60px Georgia';ctx.fillText('ENTWICKLUNGSBEISPIEL',170,460);
 const first=Array.from({length:18},(_,i)=>`Absatz ${i+1}: Dieses Testwesen hat dichtes, grünes Fell. Seine drei Flügel tragen goldene Federn. An den kräftigen Füßen sitzen fünf gebogene Krallen.`).join('\n\n');
 const revised=('Überarbeitet: Der schmale Kopf hat zwei große, bernsteinfarbene Augen.\n\n').repeat(12);
-const fixtures=[{id:'quiet-dev-1',name:'ENTWICKLUNGSBEISPIEL – Federwesen',visible:true,researcher:'TEST',first:{description:first,image:canvas.toDataURL('image/png'),phase:'',note:''},revised:{description:revised,image:null,phase:'Überarbeitet',note:''}},{id:'quiet-dev-2',name:'ENTWICKLUNGSBEISPIEL – Waldwesen',visible:true,researcher:'',first:{description:'Dieses zweite Testwesen hat vier Pfoten und große Ohren.',image:canvas.toDataURL('image/jpeg'),phase:'',note:''},revised:null}];
+const longNote=('Lange Testnotiz über Verhalten und Stimmung. ').repeat(40).trim();
+const fixtures=[{id:'quiet-dev-1',name:'ENTWICKLUNGSBEISPIEL – Federwesen',visible:true,researcher:'TEST',first:{description:first,image:canvas.toDataURL('image/png'),phase:'',note:longNote},revised:{description:revised,image:null,phase:'Überarbeitet',note:''}},{id:'quiet-dev-2',name:'ENTWICKLUNGSBEISPIEL – Waldwesen',visible:true,researcher:'',first:{description:'Dieses zweite Testwesen hat vier Pfoten und große Ohren.',image:canvas.toDataURL('image/jpeg'),phase:'',note:'Kurze Testnotiz: Der Schwanz ändert sich mit der Stimmung.'},revised:null}];
 await writeCollection(activeClass().id,fixtures);
 const storedWorks=JSON.stringify(await readCollection(activeClass().id));
 const content=document.querySelector('#view-content'),dialog=document.querySelector('#view-dialog');
@@ -25,7 +26,8 @@ const geometry=()=>{
   const heading=dialog.querySelector('.dialog-heading').getBoundingClientRect();assert(heading.height<65,'Mehrzeilige Kopfzeile');
   assert(content.querySelectorAll('.book-edge').length===2,'Mehr als ein Paar Pfeile');
   for(const n of content.querySelectorAll('.book-edge,.creature-spread,.book-position,.book-stage')){const r=n.getBoundingClientRect();assert(r.left>=0&&r.top>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,`Außerhalb: ${n.className}`);}
-  for(const p of content.querySelectorAll('.creature-description,.safe-book-copy'))assert(p.scrollHeight<=p.clientHeight+1,'Text abgeschnitten');
+  for(const p of content.querySelectorAll('.creature-description,.creature-note,.safe-book-copy'))assert(p.scrollHeight<=p.clientHeight+1,'Text abgeschnitten');
+  for(const p of content.querySelectorAll('.creature-note:not([hidden])'))assert(p.getBoundingClientRect().bottom<=p.closest('.creature-words').getBoundingClientRect().bottom+1,'Notiz außerhalb der Seite');
   assert(!document.querySelector('[data-presentation]'),'Präsentationsschalter vorhanden');
 };
 function readAll(expected,selector='.creature-description'){
@@ -39,7 +41,9 @@ const run=button('Buchbedienung prüfen',async()=>{
   try{
     await navigate('collection');await tick();if(content.querySelector('.creature-reader'))click('Inhaltsverzeichnis');await tick();content.querySelector('.creature-card').click();await tick();geometry();
     assert(arrow(-1).disabled,'Anfang nicht erkennbar');assert(dialog.querySelector('.book-options')&&!dialog.querySelector('.book-options').open,'Menü nicht geschlossen');checks.push('Kompakte Kopfzeile und Anfang');
-    const total=readAll(first);assert(total>1,'Langer Text ohne Folgeseiten');arrow(1).click();await tick();assert(content.textContent.includes(fixtures[1].name),'Kein Wesenwechsel');assert(arrow(1).disabled,'Ende nicht erkennbar');arrow(-1).click();await tick();assert(number()[0]===number()[1],'Rückwärts nicht letzte Textseite');checks.push('Alle Textseiten, Wesenwechsel und Rückwärtsgrenze');
+    const total=readAll(first);assert(total>1,'Langer Text ohne Folgeseiten');
+    let noteText='';while(number()[0]>1)arrow(-1).click();while(true){noteText+=content.querySelector('.creature-note').textContent;const [page,pages]=number();if(page===pages)break;arrow(1).click();}assert(noteText===longNote,'Lange Notiz nicht vollständig');checks.push('Lange Notiz vollständig unter dem Text');
+    arrow(1).click();await tick();await tick();assert(content.textContent.includes(fixtures[1].name),'Kein Wesenwechsel');assert(arrow(1).disabled,'Ende nicht erkennbar');assert(number()[1]===1&&content.querySelector('.creature-description').textContent===fixtures[1].first.description&&content.querySelector('.creature-note').textContent===fixtures[1].first.note,'Kurze Notiz nicht unter dem Text');geometry();checks.push('Kurze Notiz auf derselben Seite');arrow(-1).click();await tick();assert(number()[0]===number()[1],'Rückwärts nicht letzte Textseite');checks.push('Alle Textseiten, Wesenwechsel und Rückwärtsgrenze');
     click('Bild');await tick();geometry();assert(content.querySelectorAll('.creature-leaf').length===1&&!number(),'Bild mit unsichtbaren Textseiten');arrow(1).click();await tick();assert(content.textContent.includes(fixtures[1].name),'Bildwechsel benötigt mehrere Klicks');
     open();assert(!find('Überarbeitet'),'Unverfügbare Fassung angeboten');close();arrow(-1).click();await tick();checks.push('Bildansicht wechselt unmittelbar; verfügbare Optionen');
     click('Text');await tick();geometry();assert(content.querySelectorAll('.creature-leaf').length===1,'Leere Bildhälfte');click('Bild + Text');await tick();assert(content.querySelectorAll('.creature-leaf').length===2,'Doppelseite fehlt');assert(content.textContent.includes(fixtures[0].name),'Wesen beim Ansichtswechsel verloren');checks.push('Drei Ansichten erhalten das Wesen');

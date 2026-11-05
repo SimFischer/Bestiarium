@@ -27,3 +27,14 @@ export function paginateText(text, paragraph, limit = Infinity) {
   if (!pages.length) pages.push({ start: 0, end: 0, text: '' });
   return pages;
 }
+
+// Keeps a note below the text: on the last page if it fits, otherwise on its own pages.
+export function addNotePages(pages, note, paragraph, node, height) {
+  const last = pages.at(-1);
+  paragraph.style.height = 'auto'; paragraph.textContent = last.text;
+  node.hidden = false; node.style.height = 'auto'; node.textContent = note;
+  const margin = parseFloat(getComputedStyle(node).marginTop);
+  if (paragraph.offsetHeight + margin + node.offsetHeight <= height) { last.note = note; return pages; }
+  node.style.height = `${height - margin}px`;
+  return [...pages, ...paginateText(note, node).map(page => ({ start: last.end + page.start, end: last.end + page.end, text: '', note: page.text }))];
+}
