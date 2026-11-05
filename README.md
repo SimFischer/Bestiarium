@@ -10,7 +10,7 @@ Das Buch ist oben in der Navigation schon während des Einstiegs erreichbar, una
 
 „Bearbeiten“ öffnet auch „Überarbeitung hinzufügen“. Diese zweite Fassung beginnt als Kopie der ersten. Änderungen an einer Fassung verändern die andere nicht. Überarbeitungen sind optional. Die ursprüngliche Fassung bleibt gespeichert, kann aber von der Lehrkraft ausdrücklich bearbeitet werden.
 
-Die Verwaltung erlaubt Sichtbarkeit, Reihenfolge und bestätigtes Löschen einzelner Werke oder der Sammlung der aktiven Klasse. Die Schüleransicht zeigt ausschließlich sichtbare Werke, ohne Uploads oder Anmeldung. Einzelansichten bieten Fassungswechsel, getrenntes Verdecken von Bild und Text und optionale Gesprächsimpulse. Lange Texte fließen vollständig; die Ansicht kann gescrollt werden.
+Die Verwaltung erlaubt Sichtbarkeit, Reihenfolge und bestätigtes Löschen einzelner Werke oder der Sammlung der aktiven Klasse. Die Schüleransicht zeigt ausschließlich sichtbare Werke, ohne Uploads oder Anmeldung. Einzelansichten bieten Fassungswechsel, getrenntes Verdecken von Bild und Text und optionale Gesprächsimpulse. Lange Texte werden vollständig auf Textfolgeseiten verteilt; innerhalb der Buchseiten gibt es keine Scrollbalken. Die Sammlungsübersicht und die Lehrkraftvorschau bleiben fließende Ansichten.
 
 ## Auf das Smartboard übertragen
 
@@ -31,6 +31,10 @@ Die Datei enthält alle sichtbaren und ausgeblendeten Einträge, beide Fassungen
 - Importformat `bestiarium-creatures`, Version 1. Es werden nur die definierten Textfelder, boolesche Sichtbarkeit und eingebettete PNG/JPEG/WebP-Daten akzeptiert; Bilder werden vor dem Import decodiert. Texte werden ausschließlich mit `textContent` ausgegeben. Keine HTML-Ausführung, externen Bild-URLs oder SVG-Dateien.
 
 ## Prüfungen
+
+Die Tierseiten, das Inhaltsverzeichnis und die Kodexkapitel passen das Buch proportional in die nach den Bedienelementen verbleibende Breite und Höhe ein. Auf Tiergrafiken ist ausschließlich die Fläche bei 54–92 % der Breite und 8–45 % der Höhe für Text freigegeben. Die untere Illustration bleibt unverändert sichtbar. Der Kodex und das Verzeichnis verwenden die vorhandene freie Doppelseite; ihre Inhaltsflächen berücksichtigen Falz und Pergamentränder. Lesbare Mindestschriftgrößen werden durch gemessene Folgeseiten ermöglicht, einschließlich einzelner langer Abschnitte und ungetrennter Wörter. Fenstergröße, Browserzoom und geladene Schriftarten lösen eine neue Aufteilung aus. Die aktuelle Textposition bleibt dabei nach Möglichkeit erhalten. Textseiten und Eintragswechsel haben getrennte Bedienelemente. Es werden ausschließlich Ansichten verändert, keine gespeicherten Texte, Bilder oder Fortschritte.
+
+`tests/book-layout.html` ist eine ausschließlich auf localhost erlaubte Layout-Testansicht mit isolierten Entwicklungsbeispielen. `tests/book-layout.cjs` startet einen eigenen Server und ein temporäres Chrome-Profil. Es benötigt Node.js, Playwright und Chrome (optional über `BESTIARIUM_CHROME` festlegen). Ausführen mit `node tests/book-layout.cjs`; Playwright muss für Node auflösbar sein. Die Prüfung verwendet echten Chrome-Browserzoom von 100/125/150 % bei 1920×1080, 1366×768 und 1900×830, liest sämtliche Folgeseiten und vergleicht den vollständigen Tiertext. Sie prüft außerdem Kodex, Verzeichnis, lange Einzelabschnitte und Schülerwerke. Screenshots landen im ausgegebenen temporären Verzeichnis; über `BOOK_TEST_OUTPUT` lässt sich ein anderes Ziel wählen. Niemals das Profil oder den Ursprung einer echten Unterrichtsinstanz zum Testen verwenden.
 
 Für eine eigene lokale Entwicklungsinstanz einen statischen HTTP-Server starten (nur `127.0.0.1`, nicht direkt `file://`). In einem separaten Entwicklungsbrowser `/tests/collection.html` öffnen. **Die Tests ändern den Fortschritt der lokalen Testklasse. Niemals mit echten Unterrichtsdaten ausführen.** Auf nicht lokalen Hosts wird die Ausführung verweigert.
 

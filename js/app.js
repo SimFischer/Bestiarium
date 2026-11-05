@@ -91,6 +91,7 @@ const buttons = hotspots.map(hotspot => {
 function renderView() {
   const classroom = activeClass();
   const heading = document.querySelector('#view-title');
+  dialog.querySelector('.dialog-heading .book-tools')?.remove();
   dialog.classList.toggle('book-dialog', currentView === 'bestiary' && selectedId !== 'classBestiary');
   dialog.classList.toggle('collection-dialog', currentView === 'collection' || (currentView === 'bestiary' && selectedId === 'classBestiary'));
   dialog.classList.toggle('landscape-dialog', ['world-map', 'expedition'].includes(currentView));
@@ -108,7 +109,7 @@ function renderView() {
     if (back) tools.append(back);
     const hasAction = messages.renderAction(tools, 'bestiary');
     content.classList.toggle('has-presentation-action', hasAction);
-    if (back || hasAction) content.prepend(tools);
+    if (back || hasAction) heading.after(tools);
   } else if (currentView === 'world-map') {
     heading.textContent = 'Weltkarte';
     renderMap(content, classroom, navigate);

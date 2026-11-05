@@ -1,5 +1,6 @@
 import { element, button } from './ui.js';
 import { readCollection } from './collection-store.js';
+import { paginateBook } from './book-layout.js';
 export const collectionTitle = 'Das Buch der unentdeckten Wesen';
 export const invitation = 'In unserem Archiv liegt ein besonderes Buch. Es wartet auf Wesen, die bisher niemand erforscht hat. Eure ersten Beschreibungen machen sie sichtbar. Mit jeder Entdeckung und jeder genaueren Beobachtung wächst unser Wissen.';
 export function creatureSpread(entry, version = 'first') {
@@ -26,6 +27,7 @@ export async function renderCollection(content, classId) {
     let selected = null, version = 'first', imageVisible = true, textVisible = true, prompts = false;
     function render() {
       root.replaceChildren();
+      root.classList.toggle('is-reading', selected !== null);
       const subtitle = element('p', 'Entdeckungen unserer Forschungsgruppe', 'creature-subtitle');
       root.append(subtitle);
       if (selected === null) {
@@ -62,6 +64,16 @@ export async function renderCollection(content, classId) {
       const turns = element('nav', '', 'actions creature-turns'); turns.setAttribute('aria-label', 'Blättern');
       [-1, 1].forEach(direction => { const next = button(direction < 0 ? '‹ Vorheriges Wesen' : 'Nächstes Wesen ›', () => { selected += direction; version = 'first'; render(); focus(); }); next.disabled = !entries[selected + direction]; turns.append(next); });
       turns.insertBefore(element('span', `${selected + 1} von ${entries.length}`), turns.lastChild); root.append(turns);
+      // Teacher previews retain their flowing layout; the classroom reader uses pages.
+      if (root.closest('.collection-dialog')) {
+        const words = spread.querySelector('.creature-words');
+        const blocks = [...words.children];
+        const area = element('div', '', 'collection-page-text');
+        words.replaceChildren(area);
+        const controls = element('nav');
+        root.insertBefore(controls, turns);
+        paginateBook(area, blocks, controls);
+      }
     }
     function focus() { root.tabIndex = -1; root.focus({ preventScroll: true }); const dialog = root.closest('dialog'); if (dialog) dialog.scrollTop = 0; }
     render();
